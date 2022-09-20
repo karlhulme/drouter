@@ -3,6 +3,7 @@ import {
   OpenApiSpecComponentSchema,
   OpenApiSpecPathOperation,
   OpenApiSpecPathOperationParameter,
+  OpenApiSpecPathOperationResponse,
   OpenApiSpecPathOperationResponseHeader,
 } from "../../deps.ts";
 import {
@@ -11,8 +12,6 @@ import {
   ServiceConfig,
 } from "../interfaces/index.ts";
 import { convertUrlPatternToOpenApiPath } from "./convertUrlPatternToOpenApiPath.ts";
-
-// TODO: add the failure response codes
 
 /**
  * Returns an OpenAPI specification.
@@ -190,6 +189,13 @@ function createPathOperation(
           return agg;
         }, {} as Record<string, OpenApiSpecPathOperationResponseHeader>),
       },
+      ...(operation.responseFailureDefinitions || []).reduce((agg, cur) => {
+        agg[cur.status.toString()] = {
+          description: cur.summary,
+        };
+
+        return agg;
+      }, {} as Record<string, OpenApiSpecPathOperationResponse>),
     },
   };
 }
