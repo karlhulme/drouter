@@ -29,7 +29,6 @@ export function createOperation(props: CreateOperationProps) {
     requestHeaders: [],
     requestQueryParams: [],
     requestUrlParams: [],
-    responseSuccessCode: 200,
     handler: props.handler,
   };
 

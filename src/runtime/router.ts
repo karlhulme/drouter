@@ -254,7 +254,7 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
               "content-type": "application/json",
               ...respHeaders,
             },
-            status: resp.status || 200,
+            status: op.responseSuccessCode || 200,
           });
         }
       }

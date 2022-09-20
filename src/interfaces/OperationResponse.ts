@@ -16,9 +16,4 @@ export interface OperationResponse<
    * An array of response headers.
    */
   headers?: OperationResponseHeader<ResponseHeaderNames>[];
-
-  /**
-   * The status code to return.
-   */
-  status?: number;
 }

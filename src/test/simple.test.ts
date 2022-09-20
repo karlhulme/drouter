@@ -15,10 +15,29 @@ Deno.test("Process an operation without url parameters, query params, headers or
 
   const response = await routerHandler(new Request("http://localhost/test"));
   const result = await response.json();
+  assertEquals(response.status, 200);
   assertEquals(result, { foo: "bar" });
 });
 
-Deno.test("Process an operation where the implementation uses a not supplied parameter.", async () => {
+Deno.test("Process an operation with a custom success code.", async () => {
+  const routerHandler = createRouterHandler(
+    createOperation({
+      handler: async () => ({
+        body: { foo: "bar" },
+      }),
+      setup: (op) => {
+        op.responseSuccessCode = 201;
+      },
+    }),
+  );
+
+  const response = await routerHandler(new Request("http://localhost/test"));
+  const result = await response.json();
+  assertEquals(response.status, 201);
+  assertEquals(result, { foo: "bar" });
+});
+
+Deno.test("Process an operation where the implementation attempts to use a parameter that was not supplied.", async () => {
   const routerHandler = createRouterHandler(
     createOperation({
       handler: async (req) => ({
