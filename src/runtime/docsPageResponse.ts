@@ -7,6 +7,7 @@ export function docsPageResponse(): Response {
     <html>
       <head>
         <meta charset="utf-8">
+        <meta name="description" content="Service documentation.">
         <script type="module" src="https://unpkg.com/rapidoc/dist/rapidoc-min.js"></script>
       </head>
       <body>

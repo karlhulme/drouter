@@ -21,7 +21,7 @@ export function parseAndValidateRequestValue(
 
     const validationResult = type.validator(value, "");
 
-    if (validationResult.length > 0) {
+    if (Array.isArray(validationResult) && validationResult.length > 0) {
       throw new OperationError(
         400,
         `${displayName} is not valid.`,
@@ -67,8 +67,10 @@ function parseRequestValue(
 
     return value;
   } else if (targetType === "boolean") {
-    return rawValue === "True" || rawValue === "true" || rawValue === "TRUE";
+    return rawValue === "True" || rawValue === "true" || rawValue === "TRUE" ||
+      rawValue === "1";
   } else {
+    // This branch handles object and array.
     try {
       return JSON.parse(rawValue);
     } catch {

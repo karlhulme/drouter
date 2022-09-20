@@ -7,6 +7,9 @@ import { ServiceConfig } from "../interfaces/index.ts";
 export function rootResponse(config: ServiceConfig) {
   const html = `<!doctype html>
     <html>
+      <head>
+        <meta name="description" content="Root.">
+      </head>
       <body>
         <h1>
           ${config.title} v${config.version}

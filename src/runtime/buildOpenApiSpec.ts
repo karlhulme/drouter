@@ -12,6 +12,8 @@ import {
 } from "../interfaces/index.ts";
 import { convertUrlPatternToOpenApiPath } from "./convertUrlPatternToOpenApiPath.ts";
 
+// TODO: add the failure response codes
+
 /**
  * Returns an OpenAPI specification.
  * @param config The configuration of the service.
@@ -41,6 +43,12 @@ export function buildOpenApiSpec(config: ServiceConfig): OpenApiSpec {
   return spec;
 }
 
+/**
+ * Appends the given operation to the openapi specification including
+ * any path information, route parameters and associated types.
+ * @param spec An openapi specification.
+ * @param operation An operation.
+ */
 function appendOperationToSpec(spec: OpenApiSpec, operation: GenericOperation) {
   const pathPattern = convertUrlPatternToOpenApiPath(operation.urlPattern);
 
@@ -107,6 +115,10 @@ function appendOperationToSpec(spec: OpenApiSpec, operation: GenericOperation) {
   }
 }
 
+/**
+ * Returns an openapi path based on the given operation.
+ * @param operation An operation.
+ */
 function createPathOperation(
   operation: GenericOperation,
 ): OpenApiSpecPathOperation {
@@ -182,6 +194,11 @@ function createPathOperation(
   };
 }
 
+/**
+ * Appends the given type to the openapi specification.
+ * @param spec An openapi specification.
+ * @param type A type.
+ */
 function appendTypeToSpec(spec: OpenApiSpec, type: OperationNamedType) {
   if (spec.components.schemas[type.name]) {
     // Type has already been added to the spec.

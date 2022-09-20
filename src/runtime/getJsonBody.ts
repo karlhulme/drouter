@@ -25,7 +25,7 @@ export async function getJsonBody(
 
     const validationResult = operation.requestBodyType.validator(body, "");
 
-    if (validationResult.length > 0) {
+    if (Array.isArray(validationResult) && validationResult.length > 0) {
       throw new OperationError(
         400,
         "JSON body does not pass validation.",
