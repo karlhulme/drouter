@@ -2,15 +2,22 @@ import {
   GenericOperation,
   OperationRequestValue,
 } from "../interfaces/index.ts";
-import { readRequestValue } from "./readRequestValue.ts";
+import { parseAndValidateRequestValue } from "./parseAndValidateRequestValue.ts";
 
-export function getHeaderValues(req: Request, op: GenericOperation) {
+/**
+ * Returns an array of request values extracted from the given
+ * headers.
+ * @param headers The headers from an HTTP request object.
+ * @param op An operation.
+ */
+export function getHeaderValues(headers: Headers, op: GenericOperation) {
   const headerValues: OperationRequestValue[] = [];
 
   if (Array.isArray(op.requestHeaders)) {
     for (const header of op.requestHeaders) {
-      const rawValue = req.headers.get(header.name);
-      const value = readRequestValue(
+      const rawValue = headers.get(header.name);
+
+      const value = parseAndValidateRequestValue(
         `Header '${header.name}'`,
         rawValue,
         header.type,

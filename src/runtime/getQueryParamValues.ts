@@ -2,8 +2,14 @@ import {
   GenericOperation,
   OperationRequestValue,
 } from "../interfaces/index.ts";
-import { readRequestValue } from "./readRequestValue.ts";
+import { parseAndValidateRequestValue } from "./parseAndValidateRequestValue.ts";
 
+/**
+ * Returns an array of request values extracted from the given
+ * query parameters.
+ * @param queryParams The query parameters from an HTTP request object.
+ * @param op An operation.
+ */
 export function getQueryParamValues(
   queryParams: URLSearchParams,
   op: GenericOperation,
@@ -13,7 +19,8 @@ export function getQueryParamValues(
   if (Array.isArray(op.requestQueryParams)) {
     for (const queryParam of op.requestQueryParams) {
       const rawValue = queryParams.get(queryParam.name);
-      const value = readRequestValue(
+
+      const value = parseAndValidateRequestValue(
         `Query param '${queryParam.name}'`,
         rawValue,
         queryParam.type,

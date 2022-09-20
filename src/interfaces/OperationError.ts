@@ -1,3 +1,6 @@
+/**
+ * An error occurred during the processing of an operation.
+ */
 export class OperationError extends Error {
   constructor(
     readonly status: number,

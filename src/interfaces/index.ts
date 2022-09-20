@@ -11,4 +11,4 @@ export * from "./OperationRequestQueryParamsBlock.ts";
 export * from "./OperationRequestValue.ts";
 export * from "./OperationResponse.ts";
 export * from "./OperationResponseHeader.ts";
-export * from "./RouterConfig.ts";
+export * from "./ServiceConfig.ts";

@@ -8,11 +8,15 @@ import {
 import {
   GenericOperation,
   OperationNamedType,
-  RouterConfig,
+  ServiceConfig,
 } from "../interfaces/index.ts";
 import { convertUrlPatternToOpenApiPath } from "./convertUrlPatternToOpenApiPath.ts";
 
-export function buildOpenApiSpec(config: RouterConfig): OpenApiSpec {
+/**
+ * Returns an OpenAPI specification.
+ * @param config The configuration of the service.
+ */
+export function buildOpenApiSpec(config: ServiceConfig): OpenApiSpec {
   const spec: OpenApiSpec = {
     openapi: "3.0.3",
     info: {

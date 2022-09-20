@@ -1,6 +1,9 @@
-export function buildDocsPage() {
+/**
+ * Returns a response containing a documentation page.
+ */
+export function docsPageResponse(): Response {
   // Important - must specify the !doctype directive and the meta charset tag.
-  return `<!doctype html>
+  const html = `<!doctype html>
     <html>
       <head>
         <meta charset="utf-8">
@@ -14,4 +17,10 @@ export function buildDocsPage() {
       </body>
     </html>
   `;
+
+  return new Response(html, {
+    headers: {
+      "content-type": "text/html;charset=utf-8",
+    },
+  });
 }

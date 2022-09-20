@@ -3,7 +3,18 @@ import {
   OperationRequestValue,
 } from "../interfaces/index.ts";
 
-// called when the value is retrieved during the request
+/**
+ * Returns a value from a pre-validated set of values extracted
+ * from the request and supplied to an operation during the processing
+ * of a request.
+ * @param operation An operation.
+ * @param displayName The name of the value being requested, such as "Header 'abc'"".
+ * @param name The name of the value being requested.
+ * @param values The set of pre-validated values to retrieve from.
+ * @param targetType The expected type of the value that the operation is trying to request.
+ * @param requiredValue True if the operation is expecting the value to be guaranteed to
+ * be available.
+ */
 export function getRequestValue(
   operation: GenericOperation,
   displayName: string,

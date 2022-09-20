@@ -1,14 +1,22 @@
-import { OperationError, RouterConfig } from "../interfaces/index.ts";
+import { OperationError, ServiceConfig } from "../interfaces/index.ts";
 import { getJsonBody } from "./getJsonBody.ts";
 import { getHeaderValues } from "./getHeaderValues.ts";
 import { getQueryParamValues } from "./getQueryParamValues.ts";
 import { getRequestValue } from "./getRequestValue.ts";
 import { getUrlParamValues } from "./getUrlParamValues.ts";
-import { buildOpenApiSpec } from "./buildOpenApiSpec.ts";
-import { buildDocsPage } from "./buildDocsPage.ts";
+import { docsPageResponse } from "./docsPageResponse.ts";
 import { createErrorResponse } from "./createErrorResponse.ts";
+import { healthResponse } from "./healthResponse.ts";
+import { rootResponse } from "./rootResponse.ts";
+import { openApiResponse } from "./openApiResponse.ts";
 
-export function router(config: RouterConfig): Deno.ServeHandler {
+/**
+ * Returns an HTTP request handler that picks operation implementations
+ * based on the url and validates the request before invoking it.
+ * @param config A router configuration that defines the operations
+ * this service can provide.
+ */
+export function router(config: ServiceConfig): Deno.ServeHandler {
   const internalOps = config.operations.map((op) => ({
     urlPatternCompiled: new URLPattern({ pathname: op.urlPattern }),
     operation: op,
@@ -19,29 +27,19 @@ export function router(config: RouterConfig): Deno.ServeHandler {
       const url = new URL(req.url);
 
       if (req.method === "GET" && url.pathname === "/") {
-        return new Response("Welcome to the service.");
+        return rootResponse(config);
       }
 
       if (req.method === "GET" && url.pathname === "/health") {
-        return new Response("Healthy.");
+        return healthResponse();
       }
 
       if (req.method === "GET" && url.pathname === "/docs") {
-        const docsPage = buildDocsPage();
-        return new Response(docsPage, {
-          headers: {
-            "content-type": "text/html;charset=utf-8",
-          },
-        });
+        return docsPageResponse();
       }
 
       if (req.method === "GET" && url.pathname === "/openapi") {
-        const openApi = buildOpenApiSpec(config);
-        return new Response(JSON.stringify(openApi), {
-          headers: {
-            "content-type": "application/json",
-          },
-        });
+        return openApiResponse(config);
       }
 
       for (const internalOp of internalOps) {
@@ -56,7 +54,7 @@ export function router(config: RouterConfig): Deno.ServeHandler {
 
           const body = await getJsonBody(req, op);
 
-          const headerValues = getHeaderValues(req, op);
+          const headerValues = getHeaderValues(req.headers, op);
           const queryParamValues = getQueryParamValues(url.searchParams, op);
           const urlParamValues = getUrlParamValues(
             urlMatch.pathname.groups,
@@ -268,7 +266,9 @@ export function router(config: RouterConfig): Deno.ServeHandler {
       if (err instanceof OperationError) {
         return createErrorResponse(err);
       } else {
+        // Logs the unexpected error to the console.
         console.error(err);
+
         return createErrorResponse(
           new OperationError(500, "Internal server error."),
         );
