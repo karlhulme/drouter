@@ -43,9 +43,9 @@ export function buildOpenApiSpec(config: ServiceConfig): OpenApiSpec {
 }
 
 /**
- * Appends the given operation to the openapi specification including
+ * Appends the given operation to the OpenAPI specification including
  * any path information, route parameters and associated types.
- * @param spec An openapi specification.
+ * @param spec An OpenAPI specification.
  * @param operation An operation.
  */
 function appendOperationToSpec(spec: OpenApiSpec, operation: GenericOperation) {
@@ -115,7 +115,7 @@ function appendOperationToSpec(spec: OpenApiSpec, operation: GenericOperation) {
 }
 
 /**
- * Returns an openapi path based on the given operation.
+ * Returns an OpenAPI path based on the given operation.
  * @param operation An operation.
  */
 function createPathOperation(
@@ -201,8 +201,8 @@ function createPathOperation(
 }
 
 /**
- * Appends the given type to the openapi specification.
- * @param spec An openapi specification.
+ * Appends the given type to the OpenAPI specification.
+ * @param spec An OpenAPI specification.
  * @param type A type.
  */
 function appendTypeToSpec(spec: OpenApiSpec, type: OperationNamedType) {
