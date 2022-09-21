@@ -21,6 +21,7 @@ Deno.test("Fail to process an operation with unparseable number or object parame
             schema: {
               type: "number",
             },
+            referencedRuntimeTypes: [],
             underlyingType: "number",
             validator: () => [],
           },
@@ -32,6 +33,7 @@ Deno.test("Fail to process an operation with unparseable number or object parame
             schema: {
               type: "object",
             },
+            referencedRuntimeTypes: [],
             underlyingType: "object",
             validator: () => [],
           },

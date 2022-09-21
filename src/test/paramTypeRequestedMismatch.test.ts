@@ -19,6 +19,7 @@ Deno.test("Fail to process an operation where a non-number parameter is read as 
             schema: {
               type: "object",
             },
+            referencedRuntimeTypes: [],
             underlyingType: "object",
             validator: () => [],
           },
@@ -71,6 +72,7 @@ Deno.test("Fail to process an operation where a non-string parameter is read as 
             schema: {
               type: "object",
             },
+            referencedRuntimeTypes: [],
             underlyingType: "object",
             validator: () => [],
           },
@@ -123,6 +125,7 @@ Deno.test("Fail to process an operation where a non-boolean parameter is read as
             schema: {
               type: "object",
             },
+            referencedRuntimeTypes: [],
             underlyingType: "object",
             validator: () => [],
           },

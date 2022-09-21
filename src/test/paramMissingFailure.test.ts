@@ -17,6 +17,7 @@ Deno.test("Fail to process an operation that is not given a required parameter."
             schema: {
               type: "number",
             },
+            referencedRuntimeTypes: [],
             underlyingType: "number",
             validator: () => [{ error: "found" }],
           },

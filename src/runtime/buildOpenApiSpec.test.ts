@@ -18,12 +18,21 @@ Deno.test("Build an OpenAPI spec using all parts of the specification.", async (
         name: "id",
         summary: "The id.",
         type: {
-          name: "number",
+          name: "id",
           schema: {
             type: "number",
           },
           underlyingType: "number",
           validator: () => [],
+          referencedRuntimeTypes: [{
+            name: "anotherNumber",
+            schema: {
+              type: "number",
+            },
+            referencedRuntimeTypes: [],
+            underlyingType: "number",
+            validator: () => [],
+          }],
         },
       }],
       responseBodyType: {
@@ -31,6 +40,7 @@ Deno.test("Build an OpenAPI spec using all parts of the specification.", async (
         schema: {
           type: "object",
         },
+        referencedRuntimeTypes: [],
         underlyingType: "object",
         validator: () => [],
       },
@@ -52,6 +62,7 @@ Deno.test("Build an OpenAPI spec using all parts of the specification.", async (
           schema: {
             type: "string",
           },
+          referencedRuntimeTypes: [],
           underlyingType: "string",
           validator: () => [],
         },
@@ -61,6 +72,7 @@ Deno.test("Build an OpenAPI spec using all parts of the specification.", async (
         schema: {
           type: "array",
         },
+        referencedRuntimeTypes: [],
         underlyingType: "array",
         validator: () => [],
       },
@@ -82,6 +94,7 @@ Deno.test("Build an OpenAPI spec using all parts of the specification.", async (
           schema: {
             type: "boolean",
           },
+          referencedRuntimeTypes: [],
           underlyingType: "boolean",
           validator: () => [],
         },
@@ -102,6 +115,7 @@ Deno.test("Build an OpenAPI spec using all parts of the specification.", async (
         schema: {
           type: "object",
         },
+        referencedRuntimeTypes: [],
         underlyingType: "object",
         validator: () => [],
       },
@@ -121,6 +135,7 @@ Deno.test("Build an OpenAPI spec using all parts of the specification.", async (
         schema: {
           type: "object",
         },
+        referencedRuntimeTypes: [],
         underlyingType: "object",
         validator: () => [],
       },
@@ -133,6 +148,7 @@ Deno.test("Build an OpenAPI spec using all parts of the specification.", async (
           schema: {
             type: "number",
           },
+          referencedRuntimeTypes: [],
           underlyingType: "number",
           validator: () => [],
         },
@@ -152,6 +168,7 @@ Deno.test("Build an OpenAPI spec using all parts of the specification.", async (
         schema: {
           type: "object",
         },
+        referencedRuntimeTypes: [],
         underlyingType: "object",
         validator: () => [],
       },

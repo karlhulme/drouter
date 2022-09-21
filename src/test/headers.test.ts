@@ -22,6 +22,7 @@ Deno.test("Process an operation with optional headers.", async () => {
             schema: {
               type: "number",
             },
+            referencedRuntimeTypes: [],
             underlyingType: "number",
             validator: () => [],
           },
@@ -33,6 +34,7 @@ Deno.test("Process an operation with optional headers.", async () => {
             schema: {
               type: "str",
             },
+            referencedRuntimeTypes: [],
             underlyingType: "string",
             validator: () => [],
           },
@@ -44,6 +46,7 @@ Deno.test("Process an operation with optional headers.", async () => {
             schema: {
               type: "boolean",
             },
+            referencedRuntimeTypes: [],
             underlyingType: "boolean",
             validator: () => [],
           },
@@ -55,6 +58,7 @@ Deno.test("Process an operation with optional headers.", async () => {
             schema: {
               type: "object",
             },
+            referencedRuntimeTypes: [],
             underlyingType: "object",
             validator: () => [],
           },
@@ -104,6 +108,7 @@ Deno.test("Process an operation with required headers.", async () => {
             schema: {
               type: "number",
             },
+            referencedRuntimeTypes: [],
             underlyingType: "number",
             validator: () => [],
           },
@@ -116,6 +121,7 @@ Deno.test("Process an operation with required headers.", async () => {
             schema: {
               type: "str",
             },
+            referencedRuntimeTypes: [],
             underlyingType: "string",
             validator: () => [],
           },
@@ -128,6 +134,7 @@ Deno.test("Process an operation with required headers.", async () => {
             schema: {
               type: "boolean",
             },
+            referencedRuntimeTypes: [],
             underlyingType: "boolean",
             validator: () => [],
           },
@@ -140,6 +147,7 @@ Deno.test("Process an operation with required headers.", async () => {
             schema: {
               type: "object",
             },
+            referencedRuntimeTypes: [],
             underlyingType: "object",
             validator: () => [],
           },

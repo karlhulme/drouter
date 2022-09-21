@@ -37,6 +37,7 @@ Deno.test("Process an operation with url parameters.", async () => {
             schema: {
               type: "number",
             },
+            referencedRuntimeTypes: [],
             underlyingType: "number",
             validator: () => [],
           },
@@ -48,6 +49,7 @@ Deno.test("Process an operation with url parameters.", async () => {
             schema: {
               type: "str",
             },
+            referencedRuntimeTypes: [],
             underlyingType: "string",
             validator: () => [],
           },
@@ -59,6 +61,7 @@ Deno.test("Process an operation with url parameters.", async () => {
             schema: {
               type: "boolean",
             },
+            referencedRuntimeTypes: [],
             underlyingType: "boolean",
             validator: () => [],
           },

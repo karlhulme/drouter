@@ -52,6 +52,7 @@ Deno.test("Process an operation where the implementation attempts to use a param
             schema: {
               type: "string",
             },
+            referencedRuntimeTypes: [],
             underlyingType: "string",
             validator: () => [],
           },

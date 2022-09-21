@@ -16,6 +16,7 @@ import { convertUrlPatternToOpenApiPath } from "./convertUrlPatternToOpenApiPath
 /**
  * Returns an OpenAPI specification.
  * @param config The configuration of the service.
+ * @param namedTypes An array of named types.
  */
 export function buildOpenApiSpec(config: ServiceConfig): OpenApiSpec {
   const spec: OpenApiSpec = {
@@ -47,6 +48,7 @@ export function buildOpenApiSpec(config: ServiceConfig): OpenApiSpec {
  * any path information, route parameters and associated types.
  * @param spec An OpenAPI specification.
  * @param operation An operation.
+ * @param namedTypes An array of named types.
  */
 function appendOperationToSpec(spec: OpenApiSpec, operation: GenericOperation) {
   const pathPattern = convertUrlPatternToOpenApiPath(operation.urlPattern);
@@ -204,8 +206,12 @@ function createPathOperation(
  * Appends the given type to the OpenAPI specification.
  * @param spec An OpenAPI specification.
  * @param type A type.
+ * @param namedTypes An array of named types.
  */
-function appendTypeToSpec(spec: OpenApiSpec, type: OperationNamedType) {
+function appendTypeToSpec(
+  spec: OpenApiSpec,
+  type: OperationNamedType,
+) {
   if (spec.components.schemas[type.name]) {
     // Type has already been added to the spec.
     return;
@@ -213,4 +219,9 @@ function appendTypeToSpec(spec: OpenApiSpec, type: OperationNamedType) {
 
   spec.components.schemas[type.name] = type
     .schema as OpenApiSpecComponentSchema;
+
+  // Add any referenced types to the list of types to include.
+  for (const refRuntimeType of type.referencedRuntimeTypes) {
+    appendTypeToSpec(spec, refRuntimeType);
+  }
 }
