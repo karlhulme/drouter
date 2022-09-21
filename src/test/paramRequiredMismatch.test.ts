@@ -19,7 +19,7 @@ Deno.test("Fail to process an operation with where an optional parameter is read
             schema: {
               type: "number",
             },
-            referencedRuntimeTypes: [],
+            referencedSchemaTypes: [],
             underlyingType: "number",
             validator: () => [],
           },

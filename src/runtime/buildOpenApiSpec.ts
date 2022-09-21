@@ -16,7 +16,6 @@ import { convertUrlPatternToOpenApiPath } from "./convertUrlPatternToOpenApiPath
 /**
  * Returns an OpenAPI specification.
  * @param config The configuration of the service.
- * @param namedTypes An array of named types.
  */
 export function buildOpenApiSpec(config: ServiceConfig): OpenApiSpec {
   const spec: OpenApiSpec = {
@@ -37,7 +36,7 @@ export function buildOpenApiSpec(config: ServiceConfig): OpenApiSpec {
     .sort((a, b) => a.name.localeCompare(b.name));
 
   for (const operation of sortedOperations) {
-    appendOperationToSpec(spec, operation);
+    appendOperationToSpec(spec, operation, config.namedTypes);
   }
 
   return spec;
@@ -50,7 +49,11 @@ export function buildOpenApiSpec(config: ServiceConfig): OpenApiSpec {
  * @param operation An operation.
  * @param namedTypes An array of named types.
  */
-function appendOperationToSpec(spec: OpenApiSpec, operation: GenericOperation) {
+function appendOperationToSpec(
+  spec: OpenApiSpec,
+  operation: GenericOperation,
+  namedTypes: OperationNamedType[],
+) {
   const pathPattern = convertUrlPatternToOpenApiPath(operation.urlPattern);
 
   if (!spec.paths[pathPattern]) {
@@ -84,34 +87,34 @@ function appendOperationToSpec(spec: OpenApiSpec, operation: GenericOperation) {
   }
 
   if (operation.requestBodyType) {
-    appendTypeToSpec(spec, operation.requestBodyType);
+    appendTypeToSpec(spec, operation.requestBodyType, namedTypes);
   }
 
   if (operation.responseBodyType) {
-    appendTypeToSpec(spec, operation.responseBodyType);
+    appendTypeToSpec(spec, operation.responseBodyType, namedTypes);
   }
 
   if (Array.isArray(operation.requestUrlParams)) {
     for (const urlParam of operation.requestUrlParams) {
-      appendTypeToSpec(spec, urlParam.type);
+      appendTypeToSpec(spec, urlParam.type, namedTypes);
     }
   }
 
   if (Array.isArray(operation.requestQueryParams)) {
     for (const queryParams of operation.requestQueryParams) {
-      appendTypeToSpec(spec, queryParams.type);
+      appendTypeToSpec(spec, queryParams.type, namedTypes);
     }
   }
 
   if (Array.isArray(operation.requestHeaders)) {
     for (const header of operation.requestHeaders) {
-      appendTypeToSpec(spec, header.type);
+      appendTypeToSpec(spec, header.type, namedTypes);
     }
   }
 
   if (Array.isArray(operation.responseHeaders)) {
     for (const header of operation.responseHeaders) {
-      appendTypeToSpec(spec, header.type);
+      appendTypeToSpec(spec, header.type, namedTypes);
     }
   }
 }
@@ -211,6 +214,7 @@ function createPathOperation(
 function appendTypeToSpec(
   spec: OpenApiSpec,
   type: OperationNamedType,
+  namedTypes: OperationNamedType[],
 ) {
   if (spec.components.schemas[type.name]) {
     // Type has already been added to the spec.
@@ -221,7 +225,11 @@ function appendTypeToSpec(
     .schema as OpenApiSpecComponentSchema;
 
   // Add any referenced types to the list of types to include.
-  for (const refRuntimeType of type.referencedRuntimeTypes) {
-    appendTypeToSpec(spec, refRuntimeType);
+  for (const refSchemaTypeName of type.referencedSchemaTypes) {
+    const refSchemaType = namedTypes.find((t) => t.name === refSchemaTypeName);
+
+    if (refSchemaType) {
+      appendTypeToSpec(spec, refSchemaType, namedTypes);
+    }
   }
 }

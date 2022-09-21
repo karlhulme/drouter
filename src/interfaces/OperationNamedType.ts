@@ -13,9 +13,9 @@ export interface OperationNamedType {
   schema: unknown;
 
   /**
-   * An array of runtime types referenced by this runtime type.
+   * An array of JSON schema types referenced by this schema.
    */
-  referencedRuntimeTypes: OperationNamedType[];
+  referencedSchemaTypes: string[];
 
   /**
    * The underlying type.

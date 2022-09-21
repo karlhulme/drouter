@@ -22,7 +22,7 @@ Deno.test("Process an operation with optional headers.", async () => {
             schema: {
               type: "number",
             },
-            referencedRuntimeTypes: [],
+            referencedSchemaTypes: [],
             underlyingType: "number",
             validator: () => [],
           },
@@ -34,7 +34,7 @@ Deno.test("Process an operation with optional headers.", async () => {
             schema: {
               type: "str",
             },
-            referencedRuntimeTypes: [],
+            referencedSchemaTypes: [],
             underlyingType: "string",
             validator: () => [],
           },
@@ -46,7 +46,7 @@ Deno.test("Process an operation with optional headers.", async () => {
             schema: {
               type: "boolean",
             },
-            referencedRuntimeTypes: [],
+            referencedSchemaTypes: [],
             underlyingType: "boolean",
             validator: () => [],
           },
@@ -58,7 +58,7 @@ Deno.test("Process an operation with optional headers.", async () => {
             schema: {
               type: "object",
             },
-            referencedRuntimeTypes: [],
+            referencedSchemaTypes: [],
             underlyingType: "object",
             validator: () => [],
           },
@@ -108,7 +108,7 @@ Deno.test("Process an operation with required headers.", async () => {
             schema: {
               type: "number",
             },
-            referencedRuntimeTypes: [],
+            referencedSchemaTypes: [],
             underlyingType: "number",
             validator: () => [],
           },
@@ -121,7 +121,7 @@ Deno.test("Process an operation with required headers.", async () => {
             schema: {
               type: "str",
             },
-            referencedRuntimeTypes: [],
+            referencedSchemaTypes: [],
             underlyingType: "string",
             validator: () => [],
           },
@@ -134,7 +134,7 @@ Deno.test("Process an operation with required headers.", async () => {
             schema: {
               type: "boolean",
             },
-            referencedRuntimeTypes: [],
+            referencedSchemaTypes: [],
             underlyingType: "boolean",
             validator: () => [],
           },
@@ -147,7 +147,7 @@ Deno.test("Process an operation with required headers.", async () => {
             schema: {
               type: "object",
             },
-            referencedRuntimeTypes: [],
+            referencedSchemaTypes: [],
             underlyingType: "object",
             validator: () => [],
           },

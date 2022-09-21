@@ -19,7 +19,7 @@ Deno.test("Process an operation recognising the various bool options.", async ()
             schema: {
               type: "boolean",
             },
-            referencedRuntimeTypes: [],
+            referencedSchemaTypes: [],
             underlyingType: "boolean",
             validator: () => [],
           },

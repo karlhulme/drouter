@@ -10,6 +10,7 @@ const emptyServiceConfig: ServiceConfig = {
   description: "The test service.",
   version: "1.0.0",
   operations: [],
+  namedTypes: [],
 };
 
 Deno.test("A root request elicits a root response.", async () => {

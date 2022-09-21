@@ -20,7 +20,7 @@ Deno.test("Fail to process an operation with a parameter that fails validation."
             schema: {
               type: "number",
             },
-            referencedRuntimeTypes: [],
+            referencedSchemaTypes: [],
             underlyingType: "number",
             validator: () => [{ error: "found" }],
           },

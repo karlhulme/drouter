@@ -52,7 +52,7 @@ Deno.test("Process an operation where the implementation attempts to use a param
             schema: {
               type: "string",
             },
-            referencedRuntimeTypes: [],
+            referencedSchemaTypes: [],
             underlyingType: "string",
             validator: () => [],
           },
@@ -71,6 +71,7 @@ Deno.test("Process an operation by selecting the correct one based on method.", 
     title: "Test service",
     description: "The test service.",
     version: "1.0.0",
+    namedTypes: [],
     operations: [
       createOperation({
         handler: async () => ({

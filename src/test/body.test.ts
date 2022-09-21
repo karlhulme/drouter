@@ -17,7 +17,7 @@ Deno.test("Process an operation with a valid payload.", async () => {
             type: "object",
           },
           underlyingType: "object",
-          referencedRuntimeTypes: [],
+          referencedSchemaTypes: [],
           validator: () => [],
         };
       },
@@ -53,7 +53,7 @@ Deno.test("Fail to process an operation with an invalid payload.", async () => {
           schema: {
             type: "object",
           },
-          referencedRuntimeTypes: [],
+          referencedSchemaTypes: [],
           underlyingType: "object",
           validator: () => [{ error: "found" }],
         };
@@ -93,7 +93,7 @@ Deno.test("Fail to process an operation with a malformed payload.", async () => 
           schema: {
             type: "object",
           },
-          referencedRuntimeTypes: [],
+          referencedSchemaTypes: [],
           underlyingType: "object",
           validator: () => [{ error: "found" }],
         };

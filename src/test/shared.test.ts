@@ -42,6 +42,7 @@ export function createRouterHandler(op: GenericOperation) {
     title: "Test service",
     description: "The test service.",
     version: "1.0.0",
+    namedTypes: [],
     operations: [op],
   });
 }
