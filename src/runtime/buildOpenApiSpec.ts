@@ -151,7 +151,7 @@ function createPathOperation(
       ...(operation.requestHeaders || []).map((p) => ({
         name: p.name,
         in: "header",
-        required: true,
+        required: Boolean(p.isRequired),
         schema: {
           $ref: `#/components/schemas/${p.type.name}`,
         },
@@ -161,7 +161,7 @@ function createPathOperation(
       ...(operation.requestQueryParams || []).map((p) => ({
         name: p.name,
         in: "query",
-        required: true,
+        required: Boolean(p.isRequired),
         schema: {
           $ref: `#/components/schemas/${p.type.name}`,
         },
@@ -184,7 +184,7 @@ function createPathOperation(
         headers: (operation.responseHeaders || []).reduce((agg, cur) => {
           agg[cur.name] = {
             description: cur.summary,
-            required: cur.isGuaranteed,
+            required: Boolean(cur.isGuaranteed),
             deprecated: Boolean(cur.deprecated),
             schema: {
               $ref: `#/components/schemas/${cur.type.name}`,
