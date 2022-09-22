@@ -249,13 +249,21 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
             return agg;
           }, {} as Record<string, unknown>);
 
-          return new Response(JSON.stringify(resp.body), {
-            headers: {
-              "content-type": "application/json",
-              ...respHeaders,
-            },
-            status: op.responseSuccessCode || 200,
-          });
+          const resultStatus = op.responseSuccessCode || 200;
+
+          if (typeof resp.body === "undefined") {
+            return new Response(null, {
+              status: resultStatus,
+            });
+          } else {
+            return new Response(JSON.stringify(resp.body), {
+              headers: {
+                "content-type": "application/json",
+                ...respHeaders,
+              },
+              status: resultStatus,
+            });
+          }
         }
       }
 

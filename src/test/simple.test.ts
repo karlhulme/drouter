@@ -3,20 +3,16 @@ import { assertEquals } from "../../deps.ts";
 import { router } from "../runtime/index.ts";
 import { createOperation, createRouterHandler } from "./shared.test.ts";
 
-Deno.test("Process an operation without url parameters, query params, headers or inbound payload.", async () => {
+Deno.test("Process an operation without url parameters, query params, headers, inbound payload or response body.", async () => {
   const routerHandler = createRouterHandler(
     createOperation({
-      handler: async () => ({
-        body: { foo: "bar" },
-      }),
+      handler: async () => ({}),
       setup: () => {},
     }),
   );
 
   const response = await routerHandler(new Request("http://localhost/test"));
-  const result = await response.json();
   assertEquals(response.status, 200);
-  assertEquals(result, { foo: "bar" });
 });
 
 Deno.test("Process an operation with a custom success code.", async () => {
