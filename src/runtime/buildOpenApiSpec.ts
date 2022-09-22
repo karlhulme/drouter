@@ -1,6 +1,6 @@
 import {
   OpenApiSpec,
-  OpenApiSpecComponentSchema,
+  OpenApiSpecComponentsSchema,
   OpenApiSpecPathOperation,
   OpenApiSpecPathOperationParameter,
   OpenApiSpecPathOperationResponse,
@@ -222,7 +222,7 @@ function appendTypeToSpec(
   }
 
   spec.components.schemas[type.name] = type
-    .schema as OpenApiSpecComponentSchema;
+    .schema as OpenApiSpecComponentsSchema;
 
   // Add any referenced types to the list of types to include.
   for (const refSchemaTypeName of type.referencedSchemaTypes) {

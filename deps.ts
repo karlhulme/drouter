@@ -6,7 +6,7 @@ export {
 
 export type {
   OpenApiSpec,
-  OpenApiSpecComponentSchema,
+  OpenApiSpecComponentsSchema,
   OpenApiSpecPathOperation,
   OpenApiSpecPathOperationParameter,
   OpenApiSpecPathOperationResponse,
