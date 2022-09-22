@@ -10,7 +10,7 @@ export interface OperationResponse<
   /**
    * The body of the response.
    */
-  body: ResponseBodyType;
+  body?: ResponseBodyType;
 
   /**
    * An array of response headers.
