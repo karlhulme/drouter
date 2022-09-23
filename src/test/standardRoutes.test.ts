@@ -1,8 +1,4 @@
-import {
-  assertEquals,
-  assertStrictEquals,
-  assertStringIncludes,
-} from "../../deps.ts";
+import { assertStrictEquals, assertStringIncludes } from "../../deps.ts";
 import { router, ServiceConfig } from "../index.ts";
 
 const emptyServiceConfig: ServiceConfig = {
@@ -47,7 +43,8 @@ Deno.test("An unknown route request elicits a 404 response.", async () => {
   const routerHandler = router(emptyServiceConfig);
   const response = await routerHandler(new Request("http://localhost/unknown"));
   assertStrictEquals(response.status, 404);
-  assertEquals(await response.json(), {
-    message: "Resource not found.",
-  });
+  assertStringIncludes(
+    await response.text(),
+    "RESOURCE_NOT_FOUND",
+  );
 });

@@ -24,7 +24,8 @@ export function parseAndValidateRequestValue(
     if (Array.isArray(validationResult) && validationResult.length > 0) {
       throw new OperationError(
         400,
-        `${displayName} is not valid.`,
+        "REQUEST_PARAMETER_DID_NOT_VALIDATE",
+        `${displayName} failed validation.`,
         validationResult,
       );
     }
@@ -33,6 +34,7 @@ export function parseAndValidateRequestValue(
   } else if (markedRequired) {
     throw new OperationError(
       400,
+      "REQUEST_PARAMETER_MISSING",
       `${displayName} is required and must be supplied in the request.`,
     );
   } else {
@@ -61,6 +63,7 @@ function parseRequestValue(
     if (isNaN(value)) {
       throw new OperationError(
         400,
+        "REQUEST_PARAMETER_VALUE_NOT_A_NUMBER",
         `${displayName} with value '${rawValue}' cannot be converted to a number.`,
       );
     }
@@ -76,6 +79,7 @@ function parseRequestValue(
     } catch {
       throw new OperationError(
         400,
+        "UNABLE_TO_READ_REQUEST_PARAMETER_AS_JSON",
         `${displayName} cannot be parsed into JSON.`,
       );
     }

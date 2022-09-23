@@ -268,7 +268,7 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
       }
 
       return createErrorResponse(
-        new OperationError(404, "Resource not found."),
+        new OperationError(404, "RESOURCE_NOT_FOUND", "Resource not found."),
       );
     } catch (err) {
       if (err instanceof OperationError) {
@@ -278,7 +278,11 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
         console.error(err);
 
         return createErrorResponse(
-          new OperationError(500, "Internal server error."),
+          new OperationError(
+            500,
+            "INTERNAL_SERVER_ERROR",
+            "Internal server error.",
+          ),
         );
       }
     } finally {

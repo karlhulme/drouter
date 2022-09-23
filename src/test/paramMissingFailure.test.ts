@@ -33,6 +33,6 @@ Deno.test("Fail to process an operation that is not given a required parameter."
   assertEquals(missingNumResponse.status, 400);
   assertStringIncludes(
     await missingNumResponse.text(),
-    "required and must be supplied",
+    "REQUEST_PARAMETER_MISSING",
   );
 });

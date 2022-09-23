@@ -76,7 +76,7 @@ Deno.test("Fail to process an operation with an invalid payload.", async () => {
   assertEquals(response.status, 400);
   assertStringIncludes(
     await response.text(),
-    "JSON body does not pass validation",
+    "REQUEST_BODY_JSON_DID_NOT_VALIDATE",
   );
 });
 
@@ -114,6 +114,6 @@ Deno.test("Fail to process an operation with a malformed payload.", async () => 
   assertEquals(response.status, 400);
   assertStringIncludes(
     await response.text(),
-    "Unable to read JSON",
+    "UNABLE_TO_READ_REQUEST_BODY_AS_JSON",
   );
 });

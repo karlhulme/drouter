@@ -7,7 +7,8 @@ import { OperationError } from "../interfaces/index.ts";
 export function createErrorResponse(err: OperationError) {
   return new Response(
     JSON.stringify({
-      message: err.message,
+      errorCode: err.errorCode,
+      description: err.description,
       details: err.details,
     }),
     {

@@ -33,7 +33,7 @@ Deno.test("Process an operation with a custom success code.", async () => {
   assertEquals(result, { foo: "bar" });
 });
 
-Deno.test("Process an operation where the implementation attempts to use a parameter that was not supplied.", async () => {
+Deno.test("Process an operation where the implementation uses an optional parameter that was not supplied.", async () => {
   const routerHandler = createRouterHandler(
     createOperation({
       handler: async (req) => ({

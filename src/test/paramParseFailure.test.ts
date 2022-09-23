@@ -52,7 +52,7 @@ Deno.test("Fail to process an operation with unparseable number or object parame
   assertEquals(invalidNumResponse.status, 400);
   assertStringIncludes(
     await invalidNumResponse.text(),
-    "cannot be converted to a number",
+    "REQUEST_PARAMETER_VALUE_NOT_A_NUMBER",
   );
 
   const invalidObjResponse = await routerHandler(
@@ -65,6 +65,6 @@ Deno.test("Fail to process an operation with unparseable number or object parame
   assertEquals(invalidObjResponse.status, 400);
   assertStringIncludes(
     await invalidObjResponse.text(),
-    "cannot be parsed into JSON",
+    "UNABLE_TO_READ_REQUEST_PARAMETER_AS_JSON",
   );
 });

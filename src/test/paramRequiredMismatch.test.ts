@@ -40,7 +40,7 @@ Deno.test("Fail to process an operation with where an optional parameter is read
     assertEquals(internalErrorResponse.status, 500);
     assertStringIncludes(
       await internalErrorResponse.text(),
-      "Internal server error",
+      "INTERNAL_SERVER_ERROR",
     );
     assertStringIncludes(
       errors[0].toString(),

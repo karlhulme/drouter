@@ -19,16 +19,21 @@ export async function getJsonBody(
     } catch {
       throw new OperationError(
         400,
-        `Unable to read JSON from request.`,
+        "UNABLE_TO_READ_REQUEST_BODY_AS_JSON",
+        "The request body does not contain well-formed JSON.",
       );
     }
 
-    const validationResult = operation.requestBodyType.validator(body, "");
+    const validationResult = operation.requestBodyType.validator(
+      body,
+      "requestBody",
+    );
 
     if (Array.isArray(validationResult) && validationResult.length > 0) {
       throw new OperationError(
         400,
-        "JSON body does not pass validation.",
+        "REQUEST_BODY_JSON_DID_NOT_VALIDATE.",
+        "The request body JSON failed validation.",
         validationResult,
       );
     }
