@@ -1,9 +1,16 @@
+import { OperationRequestValue } from "./OperationRequestValue.ts";
+
 /**
  * A block of functions for accessing request url parameter values.
  */
 export interface OperationRequestUrlParamsBlock<
   RequestUrlParamNames extends string,
 > {
+  /**
+   * Returns all the url parameter values.
+   */
+  getAllValues: () => OperationRequestValue[];
+
   /**
    * Returns the requested number.
    */

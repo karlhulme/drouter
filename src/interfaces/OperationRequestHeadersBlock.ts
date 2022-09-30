@@ -1,9 +1,16 @@
+import { OperationRequestValue } from "./OperationRequestValue.ts";
+
 /**
  * A block of functions for accessing request header values.
  */
 export interface OperationRequestHeadersBlock<
   RequestHeaderNames extends string,
 > {
+  /**
+   * Returns all the header values.
+   */
+  getAllValues: () => OperationRequestValue[];
+
   /**
    * Returns the requested number value.
    */

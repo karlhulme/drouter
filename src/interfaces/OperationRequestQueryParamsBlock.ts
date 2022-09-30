@@ -1,9 +1,16 @@
+import { OperationRequestValue } from "./OperationRequestValue.ts";
+
 /**
  * A block of functions for accessing request query parameter values.
  */
 export interface OperationRequestQueryParamsBlock<
   RequestQueryParamNames extends string,
 > {
+  /**
+   * Returns all the query parameter values.
+   */
+  getAllValues: () => OperationRequestValue[];
+
   /**
    * Returns the requested number.
    */

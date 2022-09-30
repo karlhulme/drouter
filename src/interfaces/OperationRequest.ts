@@ -12,6 +12,21 @@ export interface OperationRequest<
   RequestQueryParamNames extends string,
 > {
   /**
+   * The relative path of the request.
+   */
+  path: string;
+
+  /**
+   * The relative url pattern that matched the request.
+   */
+  urlPattern: string;
+
+  /**
+   * The method of the request.
+   */
+  method: string;
+
+  /**
    * The validated body of the request.
    */
   body: RequestBodyType;

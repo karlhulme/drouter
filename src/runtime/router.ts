@@ -62,8 +62,12 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
           );
 
           const resp = await op.handler({
+            path: url.pathname,
+            urlPattern: internalOp.operation.urlPattern,
+            method: internalOp.operation.method,
             body,
             headers: {
+              getAllValues: () => headerValues,
               getOptionalString: (headerName: string) =>
                 getRequestValue(
                   op,
@@ -138,6 +142,7 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
                 ) as T,
             },
             queryParams: {
+              getAllValues: () => queryParamValues,
               getOptionalString: (queryParamName: string) =>
                 getRequestValue(
                   op,
@@ -212,6 +217,7 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
                 ) as T,
             },
             urlParams: {
+              getAllValues: () => urlParamValues,
               getRequiredString: (urlParamName: string) =>
                 getRequestValue(
                   op,
