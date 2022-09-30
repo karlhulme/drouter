@@ -2,12 +2,12 @@
 import { assertEquals } from "../../deps.ts";
 import { createOperation, createRouterHandler } from "./shared.test.ts";
 
-Deno.test("Process an operation with optional headers.", async () => {
+Deno.test("Process an operation with optional headers and mismatching cases.", async () => {
   const routerHandler = createRouterHandler(
     createOperation({
       handler: async (req) => ({
         body: {
-          num: req.headers.getOptionalNumber("num"),
+          num: req.headers.getOptionalNumber("Num"),
           str: req.headers.getOptionalString("str"),
           bool: req.headers.getOptionalBoolean("bool"),
           obj: req.headers.getOptionalObject("obj"),
@@ -15,7 +15,7 @@ Deno.test("Process an operation with optional headers.", async () => {
       }),
       setup: (op) => {
         op.requestHeaders = [{
-          name: "num",
+          name: "NUM",
           summary: "A num",
           type: {
             name: "num",

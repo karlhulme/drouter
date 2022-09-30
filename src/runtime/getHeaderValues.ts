@@ -24,8 +24,9 @@ export function getHeaderValues(headers: Headers, op: GenericOperation) {
         Boolean(header.isRequired),
       );
 
+      // All headers are stored with lowercase key names.
       headerValues.push({
-        name: header.name,
+        name: header.name.toLowerCase(),
         value,
         required: Boolean(header.isRequired),
       });

@@ -68,7 +68,7 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
                 getRequestValue(
                   op,
                   `Header '${headerName}'`,
-                  headerName,
+                  headerName.toLowerCase(),
                   headerValues,
                   "string",
                   false,
@@ -77,7 +77,7 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
                 getRequestValue(
                   op,
                   `Header '${headerName}'`,
-                  headerName,
+                  headerName.toLowerCase(),
                   headerValues,
                   "string",
                   true,
@@ -86,7 +86,7 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
                 getRequestValue(
                   op,
                   `Header '${headerName}'`,
-                  headerName,
+                  headerName.toLowerCase(),
                   headerValues,
                   "number",
                   false,
@@ -95,7 +95,7 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
                 getRequestValue(
                   op,
                   `Header '${headerName}'`,
-                  headerName,
+                  headerName.toLowerCase(),
                   headerValues,
                   "number",
                   true,
@@ -104,7 +104,7 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
                 getRequestValue(
                   op,
                   `Header '${headerName}'`,
-                  headerName,
+                  headerName.toLowerCase(),
                   headerValues,
                   "boolean",
                   false,
@@ -113,7 +113,7 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
                 getRequestValue(
                   op,
                   `Header '${headerName}'`,
-                  headerName,
+                  headerName.toLowerCase(),
                   headerValues,
                   "boolean",
                   true,
@@ -122,7 +122,7 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
                 getRequestValue(
                   op,
                   `Header '${headerName}'`,
-                  headerName,
+                  headerName.toLowerCase(),
                   headerValues,
                   "object",
                   false,
@@ -131,7 +131,7 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
                 getRequestValue(
                   op,
                   `Header '${headerName}'`,
-                  headerName,
+                  headerName.toLowerCase(),
                   headerValues,
                   "object",
                   true,
