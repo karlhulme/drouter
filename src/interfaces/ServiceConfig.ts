@@ -1,5 +1,6 @@
 import { GenericOperation } from "./Operation.ts";
 import { OperationNamedType } from "./OperationNamedType.ts";
+import { OperationPreProcessor } from "./OperationPreProcessor.ts";
 
 /**
  * The configuration of the service.
@@ -24,6 +25,11 @@ export interface ServiceConfig {
    * An array of named types.
    */
   namedTypes: OperationNamedType[];
+
+  /**
+   * An array of handlers.
+   */
+  preProcessors?: OperationPreProcessor[];
 
   /**
    * An array of RESTful operations.

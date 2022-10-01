@@ -2,8 +2,10 @@
 import { router } from "../runtime/index.ts";
 import {
   GenericOperation,
+  OperationContext,
   OperationRequest,
   OperationResponse,
+  ServiceConfig,
 } from "../interfaces/index.ts";
 
 interface CreateOperationProps {
@@ -15,6 +17,7 @@ interface CreateOperationProps {
       string,
       string
     >,
+    ctx: OperationContext,
   ) => Promise<OperationResponse<any, string>>;
 }
 
@@ -37,12 +40,21 @@ export function createOperation(props: CreateOperationProps) {
   return shellOp;
 }
 
-export function createRouterHandler(op: GenericOperation) {
-  return router({
+export function createRouterHandler(
+  op: GenericOperation,
+  serviceConfigMutator?: (sc: ServiceConfig) => void,
+) {
+  const serviceConfig: ServiceConfig = {
     title: "Test service",
     description: "The test service.",
     version: "1.0.0",
     namedTypes: [],
     operations: [op],
-  });
+  };
+
+  if (serviceConfigMutator) {
+    serviceConfigMutator(serviceConfig);
+  }
+
+  return router(serviceConfig);
 }

@@ -6,6 +6,7 @@ import { OperationResponse } from "./OperationResponse.ts";
 import { OperationHeaderOutbound } from "./OperationHeaderOutbound.ts";
 import { OperationUrlParam } from "./OperationUrlParam.ts";
 import { OperationNamedType } from "./OperationNamedType.ts";
+import { OperationContext } from "./OperationContext.ts";
 
 /**
  * A RESTful operation without any type constraints.
@@ -117,5 +118,6 @@ export interface Operation<
       RequestHeaderNames,
       RequestQueryParamNames
     >,
+    ctx: OperationContext,
   ) => Promise<OperationResponse<ResponseBodyType, ResponseHeaderNames>>;
 }

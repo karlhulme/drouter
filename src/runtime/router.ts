@@ -61,6 +61,14 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
             op,
           );
 
+          const ctx = new Map();
+
+          if (Array.isArray(config.preProcessors)) {
+            for (const preProcessor of config.preProcessors) {
+              await preProcessor(req, ctx);
+            }
+          }
+
           const resp = await op.handler({
             path: url.pathname,
             urlPattern: internalOp.operation.urlPattern,
@@ -247,7 +255,7 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
                 ) as boolean,
             },
             underlyingRequest: req,
-          });
+          }, ctx);
 
           const respHeaders = (resp.headers || []).reduce((agg, cur) => {
             agg[cur.name] = cur.value;
