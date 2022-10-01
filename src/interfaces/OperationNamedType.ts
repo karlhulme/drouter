@@ -20,7 +20,13 @@ export interface OperationNamedType {
   /**
    * The underlying type.
    */
-  underlyingType: "string" | "number" | "boolean" | "object" | "array";
+  underlyingType:
+    | "string"
+    | "number"
+    | "boolean"
+    | "object"
+    | "array"
+    | "unknown";
 
   /**
    * A function that evaluates a value and returns validation errors.

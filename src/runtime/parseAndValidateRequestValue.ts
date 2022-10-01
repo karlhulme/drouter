@@ -53,7 +53,7 @@ export function parseAndValidateRequestValue(
 function parseRequestValue(
   displayName: string,
   rawValue: string,
-  targetType: "string" | "number" | "boolean" | "object" | "array",
+  targetType: "string" | "number" | "boolean" | "object" | "array" | "unknown",
 ) {
   if (targetType === "string") {
     return rawValue;
@@ -73,7 +73,7 @@ function parseRequestValue(
     return rawValue === "True" || rawValue === "true" || rawValue === "TRUE" ||
       rawValue === "1";
   } else {
-    // This branch handles object and array.
+    // This branch handles objects, arrays and unknowns.
     try {
       return JSON.parse(rawValue);
     } catch {
