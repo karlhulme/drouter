@@ -9,6 +9,7 @@ import { createErrorResponse } from "./createErrorResponse.ts";
 import { healthResponse } from "./healthResponse.ts";
 import { rootResponse } from "./rootResponse.ts";
 import { openApiResponse } from "./openApiResponse.ts";
+import { convertToResponseHeaderValue } from "./convertToResponseHeaderValue.ts";
 
 /**
  * Returns an HTTP request handler that picks operation implementations
@@ -257,23 +258,25 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
             underlyingRequest: req,
           }, ctx);
 
-          const respHeaders = (resp.headers || []).reduce((agg, cur) => {
-            agg[cur.name] = cur.value;
-
-            return agg;
-          }, {} as Record<string, unknown>);
-
           const responseStatus = op.responseSuccessCode || 200;
+
+          const responseHeaders = new Headers({
+            "content-type": "application/json",
+          });
+
+          for (const h of resp.headers || []) {
+            responseHeaders.append(
+              h.name,
+              convertToResponseHeaderValue(h.value),
+            );
+          }
 
           const responseBody = typeof resp.body === "undefined"
             ? null
             : JSON.stringify(resp.body);
 
           return new Response(responseBody, {
-            headers: {
-              "content-type": "application/json",
-              ...respHeaders,
-            },
+            headers: responseHeaders,
             status: responseStatus,
           });
         }
