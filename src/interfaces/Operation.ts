@@ -16,10 +16,14 @@ export type GenericOperation = Operation<
   any,
   // deno-lint-ignore no-explicit-any
   any,
-  string,
-  string,
-  string,
-  string
+  // deno-lint-ignore no-explicit-any
+  any,
+  // deno-lint-ignore no-explicit-any
+  any,
+  // deno-lint-ignore no-explicit-any
+  any,
+  // deno-lint-ignore no-explicit-any
+  any
 >;
 
 /**
