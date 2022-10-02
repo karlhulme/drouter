@@ -59,6 +59,12 @@ export interface Operation<
   tags: string[];
 
   /**
+   * A set of flags that are typically used by middleware functions
+   * to configure how they behave.
+   */
+  flags?: string[];
+
+  /**
    * True if the operation should not be used on new projects.
    */
   deprecated?: boolean;
