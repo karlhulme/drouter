@@ -1,5 +1,6 @@
 export * from "./Operation.ts";
 export * from "./OperationContext.ts";
+export * from "./OperationCookie.ts";
 export * from "./OperationError.ts";
 export * from "./OperationFailureDefinition.ts";
 export * from "./OperationHeader.ts";

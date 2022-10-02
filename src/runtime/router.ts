@@ -10,6 +10,7 @@ import { healthResponse } from "./healthResponse.ts";
 import { rootResponse } from "./rootResponse.ts";
 import { openApiResponse } from "./openApiResponse.ts";
 import { convertToResponseHeaderValue } from "./convertToResponseHeaderValue.ts";
+import { getCookieValues } from "./getCookieValues.ts";
 
 /**
  * Returns an HTTP request handler that picks operation implementations
@@ -55,6 +56,7 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
 
           const body = await getJsonBody(req, op);
 
+          const cookies = getCookieValues(req.headers.get("cookie") || "");
           const headerValues = getHeaderValues(req.headers, op);
           const queryParamValues = getQueryParamValues(url.searchParams, op);
           const urlParamValues = getUrlParamValues(
@@ -75,6 +77,7 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
             urlPattern: internalOp.operation.urlPattern,
             method: internalOp.operation.method,
             body,
+            cookies,
             headers: {
               getAllValues: () => headerValues,
               getOptionalString: (headerName: string) =>
