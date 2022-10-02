@@ -6,7 +6,6 @@ export * from "./OperationFailureDefinition.ts";
 export * from "./OperationHeader.ts";
 export * from "./OperationHeaderOutbound.ts";
 export * from "./OperationNamedType.ts";
-export * from "./OperationPreProcessor.ts";
 export * from "./OperationQueryParam.ts";
 export * from "./OperationRequest.ts";
 export * from "./OperationRequestHeadersBlock.ts";

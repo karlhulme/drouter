@@ -115,6 +115,24 @@ export interface Operation<
   responseFailureDefinitions?: OperationFailureDefinition[];
 
   /**
+   * The implementation of any middleware asynchronous functions that can be
+   * used to augment context and wrap/edit the response before it is sent
+   * to the client.
+   */
+  middlewares?: ((
+    req: OperationRequest<
+      RequestBodyType,
+      RequestUrlParamNames,
+      RequestHeaderNames,
+      RequestQueryParamNames
+    >,
+    ctx: OperationContext,
+    next: () => Promise<
+      OperationResponse<ResponseBodyType, ResponseHeaderNames>
+    >,
+  ) => Promise<OperationResponse<ResponseBodyType, ResponseHeaderNames>>)[];
+
+  /**
    * The implementation of the operation as an asynchronous function.
    */
   handler: (

@@ -1,4 +1,9 @@
-import { OperationError, ServiceConfig } from "../interfaces/index.ts";
+import {
+  OperationError,
+  OperationRequest,
+  OperationResponse,
+  ServiceConfig,
+} from "../interfaces/index.ts";
 import { getJsonBody } from "./getJsonBody.ts";
 import { getHeaderValues } from "./getHeaderValues.ts";
 import { getQueryParamValues } from "./getQueryParamValues.ts";
@@ -24,55 +29,51 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
     operation: op,
   }));
 
-  return async function (req: Request): Promise<Response> {
+  return async function (underlyingRequest: Request): Promise<Response> {
     try {
-      const url = new URL(req.url);
+      const url = new URL(underlyingRequest.url);
 
-      if (req.method === "GET" && url.pathname === "/") {
+      if (underlyingRequest.method === "GET" && url.pathname === "/") {
         return rootResponse(config);
       }
 
-      if (req.method === "GET" && url.pathname === "/health") {
+      if (underlyingRequest.method === "GET" && url.pathname === "/health") {
         return healthResponse();
       }
 
-      if (req.method === "GET" && url.pathname === "/docs") {
+      if (underlyingRequest.method === "GET" && url.pathname === "/docs") {
         return docsPageResponse();
       }
 
-      if (req.method === "GET" && url.pathname === "/openapi") {
+      if (underlyingRequest.method === "GET" && url.pathname === "/openapi") {
         return openApiResponse(config);
       }
 
       for (const internalOp of internalOps) {
-        if (internalOp.operation.method !== req.method) {
+        if (internalOp.operation.method !== underlyingRequest.method) {
           continue;
         }
 
-        const urlMatch = internalOp.urlPatternCompiled.exec(req.url);
+        const urlMatch = internalOp.urlPatternCompiled.exec(
+          underlyingRequest.url,
+        );
 
         if (urlMatch) {
           const op = internalOp.operation;
 
-          const body = await getJsonBody(req, op);
+          const body = await getJsonBody(underlyingRequest, op);
 
-          const cookies = getCookieValues(req.headers.get("cookie") || "");
-          const headerValues = getHeaderValues(req.headers, op);
+          const cookies = getCookieValues(
+            underlyingRequest.headers.get("cookie") || "",
+          );
+          const headerValues = getHeaderValues(underlyingRequest.headers, op);
           const queryParamValues = getQueryParamValues(url.searchParams, op);
           const urlParamValues = getUrlParamValues(
             urlMatch.pathname.groups,
             op,
           );
 
-          const ctx = new Map();
-
-          if (Array.isArray(config.preProcessors)) {
-            for (const preProcessor of config.preProcessors) {
-              await preProcessor(req, ctx);
-            }
-          }
-
-          const resp = await op.handler({
+          const req: OperationRequest<unknown, string, string, string> = {
             path: url.pathname,
             urlPattern: internalOp.operation.urlPattern,
             method: internalOp.operation.method,
@@ -258,8 +259,38 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
                   true,
                 ) as boolean,
             },
-            underlyingRequest: req,
-          }, ctx);
+            underlyingRequest,
+          };
+
+          const ctx = new Map();
+
+          let prevIndex = -1;
+
+          const runner = async (
+            index: number,
+          ): Promise<OperationResponse<unknown, string>> => {
+            if (index === prevIndex) {
+              throw new Error(
+                "Middleware function called next() multiple times.",
+              );
+            }
+
+            prevIndex = index;
+
+            const middleware = Array.isArray(op.middlewares)
+              ? op.middlewares[index]
+              : null;
+
+            if (middleware) {
+              return await middleware(req, ctx, () => {
+                return runner(index + 1);
+              });
+            } else {
+              return op.handler(req, ctx);
+            }
+          };
+
+          const resp = await runner(0);
 
           const responseStatus = op.responseSuccessCode || 200;
 
@@ -305,8 +336,8 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
       }
     } finally {
       // this prevents Deno.serve from crashing.
-      if (!req.bodyUsed) {
-        await req.text();
+      if (!underlyingRequest.bodyUsed) {
+        await underlyingRequest.text();
       }
     }
   };
