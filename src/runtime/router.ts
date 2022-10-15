@@ -16,6 +16,8 @@ import { rootResponse } from "./rootResponse.ts";
 import { openApiResponse } from "./openApiResponse.ts";
 import { convertToResponseHeaderValue } from "./convertToResponseHeaderValue.ts";
 import { getCookieValues } from "./getCookieValues.ts";
+import { optionsResponse } from "./optionsResponse.ts";
+import { appendCorsHeaders } from "./appendCorsHeaders.ts";
 
 /**
  * Returns an HTTP request handler that picks operation implementations
@@ -32,6 +34,10 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
   return async function (underlyingRequest: Request): Promise<Response> {
     try {
       const url = new URL(underlyingRequest.url);
+
+      if (underlyingRequest.method === "OPTIONS") {
+        return optionsResponse(config, underlyingRequest);
+      }
 
       if (underlyingRequest.method === "GET" && url.pathname === "/") {
         return rootResponse(config);
@@ -294,14 +300,21 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
 
           const responseStatus = op.responseSuccessCode || 200;
 
-          const responseHeaders = new Headers({
-            "content-type": "application/json",
-          });
+          const responseHeaders = new Headers();
+
+          appendCorsHeaders(responseHeaders, config, underlyingRequest);
 
           for (const h of resp.headers || []) {
             responseHeaders.append(
               h.name,
               convertToResponseHeaderValue(h.value),
+            );
+          }
+
+          if (typeof resp.body !== "undefined") {
+            responseHeaders.append(
+              "content-type",
+              "application/json",
             );
           }
 

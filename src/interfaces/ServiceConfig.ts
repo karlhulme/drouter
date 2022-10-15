@@ -29,4 +29,9 @@ export interface ServiceConfig {
    * An array of RESTful operations.
    */
   operations: GenericOperation[];
+
+  /**
+   * An array of acceptable request origins for CORs requests.
+   */
+  permittedCorsOrigins?: string[];
 }
