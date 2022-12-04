@@ -8,6 +8,7 @@ import { OperationCookie } from "../interfaces/index.ts";
 export function getCookieValues(cookieHeaderString: string): OperationCookie[] {
   return cookieHeaderString
     .split(";")
+    .filter((c) => c)
     .map((c) => {
       const [name, value] = c.trim().split("=", 2);
       return {
