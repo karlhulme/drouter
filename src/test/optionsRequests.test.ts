@@ -41,8 +41,8 @@ Deno.test("An OPTIONS request with a permitted origin domain that matches the re
     }),
   );
 
-  const allowHeader = response.headers.get("Allow");
-  assertStrictEquals(allowHeader, "DELETE, GET, OPTIONS, PATCH, POST, POST");
+  const allow = response.headers.get("Allow");
+  assertStrictEquals(allow, "DELETE, GET, OPTIONS, PATCH, POST, POST");
 
   const corsMethods = response.headers.get("Access-Control-Allow-Methods");
   assertStrictEquals(corsMethods, "DELETE, GET, OPTIONS, PATCH, POST, POST");
@@ -52,6 +52,9 @@ Deno.test("An OPTIONS request with a permitted origin domain that matches the re
 
   const corsAllowOrigin = response.headers.get("Access-Control-Allow-Origin");
   assertStrictEquals(corsAllowOrigin, "HTTPS://MYDOMAIN.COM");
+
+  const allowHeaders = response.headers.get("Access-Control-Allow-Headers");
+  assertStrictEquals(allowHeaders, "Set-Cookie");
 });
 
 Deno.test("An OPTIONS request with permitted origin domains that do not match the request.", async () => {

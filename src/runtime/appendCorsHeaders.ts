@@ -40,5 +40,10 @@ export function appendCorsHeaders(
       "Access-Control-Allow-Origin",
       acceptCors ? requestOrigin : config.permittedCorsOrigins[0],
     );
+
+    responseHeaders.append(
+      "Access-Control-Allow-Headers",
+      "Set-Cookie",
+    );
   }
 }
