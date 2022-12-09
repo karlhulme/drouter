@@ -3,9 +3,9 @@ import { appendCorsHeaders } from "./appendCorsHeaders.ts";
 
 /**
  * Returns a response for an error.  The format of the message is
- * error code, followed by colon, followed by description, followed
- * by new line character, followed by details object.  For example
- * ERROR_CODE: description\n{"foo": "bar"}.
+ * error code, space, status, space, description, new line character,
+ * optional JSON.stringified details object.  For example
+ * ERROR_CODE 400 This was the problem.\n{"foo": "bar"}.
  * @param err An operation error.
  * @param config The service configuration.
  * @param underlyingRequest The underlying client request.
@@ -27,7 +27,7 @@ export function createErrorResponse(
     : "";
 
   return new Response(
-    `${err.errorCode}: ${cleanDescription}\n${detailsJson}`,
+    `${err.errorCode} ${err.status} ${cleanDescription}\n${detailsJson}`,
     {
       status: err.status,
       headers,
