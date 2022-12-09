@@ -349,7 +349,7 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
           new OperationError(
             500,
             "INTERNAL_SERVER_ERROR",
-            "Internal server error.",
+            `Unexpected error raised processing request.`,
           ),
           config,
           underlyingRequest,
