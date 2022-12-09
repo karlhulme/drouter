@@ -16,11 +16,6 @@ export class OperationError extends Error {
      * contain any line breaks.
      */
     readonly description: string,
-    /**
-     * Any JSON-stringifiable details object that further describes
-     * this error or how to resolve it.
-     */
-    readonly details?: unknown,
   ) {
     super(
       `Status: ${status}, Error code: ${errorCode}, Description: ${description}`,

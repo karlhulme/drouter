@@ -22,12 +22,10 @@ export function createErrorResponse(
 
   const cleanDescription = err.description.replaceAll("\n", "");
 
-  const detailsJson = typeof err.details === "object"
-    ? JSON.stringify(err.details)
-    : "";
-
   return new Response(
-    `${err.errorCode} ${err.status} ${cleanDescription}\n${detailsJson}`,
+    // Put a new line on the end, so that clients capable of reading
+    // structured error responses know where the structured part ends.
+    `${err.errorCode} ${err.status} ${cleanDescription}\n`,
     {
       status: err.status,
       headers,
