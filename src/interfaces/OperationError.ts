@@ -12,7 +12,8 @@ export class OperationError extends Error {
      */
     readonly errorCode: string,
     /**
-     * The description of the error.
+     * The one-line description of the error.  This field should not
+     * contain any line breaks.
      */
     readonly description: string,
     /**
