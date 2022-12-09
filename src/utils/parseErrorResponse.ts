@@ -12,7 +12,7 @@ export function parseErrorResponse(
   message: string,
 ): OperationError {
   try {
-    const [header] = message.split("\n", 1);
+    const [header, ...detailParts] = message.split("\n");
     const [errorCode, statusText, ...descriptionParts] = header.split(" ");
 
     const status = parseInt(statusText);
@@ -26,10 +26,13 @@ export function parseErrorResponse(
 
     const description = descriptionParts.join(" ");
 
+    const details = detailParts.join("\n");
+
     return new OperationError(
       status,
       errorCode,
       description,
+      details,
     );
   } catch {
     console.log("Unable to parse errorResponse: " + message);

@@ -9,6 +9,7 @@ Deno.test("Parse a valid error response.", () => {
   assertStrictEquals(err.status, 400);
   assertStrictEquals(err.errorCode, "MY_ERROR");
   assertStrictEquals(err.description, "This is my error.");
+  assertStrictEquals(err.details, "");
 });
 
 Deno.test("Parse a valid error response with additional appended.", () => {
@@ -19,6 +20,7 @@ Deno.test("Parse a valid error response with additional appended.", () => {
   assertStrictEquals(err.status, 419);
   assertStrictEquals(err.errorCode, "MY_VERBOSE_ERROR");
   assertStrictEquals(err.description, "This is my verbose error.");
+  assertStrictEquals(err.details, '{"foo":"bar"}\n\nSome more text');
 });
 
 Deno.test("Parse an invalid error response.", () => {

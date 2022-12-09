@@ -16,6 +16,11 @@ export class OperationError extends Error {
      * contain any line breaks.
      */
     readonly description: string,
+    /**
+     * Additional details associated with the error which can take
+     * any form.
+     */
+    readonly details?: string,
   ) {
     super(
       `Status: ${status}, Error code: ${errorCode}, Description: ${description}`,

@@ -34,7 +34,7 @@ export async function getJsonBody(
         400,
         "REQUEST_BODY_JSON_DID_NOT_VALIDATE.",
         "The request body JSON failed validation.",
-        validationResult,
+        JSON.stringify(validationResult, null, 2),
       );
     }
 
