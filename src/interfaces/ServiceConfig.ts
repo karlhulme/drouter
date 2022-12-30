@@ -1,3 +1,4 @@
+// import { GenericOperation } from "./Operation.ts";
 import { GenericOperation } from "./Operation.ts";
 import { OperationNamedType } from "./OperationNamedType.ts";
 

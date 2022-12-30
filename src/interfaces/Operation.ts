@@ -9,33 +9,29 @@ import { OperationNamedType } from "./OperationNamedType.ts";
 import { OperationContext } from "./OperationContext.ts";
 
 /**
- * A RESTful operation without any type constraints.
+ * The most type unconstrained version of the RESTful operation
+ * whereby the request and response bodies can be any time
+ * and the query, url and header names can be any string.
  */
 export type GenericOperation = Operation<
-  // deno-lint-ignore no-explicit-any
-  any,
-  // deno-lint-ignore no-explicit-any
-  any,
-  // deno-lint-ignore no-explicit-any
-  any,
-  // deno-lint-ignore no-explicit-any
-  any,
-  // deno-lint-ignore no-explicit-any
-  any,
-  // deno-lint-ignore no-explicit-any
-  any
+  unknown,
+  unknown,
+  string,
+  string,
+  string,
+  string
 >;
 
 /**
  * A RESTful operation.
  */
 export interface Operation<
-  RequestBodyType = undefined,
-  ResponseBodyType = undefined,
-  RequestUrlParamNames extends string = string,
-  RequestHeaderNames extends string = string,
-  RequestQueryParamNames extends string = string,
-  ResponseHeaderNames extends string = string,
+  RequestBodyType = never,
+  ResponseBodyType = never,
+  RequestUrlParamNames extends string = never,
+  RequestHeaderNames extends string = never,
+  RequestQueryParamNames extends string = never,
+  ResponseHeaderNames extends string = never,
 > {
   /**
    * The url to match including any url parameters, e.g /users/:id
