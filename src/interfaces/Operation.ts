@@ -13,6 +13,12 @@ import { OperationContext } from "./OperationContext.ts";
  * then the most unconstrained version of the type is used.
  * That means the request and response bodies can be any
  * type and the query, url and header names can be any string.
+ *
+ * The RequestBodyType and ResponseBodyType need to be the
+ * Typescript 'any' type.  Attempts to use the unknown type causes
+ * breaking issues when trying to assign Operation<specific...>
+ * to Operation<unknown...> which is necessary when setting up
+ * the router.
  */
 export interface Operation<
   // deno-lint-ignore no-explicit-any
