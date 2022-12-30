@@ -117,20 +117,22 @@ export interface Operation<
   /**
    * The implementation of any middleware asynchronous functions that can be
    * used to augment context and wrap/edit the response before it is sent
-   * to the client.
+   * to the client.  The middleware is typed with the most permissive
+   * types (similar to GenericOperation) since the middleware cannot know
+   * anything about which operation they will be operating on.
    */
   middlewares?: ((
     req: OperationRequest<
-      RequestBodyType,
-      RequestUrlParamNames,
-      RequestHeaderNames,
-      RequestQueryParamNames
+      unknown,
+      string,
+      string,
+      string
     >,
     ctx: OperationContext,
     next: () => Promise<
-      OperationResponse<ResponseBodyType, ResponseHeaderNames>
+      OperationResponse<unknown, string>
     >,
-  ) => Promise<OperationResponse<ResponseBodyType, ResponseHeaderNames>>)[];
+  ) => Promise<OperationResponse<unknown, string>>)[];
 
   /**
    * The implementation of the operation as an asynchronous function.
