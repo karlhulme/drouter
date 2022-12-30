@@ -27,9 +27,9 @@ export function createErrorResponse(
   return new Response(
     // Put a new line on the end, so that clients capable of reading
     // structured error responses know where the structured part ends.
-    `${err.errorCode} ${err.status} ${cleanDescription}\n${cleanDetails}`,
+    `${err.errorCode} ${err.code} ${cleanDescription}\n${cleanDetails}`,
     {
-      status: err.status,
+      status: err.code,
       headers,
     },
   );

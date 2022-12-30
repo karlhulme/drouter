@@ -1,7 +1,4 @@
-import {
-  GenericOperation,
-  OperationRequestValue,
-} from "../interfaces/index.ts";
+import { Operation, OperationRequestValue } from "../interfaces/index.ts";
 
 /**
  * Returns a value from a pre-validated set of values extracted
@@ -16,7 +13,7 @@ import {
  * be available.
  */
 export function getRequestValue(
-  operation: GenericOperation,
+  operation: Operation,
   displayName: string,
   name: string,
   values: OperationRequestValue[],

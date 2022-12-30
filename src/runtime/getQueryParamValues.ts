@@ -1,7 +1,4 @@
-import {
-  GenericOperation,
-  OperationRequestValue,
-} from "../interfaces/index.ts";
+import { Operation, OperationRequestValue } from "../interfaces/index.ts";
 import { parseAndValidateRequestValue } from "./parseAndValidateRequestValue.ts";
 
 /**
@@ -12,7 +9,7 @@ import { parseAndValidateRequestValue } from "./parseAndValidateRequestValue.ts"
  */
 export function getQueryParamValues(
   queryParams: URLSearchParams,
-  op: GenericOperation,
+  op: Operation,
 ) {
   const queryParamValues: OperationRequestValue[] = [];
 

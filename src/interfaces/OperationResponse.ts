@@ -4,8 +4,8 @@ import { OperationResponseHeader } from "./OperationResponseHeader.ts";
  * Te response to the operation.
  */
 export interface OperationResponse<
-  ResponseBodyType = never,
-  ResponseHeaderNames extends string = never,
+  ResponseBodyType = unknown,
+  ResponseHeaderNames extends string = string,
 > {
   /**
    * The body of the response.

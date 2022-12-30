@@ -6,7 +6,7 @@ export class OperationError extends Error {
     /**
      * The HTTP status code for this error.
      */
-    readonly status: number,
+    readonly code: number,
     /**
      * The all-caps error code for this error.
      */
@@ -23,7 +23,7 @@ export class OperationError extends Error {
     readonly details?: string,
   ) {
     super(
-      `Status: ${status}, Error code: ${errorCode}, Description: ${description}`,
+      `Code: ${code}, Error code: ${errorCode}, Description: ${description}`,
     );
     Object.setPrototypeOf(this, new.target.prototype);
     this.name = this.constructor.name;

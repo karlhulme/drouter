@@ -1,7 +1,4 @@
-import {
-  GenericOperation,
-  OperationRequestValue,
-} from "../interfaces/index.ts";
+import { Operation, OperationRequestValue } from "../interfaces/index.ts";
 import { parseAndValidateRequestValue } from "./parseAndValidateRequestValue.ts";
 
 /**
@@ -10,7 +7,7 @@ import { parseAndValidateRequestValue } from "./parseAndValidateRequestValue.ts"
  * @param headers The headers from an HTTP request object.
  * @param op An operation.
  */
-export function getHeaderValues(headers: Headers, op: GenericOperation) {
+export function getHeaderValues(headers: Headers, op: Operation) {
   const headerValues: OperationRequestValue[] = [];
 
   if (Array.isArray(op.requestHeaders)) {

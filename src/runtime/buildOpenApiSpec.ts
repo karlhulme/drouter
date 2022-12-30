@@ -7,7 +7,7 @@ import {
   OpenApiSpecPathOperationResponseHeader,
 } from "../../deps.ts";
 import {
-  GenericOperation,
+  Operation,
   OperationNamedType,
   ServiceConfig,
 } from "../interfaces/index.ts";
@@ -51,7 +51,7 @@ export function buildOpenApiSpec(config: ServiceConfig): OpenApiSpec {
  */
 function appendOperationToSpec(
   spec: OpenApiSpec,
-  operation: GenericOperation,
+  operation: Operation,
   namedTypes: OperationNamedType[],
 ) {
   const pathPattern = convertUrlPatternToOpenApiPath(operation.urlPattern);
@@ -124,7 +124,7 @@ function appendOperationToSpec(
  * @param operation An operation.
  */
 function createPathOperation(
-  operation: GenericOperation,
+  operation: Operation,
 ): OpenApiSpecPathOperation {
   const successCode = operation.responseSuccessCode
     ? operation.responseSuccessCode.toString()
@@ -195,7 +195,7 @@ function createPathOperation(
         }, {} as Record<string, OpenApiSpecPathOperationResponseHeader>),
       },
       ...(operation.responseFailureDefinitions || []).reduce((agg, cur) => {
-        agg[cur.status.toString()] = {
+        agg[cur.code.toString()] = {
           description: cur.summary,
         };
 

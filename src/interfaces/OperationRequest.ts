@@ -7,10 +7,10 @@ import { OperationRequestUrlParamsBlock } from "./OperationRequestUrlParamsBlock
  * The data for an operation request.
  */
 export interface OperationRequest<
-  RequestBodyType = never,
-  RequestUrlParamNames extends string = never,
-  RequestHeaderNames extends string = never,
-  RequestQueryParamNames extends string = never,
+  RequestBodyType = unknown,
+  RequestUrlParamNames extends string = string,
+  RequestHeaderNames extends string = string,
+  RequestQueryParamNames extends string = string,
 > {
   /**
    * The relative path of the request.

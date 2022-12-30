@@ -1,4 +1,4 @@
-import { GenericOperation, OperationError } from "../interfaces/index.ts";
+import { Operation, OperationError } from "../interfaces/index.ts";
 
 /**
  * Extracts, validates and returns the body of the given HTTP request
@@ -9,7 +9,7 @@ import { GenericOperation, OperationError } from "../interfaces/index.ts";
  */
 export async function getJsonBody(
   req: Request,
-  operation: GenericOperation,
+  operation: Operation,
 ): Promise<unknown> {
   if (operation.requestBodyType) {
     let body;

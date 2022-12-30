@@ -5,7 +5,7 @@ export interface OperationFailureDefinition {
   /**
    * The HTTP code of the error.
    */
-  status: number;
+  code: number;
 
   /**
    * A summary of the failure.

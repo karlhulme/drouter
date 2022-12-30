@@ -9,29 +9,18 @@ import { OperationNamedType } from "./OperationNamedType.ts";
 import { OperationContext } from "./OperationContext.ts";
 
 /**
- * The most type unconstrained version of the RESTful operation
- * whereby the request and response bodies can be any time
- * and the query, url and header names can be any string.
- */
-export type GenericOperation = Operation<
-  unknown,
-  unknown,
-  string,
-  string,
-  string,
-  string
->;
-
-/**
- * A RESTful operation.
+ * A RESTful operation.  If type parameters are not supplied
+ * then he most unconstrained version of the type is used.
+ * That means the request and response bodies are an unknown
+ * type and the query, url and header names can be any string.
  */
 export interface Operation<
-  RequestBodyType = never,
-  ResponseBodyType = never,
-  RequestUrlParamNames extends string = never,
-  RequestHeaderNames extends string = never,
-  RequestQueryParamNames extends string = never,
-  ResponseHeaderNames extends string = never,
+  RequestBodyType = unknown,
+  ResponseBodyType = unknown,
+  RequestUrlParamNames extends string = string,
+  RequestHeaderNames extends string = string,
+  RequestQueryParamNames extends string = string,
+  ResponseHeaderNames extends string = string,
 > {
   /**
    * The url to match including any url parameters, e.g /users/:id
@@ -57,12 +46,6 @@ export interface Operation<
    * An array of tags as used by the documentation generation.
    */
   tags: string[];
-
-  /**
-   * A set of flags that are typically used by middleware functions
-   * to configure how they behave.
-   */
-  flags?: string[];
 
   /**
    * True if the operation should not be used on new projects.
@@ -122,17 +105,10 @@ export interface Operation<
    * anything about which operation they will be operating on.
    */
   middlewares?: ((
-    req: OperationRequest<
-      unknown,
-      string,
-      string,
-      string
-    >,
+    req: OperationRequest,
     ctx: OperationContext,
-    next: () => Promise<
-      OperationResponse<unknown, string>
-    >,
-  ) => Promise<OperationResponse<unknown, string>>)[];
+    next: () => Promise<OperationResponse>,
+  ) => Promise<OperationResponse>)[];
 
   /**
    * The implementation of the operation as an asynchronous function.

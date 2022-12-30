@@ -1,7 +1,7 @@
 // deno-lint-ignore-file no-explicit-any
 import { router } from "../runtime/index.ts";
 import {
-  GenericOperation,
+  Operation,
   OperationContext,
   OperationRequest,
   OperationResponse,
@@ -9,7 +9,7 @@ import {
 } from "../interfaces/index.ts";
 
 interface CreateOperationProps {
-  setup: (op: GenericOperation) => void;
+  setup: (op: Operation) => void;
   handler: (
     req: OperationRequest<
       any,
@@ -22,7 +22,7 @@ interface CreateOperationProps {
 }
 
 export function createOperation(props: CreateOperationProps) {
-  const shellOp: GenericOperation = {
+  const shellOp: Operation = {
     urlPattern: "/test",
     name: "Test operation",
     summary: "The test operation",
@@ -41,7 +41,7 @@ export function createOperation(props: CreateOperationProps) {
 }
 
 export function createRouterHandler(
-  op: GenericOperation,
+  op: Operation,
   serviceConfigMutator?: (sc: ServiceConfig) => void,
 ) {
   const serviceConfig: ServiceConfig = {

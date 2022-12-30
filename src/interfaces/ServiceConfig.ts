@@ -1,5 +1,5 @@
 // import { GenericOperation } from "./Operation.ts";
-import { GenericOperation } from "./Operation.ts";
+import { Operation } from "./Operation.ts";
 import { OperationNamedType } from "./OperationNamedType.ts";
 
 /**
@@ -28,8 +28,12 @@ export interface ServiceConfig {
 
   /**
    * An array of RESTful operations.
+   * The actual operations should be based on the Operation interface
+   * and a set of narrowing type params.  Unfortunately a handler
+   * with a narrowed type (SvcEntity, number, never) cannot treated as
+   * unknown, so operations will need to be explicitly cast down.
    */
-  operations: GenericOperation[];
+  operations: Operation[];
 
   /**
    * An array of acceptable request origins for CORs requests.

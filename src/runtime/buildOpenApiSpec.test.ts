@@ -175,7 +175,7 @@ Deno.test("Build an OpenAPI spec using all parts of the specification.", async (
       },
       deprecated: true,
       responseFailureDefinitions: [{
-        status: 400,
+        code: 400,
         summary: "Bad request.",
       }],
       responseSuccessCode: 200,
