@@ -10,13 +10,15 @@ import { OperationContext } from "./OperationContext.ts";
 
 /**
  * A RESTful operation.  If type parameters are not supplied
- * then he most unconstrained version of the type is used.
- * That means the request and response bodies are an unknown
+ * then the most unconstrained version of the type is used.
+ * That means the request and response bodies can be any
  * type and the query, url and header names can be any string.
  */
 export interface Operation<
-  RequestBodyType = unknown,
-  ResponseBodyType = unknown,
+  // deno-lint-ignore no-explicit-any
+  RequestBodyType = any,
+  // deno-lint-ignore no-explicit-any
+  ResponseBodyType = any,
   RequestUrlParamNames extends string = string,
   RequestHeaderNames extends string = string,
   RequestQueryParamNames extends string = string,
