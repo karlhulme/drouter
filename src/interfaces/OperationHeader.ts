@@ -25,7 +25,7 @@ export interface OperationHeader<RequestHeaderNames extends string> {
   type: OperationNamedType;
 
   /**
-   * True if the header should not be supplied for new projects.
+   * A description of the approach to take given that this header is deprecated.
    */
-  deprecated?: boolean;
+  deprecated?: string;
 }

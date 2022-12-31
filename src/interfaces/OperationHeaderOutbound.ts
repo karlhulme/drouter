@@ -25,7 +25,7 @@ export interface OperationHeaderOutbound<ResponseHeaderNames extends string> {
   type: OperationNamedType;
 
   /**
-   * True if the header will not be returned in the future.
+   * A description of the approach to take given that this header is deprecated.
    */
-  deprecated?: boolean;
+  deprecated?: string;
 }

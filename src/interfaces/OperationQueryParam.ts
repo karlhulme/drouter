@@ -25,7 +25,7 @@ export interface OperationQueryParam<RequestQueryParamNames extends string> {
   type: OperationNamedType;
 
   /**
-   * True if the query parameter should not be used in new projects.
+   * A description of the approach to take given that this query param is deprecated.
    */
-  deprecated?: boolean;
+  deprecated?: string;
 }

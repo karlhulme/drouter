@@ -56,9 +56,9 @@ export interface Operation<
   tags: string[];
 
   /**
-   * True if the operation should not be used on new projects.
+   * A description of the approach to take given that this operation is deprecated.
    */
-  deprecated?: boolean;
+  deprecated?: string;
 
   /**
    * The HTTP method.

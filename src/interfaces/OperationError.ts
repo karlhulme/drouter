@@ -2,24 +2,19 @@
  * An error occurred during the processing of an operation.
  */
 export class OperationError extends Error {
+  /**
+   * Constructs a new error.
+   * @param code The HTTP status code for this error.
+   * @param errorCode The all-caps error code for this error.
+   * @param description The one-line description of the error.
+   * This field should not contain any line breaks.
+   * @param details Additional details associated with the error
+   * which can take any form.
+   */
   constructor(
-    /**
-     * The HTTP status code for this error.
-     */
     readonly code: number,
-    /**
-     * The all-caps error code for this error.
-     */
     readonly errorCode: string,
-    /**
-     * The one-line description of the error.  This field should not
-     * contain any line breaks.
-     */
     readonly description: string,
-    /**
-     * Additional details associated with the error which can take
-     * any form.
-     */
     readonly details?: string,
   ) {
     super(
