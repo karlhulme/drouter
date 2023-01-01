@@ -10,6 +10,19 @@ export function rootResponse(config: ServiceConfig) {
       <head>
         <meta name="description" content="Root.">
       </head>
+      <style>
+        body {
+          background-color: white;
+          color: black;
+        }
+
+        @media (prefers-color-scheme: dark) {
+          body {
+            background-color: black;
+            color: white;
+          }
+        }
+      </style>
       <body>
         <h1>
           ${config.title} v${config.version}
