@@ -17,7 +17,7 @@ export function createErrorResponse(
 ) {
   const headers = new Headers();
 
-  headers.append("content-type", "application/json");
+  headers.append("content-type", "text/html;charset=utf-8");
   appendCorsHeaders(headers, config, underlyingRequest);
 
   const cleanDescription = err.description.replaceAll("\n", "");
