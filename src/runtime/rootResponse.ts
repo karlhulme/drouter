@@ -15,11 +15,17 @@ export function rootResponse(config: ServiceConfig) {
           background-color: white;
           color: black;
         }
+        a {
+          color: blue;
+        }
 
         @media (prefers-color-scheme: dark) {
           body {
             background-color: black;
             color: white;
+          }
+          a {
+            color: cyan;
           }
         }
       </style>
