@@ -25,7 +25,7 @@ export function parseAndValidateRequestValue(
       throw new OperationError(
         400,
         "REQUEST_PARAMETER_DID_NOT_VALIDATE",
-        "${displayName} failed validation.",
+        `${displayName} failed validation.`,
         JSON.stringify(validationResult, null, 2),
       );
     }
