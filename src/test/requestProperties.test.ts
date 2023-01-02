@@ -10,7 +10,11 @@ Deno.test("Get all the information passed to the request.", async () => {
         const queryParamValues = req.queryParams.getAllValues();
         const urlParams = req.urlParams.getAllValues();
 
-        assertEquals(headerValues, []);
+        assertEquals(headerValues, [{
+          name: "api-version",
+          required: false,
+          value: null,
+        }]);
         assertEquals(queryParamValues, []);
         assertEquals(urlParams, []);
 

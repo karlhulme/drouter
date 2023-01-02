@@ -29,9 +29,6 @@ export function createOperation(props: CreateOperationProps) {
     operationId: "testOp",
     tags: ["Tests"],
     method: "GET",
-    requestHeaders: [],
-    requestQueryParams: [],
-    requestUrlParams: [],
     handler: props.handler,
   };
 

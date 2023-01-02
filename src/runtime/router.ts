@@ -18,6 +18,8 @@ import { convertToResponseHeaderValue } from "./convertToResponseHeaderValue.ts"
 import { getCookieValues } from "./getCookieValues.ts";
 import { optionsResponse } from "./optionsResponse.ts";
 import { appendCorsHeaders } from "./appendCorsHeaders.ts";
+import { safeArrayLength } from "../utils/safeArrayLength.ts";
+import { createApiVersionType } from "./createApiVersionType.ts";
 
 /**
  * Returns an HTTP request handler that picks operation implementations
@@ -26,10 +28,34 @@ import { appendCorsHeaders } from "./appendCorsHeaders.ts";
  * this service can provide.
  */
 export function router(config: ServiceConfig): Deno.ServeHandler {
-  const internalOps = config.operations.map((op) => ({
-    urlPatternCompiled: new URLPattern({ pathname: op.urlPattern }),
-    operation: op,
-  }));
+  const apiVersionType = createApiVersionType();
+
+  // Add the api-version header to all operations and mark it
+  // as required if the config dictates it.
+  for (const op of config.operations) {
+    if (!Array.isArray(op.requestHeaders)) {
+      op.requestHeaders = [];
+    }
+
+    op.requestHeaders.push({
+      name: "api-version",
+      summary: "The api version to target for this operation.",
+      type: apiVersionType,
+      isRequired: config.requireApiVersionHeader,
+    });
+  }
+
+  // Sort the ops such that the paths that require the
+  // least number of parameters appear first.
+  const internalOps = config.operations
+    .map((op) => ({
+      urlPatternCompiled: new URLPattern({ pathname: op.urlPattern }),
+      operation: op,
+    }))
+    .sort((a, b) =>
+      safeArrayLength(a.operation.requestUrlParams) -
+      safeArrayLength(b.operation.requestUrlParams)
+    );
 
   return async function (underlyingRequest: Request): Promise<Response> {
     try {

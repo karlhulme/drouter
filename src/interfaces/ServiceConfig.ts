@@ -36,6 +36,11 @@ export interface ServiceConfig {
   operations: Operation[];
 
   /**
+   * True if the api-version header must be supplied.
+   */
+  requireApiVersionHeader?: boolean;
+
+  /**
    * An array of acceptable request origins for CORs requests.
    */
   permittedCorsOrigins?: string[];
