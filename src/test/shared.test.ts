@@ -46,6 +46,7 @@ export function createRouterHandler(
     description: "The test service.",
     version: "1.0.0",
     namedTypes: [],
+    optionalApiVersionHeader: true,
     operations: [op],
   };
 

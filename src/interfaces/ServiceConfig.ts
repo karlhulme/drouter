@@ -36,9 +36,12 @@ export interface ServiceConfig {
   operations: Operation[];
 
   /**
-   * True if the api-version header must be supplied.
+   * True if the api-version header is optional rather than required.
+   * This is typically enabled explictly for dev environments.  On
+   * production environments clients should be required to specify
+   * a version.
    */
-  requireApiVersionHeader?: boolean;
+  optionalApiVersionHeader?: boolean;
 
   /**
    * An array of acceptable request origins for CORs requests.

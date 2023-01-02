@@ -41,7 +41,7 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
       name: "api-version",
       summary: "The api version to target for this operation.",
       type: apiVersionType,
-      isRequired: config.requireApiVersionHeader,
+      isRequired: !config.optionalApiVersionHeader,
     });
   }
 

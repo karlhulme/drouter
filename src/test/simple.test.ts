@@ -68,6 +68,7 @@ Deno.test("Process an operation by selecting the correct one based on method.", 
     description: "The test service.",
     version: "1.0.0",
     namedTypes: [],
+    optionalApiVersionHeader: true,
     operations: [
       createOperation({
         handler: async () => ({

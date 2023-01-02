@@ -15,8 +15,9 @@ Run `deno task test` to test, format and output coverage report.
 
 ## Api Versioning
 
-The API version is automatically added as a header. If `requireApiVersionHeader`
-is set on the config then it will be marked as required as well.
+The API version is automatically added as a header. If
+`optionalApiVersionHeader` is set on the config then it will be marked as
+required as well.
 
 In time, it should be possible to specify multiple versions of each operation.
 Each previous version should be expressed as a series of changes required to
