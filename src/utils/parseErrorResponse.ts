@@ -10,6 +10,7 @@ import { OperationError } from "../interfaces/index.ts";
  */
 export function parseErrorResponse(
   message: string,
+  includeDetails?: boolean,
 ): OperationError {
   try {
     const [header, ...detailParts] = message.split("\n");
@@ -26,7 +27,7 @@ export function parseErrorResponse(
 
     const description = descriptionParts.join(" ");
 
-    const details = detailParts.join("\n");
+    const details = includeDetails ? detailParts.join("\n") : "";
 
     return new OperationError(
       status,
