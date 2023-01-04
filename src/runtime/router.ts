@@ -1,7 +1,7 @@
 import {
+  Operation,
   OperationError,
   OperationRequest,
-  OperationResponse,
   ServiceConfig,
 } from "../interfaces/index.ts";
 import { getJsonBody } from "./getJsonBody.ts";
@@ -43,10 +43,12 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
       type: apiVersionType,
       isRequired: !config.optionalApiVersionHeader,
     });
+
+    // Add any global headers and response headers.
   }
 
   // Sort the ops such that the paths that require the
-  // least number of parameters appear first.
+  // least number of parameters are matched first.
   const internalOps = config.operations
     .map((op) => ({
       urlPatternCompiled: new URLPattern({ pathname: op.urlPattern }),
@@ -81,284 +83,22 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
         return openApiResponse(config);
       }
 
-      for (const internalOp of internalOps) {
-        if (internalOp.operation.method !== underlyingRequest.method) {
-          continue;
-        }
+      const matchedOp = findMatchingOp(internalOps, underlyingRequest);
 
-        const urlMatch = internalOp.urlPatternCompiled.exec(
-          underlyingRequest.url,
+      if (!matchedOp) {
+        return createErrorResponse(
+          new OperationError(404, "RESOURCE_NOT_FOUND", "Resource not found."),
+          config,
+          underlyingRequest,
         );
-
-        if (urlMatch) {
-          const op = internalOp.operation;
-
-          const body = await getJsonBody(underlyingRequest, op);
-
-          const cookies = getCookieValues(
-            underlyingRequest.headers.get("cookie") || "",
-          );
-          const headerValues = getHeaderValues(underlyingRequest.headers, op);
-          const queryParamValues = getQueryParamValues(url.searchParams, op);
-          const urlParamValues = getUrlParamValues(
-            urlMatch.pathname.groups,
-            op,
-          );
-
-          const req: OperationRequest<unknown, string, string, string> = {
-            path: url.pathname,
-            urlPattern: internalOp.operation.urlPattern,
-            method: internalOp.operation.method,
-            body,
-            cookies,
-            headers: {
-              getAllValues: () => headerValues,
-              getOptionalString: (headerName: string) =>
-                getRequestValue(
-                  op,
-                  `Header '${headerName}'`,
-                  headerName.toLowerCase(),
-                  headerValues,
-                  "string",
-                  false,
-                ) as string | null,
-              getRequiredString: (headerName: string) =>
-                getRequestValue(
-                  op,
-                  `Header '${headerName}'`,
-                  headerName.toLowerCase(),
-                  headerValues,
-                  "string",
-                  true,
-                ) as string,
-              getOptionalNumber: (headerName: string) =>
-                getRequestValue(
-                  op,
-                  `Header '${headerName}'`,
-                  headerName.toLowerCase(),
-                  headerValues,
-                  "number",
-                  false,
-                ) as number | null,
-              getRequiredNumber: (headerName: string) =>
-                getRequestValue(
-                  op,
-                  `Header '${headerName}'`,
-                  headerName.toLowerCase(),
-                  headerValues,
-                  "number",
-                  true,
-                ) as number,
-              getOptionalBoolean: (headerName: string) =>
-                getRequestValue(
-                  op,
-                  `Header '${headerName}'`,
-                  headerName.toLowerCase(),
-                  headerValues,
-                  "boolean",
-                  false,
-                ) as boolean | null,
-              getRequiredBoolean: (headerName: string) =>
-                getRequestValue(
-                  op,
-                  `Header '${headerName}'`,
-                  headerName.toLowerCase(),
-                  headerValues,
-                  "boolean",
-                  true,
-                ) as boolean,
-              getOptionalObject: <T>(headerName: string) =>
-                getRequestValue(
-                  op,
-                  `Header '${headerName}'`,
-                  headerName.toLowerCase(),
-                  headerValues,
-                  "object",
-                  false,
-                ) as T | null,
-              getRequiredObject: <T>(headerName: string) =>
-                getRequestValue(
-                  op,
-                  `Header '${headerName}'`,
-                  headerName.toLowerCase(),
-                  headerValues,
-                  "object",
-                  true,
-                ) as T,
-            },
-            queryParams: {
-              getAllValues: () => queryParamValues,
-              getOptionalString: (queryParamName: string) =>
-                getRequestValue(
-                  op,
-                  `Query param '${queryParamName}'`,
-                  queryParamName,
-                  queryParamValues,
-                  "string",
-                  false,
-                ) as string | null,
-              getRequiredString: (queryParamName: string) =>
-                getRequestValue(
-                  op,
-                  `Query param '${queryParamName}'`,
-                  queryParamName,
-                  queryParamValues,
-                  "string",
-                  true,
-                ) as string,
-              getOptionalNumber: (queryParamName: string) =>
-                getRequestValue(
-                  op,
-                  `Query param '${queryParamName}'`,
-                  queryParamName,
-                  queryParamValues,
-                  "number",
-                  false,
-                ) as number | null,
-              getRequiredNumber: (queryParamName: string) =>
-                getRequestValue(
-                  op,
-                  `Query param '${queryParamName}'`,
-                  queryParamName,
-                  queryParamValues,
-                  "number",
-                  true,
-                ) as number,
-              getOptionalBoolean: (queryParamName: string) =>
-                getRequestValue(
-                  op,
-                  `Query param '${queryParamName}'`,
-                  queryParamName,
-                  queryParamValues,
-                  "boolean",
-                  false,
-                ) as boolean | null,
-              getRequiredBoolean: (queryParamName: string) =>
-                getRequestValue(
-                  op,
-                  `Query param '${queryParamName}'`,
-                  queryParamName,
-                  queryParamValues,
-                  "boolean",
-                  true,
-                ) as boolean,
-              getOptionalObject: <T>(queryParamName: string) =>
-                getRequestValue(
-                  op,
-                  `Query param '${queryParamName}'`,
-                  queryParamName,
-                  queryParamValues,
-                  "object",
-                  false,
-                ) as T | null,
-              getRequiredObject: <T>(queryParamName: string) =>
-                getRequestValue(
-                  op,
-                  `Query param '${queryParamName}'`,
-                  queryParamName,
-                  queryParamValues,
-                  "object",
-                  true,
-                ) as T,
-            },
-            urlParams: {
-              getAllValues: () => urlParamValues,
-              getRequiredString: (urlParamName: string) =>
-                getRequestValue(
-                  op,
-                  `Url param '${urlParamName}'`,
-                  urlParamName,
-                  urlParamValues,
-                  "string",
-                  true,
-                ) as string,
-              getRequiredNumber: (urlParamName: string) =>
-                getRequestValue(
-                  op,
-                  `Url param '${urlParamName}'`,
-                  urlParamName,
-                  urlParamValues,
-                  "number",
-                  true,
-                ) as number,
-              getRequiredBoolean: (urlParamName: string) =>
-                getRequestValue(
-                  op,
-                  `Url param '${urlParamName}'`,
-                  urlParamName,
-                  urlParamValues,
-                  "boolean",
-                  true,
-                ) as boolean,
-            },
-            underlyingRequest,
-          };
-
-          const ctx = new Map();
-
-          let prevIndex = -1;
-
-          const runner = async (
-            index: number,
-          ): Promise<OperationResponse<unknown, string>> => {
-            if (index === prevIndex) {
-              throw new Error(
-                "Middleware function called next() multiple times.",
-              );
-            }
-
-            prevIndex = index;
-
-            const middleware = Array.isArray(op.middlewares)
-              ? op.middlewares[index]
-              : null;
-
-            if (middleware) {
-              return await middleware(req, ctx, () => {
-                return runner(index + 1);
-              });
-            } else {
-              return op.handler(req, ctx);
-            }
-          };
-
-          const resp = await runner(0);
-
-          const responseStatus = op.responseSuccessCode || 200;
-
-          const responseHeaders = new Headers();
-
-          appendCorsHeaders(responseHeaders, config, underlyingRequest);
-
-          for (const h of resp.headers || []) {
-            responseHeaders.append(
-              h.name,
-              convertToResponseHeaderValue(h.value),
-            );
-          }
-
-          if (typeof resp.body !== "undefined") {
-            responseHeaders.append(
-              "content-type",
-              "application/json",
-            );
-          }
-
-          const responseBody = typeof resp.body === "undefined"
-            ? null
-            : JSON.stringify(resp.body);
-
-          return new Response(responseBody, {
-            headers: responseHeaders,
-            status: responseStatus,
-          });
-        }
       }
 
-      return createErrorResponse(
-        new OperationError(404, "RESOURCE_NOT_FOUND", "Resource not found."),
+      return await executeMatchedOp(
         config,
+        url,
+        matchedOp.urlMatch,
         underlyingRequest,
+        matchedOp.operation,
       );
     } catch (err) {
       if (err instanceof OperationError) {
@@ -387,5 +127,335 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
         await underlyingRequest.text();
       }
     }
+  };
+}
+
+/**
+ * Retturns the matching operation and the url match parameters
+ * associated with it.  If a matching operation was not found then
+ * null is returned.
+ * @param internalOps An array of ops with compiled url matching regex.
+ * @param underlyingRequest The underlying request object.
+ */
+function findMatchingOp(
+  internalOps: { urlPatternCompiled: URLPattern; operation: Operation }[],
+  underlyingRequest: Request,
+) {
+  for (const internalOp of internalOps) {
+    if (internalOp.operation.method !== underlyingRequest.method) {
+      continue;
+    }
+
+    const urlMatch = internalOp.urlPatternCompiled.exec(
+      underlyingRequest.url,
+    );
+
+    if (urlMatch) {
+      return {
+        operation: internalOp.operation,
+        urlMatch,
+      };
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Executes the given request using the given operation and
+ * returns the response.
+ * @param config The service configuration object.
+ * @param url The full url that was requested.
+ * @param urlMatch The url values.
+ * @param underlyingRequest The underlying request.
+ * @param op The operation that will handle the request.
+ */
+async function executeMatchedOp(
+  config: ServiceConfig,
+  url: URL,
+  urlMatch: URLPatternResult,
+  underlyingRequest: Request,
+  op: Operation,
+) {
+  const ctx = new Map();
+
+  let prevIndex = -1;
+
+  const runner = async (
+    index: number,
+  ): Promise<Response> => {
+    if (index === prevIndex) {
+      throw new Error(
+        "Middleware function called next() multiple times.",
+      );
+    }
+
+    prevIndex = index;
+
+    const middleware = Array.isArray(op.middlewares)
+      ? op.middlewares[index]
+      : null;
+
+    if (middleware) {
+      return await middleware(underlyingRequest, ctx, () => {
+        return runner(index + 1);
+      });
+    } else {
+      const req = await createOperationRequest(
+        url,
+        urlMatch,
+        underlyingRequest,
+        op,
+      );
+      const res = await op.handler(req, ctx);
+
+      const responseStatus = op.responseSuccessCode || 200;
+
+      const responseHeaders = new Headers();
+
+      appendCorsHeaders(responseHeaders, config, underlyingRequest);
+
+      for (const h of res.headers || []) {
+        responseHeaders.append(
+          h.name,
+          convertToResponseHeaderValue(h.value),
+        );
+      }
+
+      if (typeof res.body !== "undefined") {
+        responseHeaders.append(
+          "content-type",
+          "application/json",
+        );
+      }
+
+      const responseBody = typeof res.body === "undefined"
+        ? null
+        : JSON.stringify(res.body);
+
+      return new Response(responseBody, {
+        headers: responseHeaders,
+        status: responseStatus,
+      });
+    }
+  };
+
+  return await runner(0);
+}
+
+/**
+ * Creates an OperationRequest object that can be passed to
+ * an operation handler.  This process validates the inputs
+ * against the data expected by the given operation.
+ * @param url The full url that was requested.
+ * @param urlMatch The url values.
+ * @param underlyingRequest The underlying request.
+ * @param op The operation that will handle the request.
+ */
+async function createOperationRequest(
+  url: URL,
+  urlMatch: URLPatternResult,
+  underlyingRequest: Request,
+  op: Operation,
+): Promise<OperationRequest> {
+  const body = await getJsonBody(underlyingRequest, op);
+
+  const cookies = getCookieValues(
+    underlyingRequest.headers.get("cookie") || "",
+  );
+  const headerValues = getHeaderValues(underlyingRequest.headers, op);
+  const queryParamValues = getQueryParamValues(url.searchParams, op);
+  const urlParamValues = getUrlParamValues(
+    urlMatch.pathname.groups,
+    op,
+  );
+
+  return {
+    path: url.pathname,
+    urlPattern: op.urlPattern,
+    method: op.method,
+    body,
+    cookies,
+    headers: {
+      getAllValues: () => headerValues,
+      getOptionalString: (headerName: string) =>
+        getRequestValue(
+          op,
+          `Header '${headerName}'`,
+          headerName.toLowerCase(),
+          headerValues,
+          "string",
+          false,
+        ) as string | null,
+      getRequiredString: (headerName: string) =>
+        getRequestValue(
+          op,
+          `Header '${headerName}'`,
+          headerName.toLowerCase(),
+          headerValues,
+          "string",
+          true,
+        ) as string,
+      getOptionalNumber: (headerName: string) =>
+        getRequestValue(
+          op,
+          `Header '${headerName}'`,
+          headerName.toLowerCase(),
+          headerValues,
+          "number",
+          false,
+        ) as number | null,
+      getRequiredNumber: (headerName: string) =>
+        getRequestValue(
+          op,
+          `Header '${headerName}'`,
+          headerName.toLowerCase(),
+          headerValues,
+          "number",
+          true,
+        ) as number,
+      getOptionalBoolean: (headerName: string) =>
+        getRequestValue(
+          op,
+          `Header '${headerName}'`,
+          headerName.toLowerCase(),
+          headerValues,
+          "boolean",
+          false,
+        ) as boolean | null,
+      getRequiredBoolean: (headerName: string) =>
+        getRequestValue(
+          op,
+          `Header '${headerName}'`,
+          headerName.toLowerCase(),
+          headerValues,
+          "boolean",
+          true,
+        ) as boolean,
+      getOptionalObject: <T>(headerName: string) =>
+        getRequestValue(
+          op,
+          `Header '${headerName}'`,
+          headerName.toLowerCase(),
+          headerValues,
+          "object",
+          false,
+        ) as T | null,
+      getRequiredObject: <T>(headerName: string) =>
+        getRequestValue(
+          op,
+          `Header '${headerName}'`,
+          headerName.toLowerCase(),
+          headerValues,
+          "object",
+          true,
+        ) as T,
+    },
+    queryParams: {
+      getAllValues: () => queryParamValues,
+      getOptionalString: (queryParamName: string) =>
+        getRequestValue(
+          op,
+          `Query param '${queryParamName}'`,
+          queryParamName,
+          queryParamValues,
+          "string",
+          false,
+        ) as string | null,
+      getRequiredString: (queryParamName: string) =>
+        getRequestValue(
+          op,
+          `Query param '${queryParamName}'`,
+          queryParamName,
+          queryParamValues,
+          "string",
+          true,
+        ) as string,
+      getOptionalNumber: (queryParamName: string) =>
+        getRequestValue(
+          op,
+          `Query param '${queryParamName}'`,
+          queryParamName,
+          queryParamValues,
+          "number",
+          false,
+        ) as number | null,
+      getRequiredNumber: (queryParamName: string) =>
+        getRequestValue(
+          op,
+          `Query param '${queryParamName}'`,
+          queryParamName,
+          queryParamValues,
+          "number",
+          true,
+        ) as number,
+      getOptionalBoolean: (queryParamName: string) =>
+        getRequestValue(
+          op,
+          `Query param '${queryParamName}'`,
+          queryParamName,
+          queryParamValues,
+          "boolean",
+          false,
+        ) as boolean | null,
+      getRequiredBoolean: (queryParamName: string) =>
+        getRequestValue(
+          op,
+          `Query param '${queryParamName}'`,
+          queryParamName,
+          queryParamValues,
+          "boolean",
+          true,
+        ) as boolean,
+      getOptionalObject: <T>(queryParamName: string) =>
+        getRequestValue(
+          op,
+          `Query param '${queryParamName}'`,
+          queryParamName,
+          queryParamValues,
+          "object",
+          false,
+        ) as T | null,
+      getRequiredObject: <T>(queryParamName: string) =>
+        getRequestValue(
+          op,
+          `Query param '${queryParamName}'`,
+          queryParamName,
+          queryParamValues,
+          "object",
+          true,
+        ) as T,
+    },
+    urlParams: {
+      getAllValues: () => urlParamValues,
+      getRequiredString: (urlParamName: string) =>
+        getRequestValue(
+          op,
+          `Url param '${urlParamName}'`,
+          urlParamName,
+          urlParamValues,
+          "string",
+          true,
+        ) as string,
+      getRequiredNumber: (urlParamName: string) =>
+        getRequestValue(
+          op,
+          `Url param '${urlParamName}'`,
+          urlParamName,
+          urlParamValues,
+          "number",
+          true,
+        ) as number,
+      getRequiredBoolean: (urlParamName: string) =>
+        getRequestValue(
+          op,
+          `Url param '${urlParamName}'`,
+          urlParamName,
+          urlParamValues,
+          "boolean",
+          true,
+        ) as boolean,
+    },
+    underlyingRequest,
   };
 }
