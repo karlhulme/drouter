@@ -115,6 +115,7 @@ export interface Operation<
   middlewares?: ((
     req: Request,
     ctx: OperationContext,
+    op: Operation,
     next: () => Promise<Response>,
   ) => Promise<Response>)[];
 

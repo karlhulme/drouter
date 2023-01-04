@@ -196,7 +196,7 @@ async function executeMatchedOp(
       : null;
 
     if (middleware) {
-      return await middleware(underlyingRequest, ctx, () => {
+      return await middleware(underlyingRequest, ctx, op, () => {
         return runner(index + 1);
       });
     } else {

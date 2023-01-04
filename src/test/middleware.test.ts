@@ -15,11 +15,11 @@ Deno.test("Process an operation that uses middleware functions.", async () => {
       },
       setup: (op) => {
         op.middlewares = [
-          async (_req, ctx, next) => {
+          async (_req, ctx, _op, next) => {
             ctx.set("foo", "bar");
             return await next();
           },
-          async (_req, ctx, next) => {
+          async (_req, ctx, _op, next) => {
             ctx.set("hello", "world");
             return await next();
           },
@@ -41,7 +41,7 @@ Deno.test("Fail to process an operation where a middleware calls next twice.", a
       },
       setup: (op) => {
         op.middlewares = [
-          async (_req, _ctx, next) => {
+          async (_req, _ctx, _op, next) => {
             await next();
             return await next();
           },
