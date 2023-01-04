@@ -1,7 +1,7 @@
 /**
- * An error occurred during the processing of an operation.
+ * An error occurred during the processing of an HTTP request.
  */
-export class OperationError extends Error {
+export class HttpError extends Error {
   /**
    * Constructs a new error.
    * @param code The HTTP status code for this error.

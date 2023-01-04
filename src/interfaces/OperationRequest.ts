@@ -1,4 +1,3 @@
-import { OperationCookie } from "./OperationCookie.ts";
 import { OperationRequestHeadersBlock } from "./OperationRequestHeadersBlock.ts";
 import { OperationRequestQueryParamsBlock } from "./OperationRequestQueryParamsBlock.ts";
 import { OperationRequestUrlParamsBlock } from "./OperationRequestUrlParamsBlock.ts";
@@ -31,11 +30,6 @@ export interface OperationRequest<
    * The validated body of the request.
    */
   body: RequestBodyType;
-
-  /**
-   * The array of cookies passed into the request.
-   */
-  cookies: OperationCookie[];
 
   /**
    * The validated headers values passed with the request.

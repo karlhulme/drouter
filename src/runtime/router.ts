@@ -1,6 +1,6 @@
 import {
+  HttpError,
   Operation,
-  OperationError,
   OperationRequest,
   ServiceConfig,
 } from "../interfaces/index.ts";
@@ -15,7 +15,6 @@ import { healthResponse } from "./healthResponse.ts";
 import { rootResponse } from "./rootResponse.ts";
 import { openApiResponse } from "./openApiResponse.ts";
 import { convertToResponseHeaderValue } from "./convertToResponseHeaderValue.ts";
-import { getCookieValues } from "./getCookieValues.ts";
 import { optionsResponse } from "./optionsResponse.ts";
 import { appendCorsHeaders } from "./appendCorsHeaders.ts";
 import { safeArrayLength } from "../utils/safeArrayLength.ts";
@@ -87,7 +86,7 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
 
       if (!matchedOp) {
         return createErrorResponse(
-          new OperationError(404, "RESOURCE_NOT_FOUND", "Resource not found."),
+          new HttpError(404, "RESOURCE_NOT_FOUND", "Resource not found."),
           config,
           underlyingRequest,
         );
@@ -101,7 +100,7 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
         matchedOp.operation,
       );
     } catch (err) {
-      if (err instanceof OperationError) {
+      if (err instanceof HttpError) {
         return createErrorResponse(
           err,
           config,
@@ -112,7 +111,7 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
         console.error(err);
 
         return createErrorResponse(
-          new OperationError(
+          new HttpError(
             500,
             "INTERNAL_SERVER_ERROR",
             `Unexpected error raised processing request.`,
@@ -260,9 +259,6 @@ async function createOperationRequest(
 ): Promise<OperationRequest> {
   const body = await getJsonBody(underlyingRequest, op);
 
-  const cookies = getCookieValues(
-    underlyingRequest.headers.get("cookie") || "",
-  );
   const headerValues = getHeaderValues(underlyingRequest.headers, op);
   const queryParamValues = getQueryParamValues(url.searchParams, op);
   const urlParamValues = getUrlParamValues(
@@ -275,7 +271,6 @@ async function createOperationRequest(
     urlPattern: op.urlPattern,
     method: op.method,
     body,
-    cookies,
     headers: {
       getAllValues: () => headerValues,
       getOptionalString: (headerName: string) =>

@@ -1,7 +1,7 @@
 /**
- * A cookie passed with a request.
+ * An HTTP cookie read from an HTTP cookies header.
  */
-export interface OperationCookie {
+export interface HttpCookie {
   /**
    * The name of the cookie.
    */

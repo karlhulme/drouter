@@ -1,4 +1,4 @@
-import { OperationError, OperationNamedType } from "../interfaces/index.ts";
+import { HttpError, OperationNamedType } from "../interfaces/index.ts";
 
 /**
  * Parses the given string request value, validates it using the
@@ -22,7 +22,7 @@ export function parseAndValidateRequestValue(
     const validationResult = type.validator(value, "");
 
     if (Array.isArray(validationResult) && validationResult.length > 0) {
-      throw new OperationError(
+      throw new HttpError(
         400,
         "REQUEST_PARAMETER_DID_NOT_VALIDATE",
         `${displayName} failed validation.`,
@@ -32,7 +32,7 @@ export function parseAndValidateRequestValue(
 
     return value;
   } else if (markedRequired) {
-    throw new OperationError(
+    throw new HttpError(
       400,
       "REQUEST_PARAMETER_MISSING",
       `${displayName} is required and must be supplied in the request.`,
@@ -61,7 +61,7 @@ function parseRequestValue(
     const value = parseFloat(rawValue);
 
     if (isNaN(value)) {
-      throw new OperationError(
+      throw new HttpError(
         400,
         "REQUEST_PARAMETER_VALUE_NOT_A_NUMBER",
         `${displayName} with value '${rawValue}' cannot be converted to a number.`,
@@ -77,7 +77,7 @@ function parseRequestValue(
     try {
       return JSON.parse(rawValue);
     } catch {
-      throw new OperationError(
+      throw new HttpError(
         400,
         "UNABLE_TO_READ_REQUEST_PARAMETER_AS_JSON",
         `${displayName} cannot be parsed into JSON.`,

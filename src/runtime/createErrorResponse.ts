@@ -1,4 +1,4 @@
-import { OperationError, ServiceConfig } from "../interfaces/index.ts";
+import { HttpError, ServiceConfig } from "../interfaces/index.ts";
 import { appendCorsHeaders } from "./appendCorsHeaders.ts";
 
 /**
@@ -11,7 +11,7 @@ import { appendCorsHeaders } from "./appendCorsHeaders.ts";
  * @param underlyingRequest The underlying client request.
  */
 export function createErrorResponse(
-  err: OperationError,
+  err: HttpError,
   config: ServiceConfig,
   underlyingRequest: Request,
 ) {

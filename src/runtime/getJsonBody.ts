@@ -1,4 +1,4 @@
-import { Operation, OperationError } from "../interfaces/index.ts";
+import { HttpError, Operation } from "../interfaces/index.ts";
 
 /**
  * Extracts, validates and returns the body of the given HTTP request
@@ -17,7 +17,7 @@ export async function getJsonBody(
     try {
       body = await req.json();
     } catch {
-      throw new OperationError(
+      throw new HttpError(
         400,
         "UNABLE_TO_READ_REQUEST_BODY_AS_JSON",
         "The request body does not contain well-formed JSON.",
@@ -30,7 +30,7 @@ export async function getJsonBody(
     );
 
     if (Array.isArray(validationResult) && validationResult.length > 0) {
-      throw new OperationError(
+      throw new HttpError(
         400,
         "REQUEST_BODY_JSON_DID_NOT_VALIDATE.",
         "The request body JSON failed validation.",

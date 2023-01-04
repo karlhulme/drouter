@@ -1,7 +1,7 @@
-import { OperationError } from "../interfaces/index.ts";
+import { HttpError } from "../interfaces/index.ts";
 
 /**
- * Returns an OperationError object built from a string.
+ * Returns an HttpError object built from a string.
  * This is useful for converting an error generated in a
  * downstream service into an error object which can be handled
  * by an upstream service.
@@ -11,7 +11,7 @@ import { OperationError } from "../interfaces/index.ts";
 export function parseErrorResponse(
   message: string,
   includeDetails?: boolean,
-): OperationError {
+): HttpError {
   try {
     const [header, ...detailParts] = message.split("\n");
     const [errorCode, statusText, ...descriptionParts] = header.split(" ");
@@ -29,7 +29,7 @@ export function parseErrorResponse(
 
     const details = includeDetails ? detailParts.join("\n") : "";
 
-    return new OperationError(
+    return new HttpError(
       status,
       errorCode,
       description,
@@ -38,7 +38,7 @@ export function parseErrorResponse(
   } catch {
     console.log("Unable to parse errorResponse: " + message);
 
-    return new OperationError(
+    return new HttpError(
       500,
       "INTERNAL_SERVER_ERROR",
       "Unable to parse errorResponse.",
