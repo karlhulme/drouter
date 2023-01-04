@@ -17,7 +17,7 @@ import { openApiResponse } from "./openApiResponse.ts";
 import { convertToResponseHeaderValue } from "./convertToResponseHeaderValue.ts";
 import { optionsResponse } from "./optionsResponse.ts";
 import { appendCorsHeaders } from "./appendCorsHeaders.ts";
-import { safeArrayLength } from "../utils/safeArrayLength.ts";
+import { safeArrayLength } from "./safeArrayLength.ts";
 import { createApiVersionType } from "./createApiVersionType.ts";
 
 /**
