@@ -135,11 +135,11 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
           underlyingRequest,
         );
       }
-      // } finally {
+    } finally {
       // this prevents Deno.serve from crashing.
-      // if (!underlyingRequest.bodyUsed) {
-      //   await underlyingRequest.text();
-      // }
+      if (!underlyingRequest.bodyUsed) {
+        await underlyingRequest.text();
+      }
     }
   };
 }
