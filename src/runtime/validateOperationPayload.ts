@@ -1,31 +1,19 @@
 import { HttpError, Operation } from "../interfaces/index.ts";
 
 /**
- * Extracts, validates and returns the body of the given HTTP request
- * according to the request type information specification in the
+ * Validates an operation payload according to the
+ * request type information specification in the
  * given operation.
- * @param req An HTTP request.
  * @param operation An operation.
+ * @param payload The payload of an HTTP request.
  */
-export async function getJsonBody(
-  req: Request,
+export function validateOperationPayload(
   operation: Operation,
-): Promise<unknown> {
+  payload: unknown,
+) {
   if (operation.requestBodyType) {
-    let body;
-
-    try {
-      body = await req.json();
-    } catch {
-      throw new HttpError(
-        400,
-        "UNABLE_TO_READ_REQUEST_BODY_AS_JSON",
-        "The request body does not contain well-formed JSON.",
-      );
-    }
-
     const validationResult = operation.requestBodyType.validator(
-      body,
+      payload,
       "requestBody",
     );
 
@@ -37,9 +25,5 @@ export async function getJsonBody(
         JSON.stringify(validationResult, null, 2),
       );
     }
-
-    return body;
-  } else {
-    return null;
   }
 }

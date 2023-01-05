@@ -106,13 +106,27 @@ export interface Operation<
   responseFailureDefinitions?: OperationFailureDefinition[];
 
   /**
-   * The implementation of any middleware asynchronous functions that can be
+   * An array of asynchronous request processing functions that can be
    * used to augment context and wrap/edit the response before and after it is
-   * handled by an operation.  The middleware uses the raw untyped and unvalidated
-   * request and response that is provided by the HTTP server.  Middleware functions must
-   * not read the body of the request.
+   * handled by an operation.  These functions uses the raw untyped and unvalidated
+   * request and response that is provided by the HTTP server.  These functions must
+   * not read the body of the request, use payloadMiddleware if you need the payload.
    */
-  middlewares?: ((
+  middleware?: ((
+    req: Request,
+    ctx: OperationContext,
+    op: Operation,
+    next: () => Promise<Response>,
+  ) => Promise<Response>)[];
+
+  /**
+   * An array of asynchronous request processing functions that can be
+   * used to augment context and wrap/edit the response before and after it is
+   * handled by an operation.  These functions use the raw untyped and unvalidated
+   * request and response that is provided by the HTTP server.  These middleware
+   * functions will find the payload value available within the context.
+   */
+  payloadMiddleware?: ((
     req: Request,
     ctx: OperationContext,
     op: Operation,

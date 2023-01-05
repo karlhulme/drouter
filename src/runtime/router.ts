@@ -4,7 +4,6 @@ import {
   OperationRequest,
   ServiceConfig,
 } from "../interfaces/index.ts";
-import { getJsonBody } from "./getJsonBody.ts";
 import { getHeaderValues } from "./getHeaderValues.ts";
 import { getQueryParamValues } from "./getQueryParamValues.ts";
 import { getRequestValue } from "./getRequestValue.ts";
@@ -19,6 +18,21 @@ import { optionsResponse } from "./optionsResponse.ts";
 import { appendCorsHeaders } from "./appendCorsHeaders.ts";
 import { safeArrayLength } from "./safeArrayLength.ts";
 import { createApiVersionType } from "./createApiVersionType.ts";
+import { validateOperationPayload } from "./validateOperationPayload.ts";
+
+/**
+ * The name of the context value that will hold the operation payload
+ * once it has been read.  It will be available to payloadMiddleware
+ * functions.  Operations should use req.body instead which will be a
+ * typed and validated value.
+ */
+export const CONTEXT_OPERATION_PAYLOAD = "operationPayload";
+
+/**
+ * The name of the context value that will hold the operation response body.
+ * It will be available once the operation has run.
+ */
+export const CONTEXT_OPERATION_RESPONSE_BODY = "operationResponseBody";
 
 /**
  * Returns an HTTP request handler that picks operation implementations
@@ -120,11 +134,11 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
           underlyingRequest,
         );
       }
-    } finally {
+      // } finally {
       // this prevents Deno.serve from crashing.
-      if (!underlyingRequest.bodyUsed) {
-        await underlyingRequest.text();
-      }
+      // if (!underlyingRequest.bodyUsed) {
+      //   await underlyingRequest.text();
+      // }
     }
   };
 }
@@ -177,8 +191,22 @@ async function executeMatchedOp(
   op: Operation,
 ) {
   const ctx = new Map();
+  ctx.set(CONTEXT_OPERATION_RESPONSE_BODY, null);
 
   let prevIndex = -1;
+
+  // Concatenate the two types of middleware together
+  // so that we can iterate thru all of them.
+  const middlewareFuncs = [
+    ...(Array.isArray(op.middleware) ? op.middleware : []),
+    ...(Array.isArray(op.payloadMiddleware) ? op.payloadMiddleware : []),
+  ];
+
+  // Determine the index at which the payload should be loaded.
+  let payload: unknown = null;
+  const loadPayloadIndex = Array.isArray(op.middleware)
+    ? op.middleware.length
+    : 0;
 
   const runner = async (
     index: number,
@@ -191,21 +219,30 @@ async function executeMatchedOp(
 
     prevIndex = index;
 
-    const middleware = Array.isArray(op.middlewares)
-      ? op.middlewares[index]
+    // Pull in the context before running any payload middleware functions.
+    if (index === loadPayloadIndex && op.requestBodyType) {
+      payload = await readJsonBody(underlyingRequest);
+      ctx.set(CONTEXT_OPERATION_PAYLOAD, payload);
+    }
+
+    // Draw down the next middleware function.
+    const middlewareFunc = index < middlewareFuncs.length
+      ? middlewareFuncs[index]
       : null;
 
-    if (middleware) {
-      return await middleware(underlyingRequest, ctx, op, () => {
+    if (middlewareFunc) {
+      return await middlewareFunc(underlyingRequest, ctx, op, () => {
         return runner(index + 1);
       });
     } else {
-      const req = await createOperationRequest(
+      const req = createOperationRequest(
         url,
         urlMatch,
         underlyingRequest,
         op,
+        payload,
       );
+
       const res = await op.handler(req, ctx);
 
       const responseStatus = op.responseSuccessCode || 200;
@@ -232,6 +269,10 @@ async function executeMatchedOp(
         ? null
         : JSON.stringify(res.body);
 
+      if (typeof res.body !== "undefined") {
+        ctx.set(CONTEXT_OPERATION_RESPONSE_BODY, res.body);
+      }
+
       return new Response(responseBody, {
         headers: responseHeaders,
         status: responseStatus,
@@ -243,6 +284,25 @@ async function executeMatchedOp(
 }
 
 /**
+ * Reads the JSON body from the request. If the body cannot be read
+ * then a boolean value of false is returned, which will fail any
+ * further validation.
+ * @param underlyingRequest An HTTP request.
+ */
+export async function readJsonBody(
+  underlyingRequest: Request,
+): Promise<unknown> {
+  try {
+    return await underlyingRequest.json();
+  } catch {
+    // We use false here because it will fail validation
+    // when the operation runs, allowing the request to
+    // be tracked.
+    return false;
+  }
+}
+
+/**
  * Creates an OperationRequest object that can be passed to
  * an operation handler.  This process validates the inputs
  * against the data expected by the given operation.
@@ -251,13 +311,14 @@ async function executeMatchedOp(
  * @param underlyingRequest The underlying request.
  * @param op The operation that will handle the request.
  */
-async function createOperationRequest(
+function createOperationRequest(
   url: URL,
   urlMatch: URLPatternResult,
   underlyingRequest: Request,
   op: Operation,
-): Promise<OperationRequest> {
-  const body = await getJsonBody(underlyingRequest, op);
+  payload: unknown,
+): OperationRequest {
+  validateOperationPayload(op, payload);
 
   const headerValues = getHeaderValues(underlyingRequest.headers, op);
   const queryParamValues = getQueryParamValues(url.searchParams, op);
@@ -270,7 +331,7 @@ async function createOperationRequest(
     path: url.pathname,
     urlPattern: op.urlPattern,
     method: op.method,
-    body,
+    body: payload,
     headers: {
       getAllValues: () => headerValues,
       getOptionalString: (headerName: string) =>
