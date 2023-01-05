@@ -45,6 +45,6 @@ Deno.test("An unknown route request elicits a 404 response.", async () => {
   assertStrictEquals(response.status, 404);
   assertStringIncludes(
     await response.text(),
-    "RESOURCE_NOT_FOUND",
+    "OPERATION_NOT_FOUND",
   );
 });

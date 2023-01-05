@@ -6,8 +6,7 @@ export class HttpError extends Error {
    * Constructs a new error.
    * @param code The HTTP status code for this error.
    * @param errorCode The all-caps error code for this error.
-   * @param description The one-line description of the error.
-   * This field should not contain any line breaks.
+   * @param description A short (typically one-line) description of the error.
    * @param details Additional details associated with the error
    * which can take any form.
    */

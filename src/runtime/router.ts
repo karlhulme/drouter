@@ -9,17 +9,18 @@ import { getQueryParamValues } from "./getQueryParamValues.ts";
 import { getRequestValue } from "./getRequestValue.ts";
 import { getUrlParamValues } from "./getUrlParamValues.ts";
 import { docsPageResponse } from "./docsPageResponse.ts";
-import { createErrorResponse } from "./createErrorResponse.ts";
 import { healthResponse } from "./healthResponse.ts";
 import { rootResponse } from "./rootResponse.ts";
 import { openApiResponse } from "./openApiResponse.ts";
 import { convertToResponseHeaderValue } from "./convertToResponseHeaderValue.ts";
-import { optionsResponse } from "./optionsResponse.ts";
 import { appendCorsHeaders } from "./appendCorsHeaders.ts";
 import { safeArrayLength } from "./safeArrayLength.ts";
 import { createApiVersionType } from "./createApiVersionType.ts";
 import { validateOperationPayload } from "./validateOperationPayload.ts";
 import { getHttpCookieValues } from "../index.ts";
+import { resourceNotFoundResponse } from "./resourceNotFoundResponse.ts";
+import { internalServerErrorResponse } from "./internalServerErrorResponse.ts";
+import { badInputErrorResponse } from "./badInputErrorResponse.ts";
 
 /**
  * The name of the context value that will hold the operation payload
@@ -34,6 +35,22 @@ export const CONTEXT_OPERATION_PAYLOAD = "operationPayload";
  * It will be available once the operation has run.
  */
 export const CONTEXT_OPERATION_RESPONSE_BODY = "operationResponseBody";
+
+/**
+ * An internal representation of an operation that includes
+ * a compiled URL pattern for matching with requests.
+ */
+interface InternalOp {
+  /**
+   * A compiled url pattern.
+   */
+  urlPatternCompiled: URLPattern;
+
+  /**
+   * An operation defined in the config.
+   */
+  operation: Operation;
+}
 
 /**
  * Returns an HTTP request handler that picks operation implementations
@@ -57,13 +74,11 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
       type: apiVersionType,
       isRequired: !config.optionalApiVersionHeader,
     });
-
-    // Add any global headers and response headers.
   }
 
   // Sort the ops such that the paths that require the
   // least number of parameters are matched first.
-  const internalOps = config.operations
+  const internalOps: InternalOp[] = config.operations
     .map((op) => ({
       urlPatternCompiled: new URLPattern({ pathname: op.urlPattern }),
       operation: op,
@@ -73,67 +88,22 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
       safeArrayLength(b.operation.requestUrlParams)
     );
 
+  // Return a function that can process individual requests.
   return async function (underlyingRequest: Request): Promise<Response> {
+    let response: Response;
+
     try {
-      const url = new URL(underlyingRequest.url);
-
-      if (underlyingRequest.method === "OPTIONS") {
-        return optionsResponse(config, underlyingRequest);
-      }
-
-      if (underlyingRequest.method === "GET" && url.pathname === "/") {
-        return rootResponse(config);
-      }
-
-      if (underlyingRequest.method === "GET" && url.pathname === "/health") {
-        return healthResponse();
-      }
-
-      if (underlyingRequest.method === "GET" && url.pathname === "/docs") {
-        return docsPageResponse();
-      }
-
-      if (underlyingRequest.method === "GET" && url.pathname === "/openapi") {
-        return openApiResponse(config);
-      }
-
-      const matchedOp = findMatchingOp(internalOps, underlyingRequest);
-
-      if (!matchedOp) {
-        return createErrorResponse(
-          new HttpError(404, "RESOURCE_NOT_FOUND", "Resource not found."),
-          config,
-          underlyingRequest,
-        );
-      }
-
-      return await executeMatchedOp(
-        config,
-        url,
-        matchedOp.urlMatch,
-        underlyingRequest,
-        matchedOp.operation,
-      );
+      response = await processRequest(underlyingRequest, config, internalOps);
     } catch (err) {
-      if (err instanceof HttpError) {
-        return createErrorResponse(
-          err,
-          config,
-          underlyingRequest,
-        );
-      } else {
-        // Logs the unexpected error to the console.
-        console.error(err);
+      // Log the unexpected error to the console.
+      console.error(err);
 
-        return createErrorResponse(
-          new HttpError(
-            500,
-            "INTERNAL_SERVER_ERROR",
-            `Unexpected error raised processing request.`,
-          ),
-          config,
-          underlyingRequest,
-        );
+      // The badInputErrorResponse is provided as a backstop, but typically
+      // some middleware will convert these into responses before we get here.
+      if (err instanceof HttpError && err.code >= 400 && err.code < 500) {
+        response = badInputErrorResponse(err);
+      } else {
+        response = internalServerErrorResponse();
       }
     } finally {
       // this prevents Deno.serve from crashing.
@@ -141,7 +111,60 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
         await underlyingRequest.text();
       }
     }
+
+    // In all cases we append the CORs headers to the response.
+    appendCorsHeaders(response.headers, config, underlyingRequest);
+    return response;
   };
+}
+
+/**
+ * Process the given request and produce a response.
+ * @param underlyingRequest The underlying HTTP request.
+ * @param config The service configuration.
+ * @param internalOps An array of operations sorted in order
+ * of matching preference.
+ */
+async function processRequest(
+  underlyingRequest: Request,
+  config: ServiceConfig,
+  internalOps: InternalOp[],
+) {
+  const url = new URL(underlyingRequest.url);
+
+  if (underlyingRequest.method === "OPTIONS") {
+    return new Response();
+  }
+
+  if (underlyingRequest.method === "GET" && url.pathname === "/") {
+    return rootResponse(config);
+  }
+
+  if (underlyingRequest.method === "GET" && url.pathname === "/health") {
+    return healthResponse();
+  }
+
+  if (underlyingRequest.method === "GET" && url.pathname === "/docs") {
+    return docsPageResponse();
+  }
+
+  if (underlyingRequest.method === "GET" && url.pathname === "/openapi") {
+    return openApiResponse(config);
+  }
+
+  const matchedOp = findMatchingOp(internalOps, underlyingRequest);
+
+  if (!matchedOp) {
+    return resourceNotFoundResponse();
+  }
+
+  return await executeMatchedOp(
+    config,
+    url,
+    matchedOp.urlMatch,
+    underlyingRequest,
+    matchedOp.operation,
+  );
 }
 
 /**
@@ -236,6 +259,8 @@ async function executeMatchedOp(
         return runner(index + 1);
       });
     } else {
+      // Create the request object which triggers validation of the
+      // payload (body) and header/query/url parameters.
       const req = createOperationRequest(
         url,
         urlMatch,

@@ -1,7 +1,7 @@
 import { ServiceConfig } from "../interfaces/index.ts";
 
 /**
- * Returns an options response.
+ * Appends a set of CORs headers to the given headers object.
  * @param responseHeaders The current set of headers that this
  * method can append to.
  * @param config The configuration for the service.
