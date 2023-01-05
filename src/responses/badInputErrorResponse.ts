@@ -6,7 +6,7 @@ import { HttpError } from "../index.ts";
  */
 export function badInputErrorResponse(err: HttpError) {
   return new Response(
-    `${err.code} ${err.errorCode} ${err.description}.\n${err.details}`,
+    `${err.code} ${err.errorCode} ${err.description}\n${err.details}`,
     {
       status: err.code,
       headers: {
