@@ -4,23 +4,25 @@ import {
   OperationRequest,
   ServiceConfig,
 } from "../interfaces/index.ts";
+import {
+  badInputErrorResponse,
+  docsPageResponse,
+  healthResponse,
+  internalServerErrorResponse,
+  openApiResponse,
+  resourceNotFoundResponse,
+  rootResponse,
+} from "../responses/index.ts";
 import { getHeaderValues } from "./getHeaderValues.ts";
 import { getQueryParamValues } from "./getQueryParamValues.ts";
 import { getRequestValue } from "./getRequestValue.ts";
 import { getUrlParamValues } from "./getUrlParamValues.ts";
-import { docsPageResponse } from "./docsPageResponse.ts";
-import { healthResponse } from "./healthResponse.ts";
-import { rootResponse } from "./rootResponse.ts";
-import { openApiResponse } from "./openApiResponse.ts";
 import { convertToResponseHeaderValue } from "./convertToResponseHeaderValue.ts";
 import { appendCorsHeaders } from "./appendCorsHeaders.ts";
 import { safeArrayLength } from "./safeArrayLength.ts";
 import { createApiVersionType } from "./createApiVersionType.ts";
 import { validateOperationPayload } from "./validateOperationPayload.ts";
 import { getHttpCookieValues } from "../index.ts";
-import { resourceNotFoundResponse } from "./resourceNotFoundResponse.ts";
-import { internalServerErrorResponse } from "./internalServerErrorResponse.ts";
-import { badInputErrorResponse } from "./badInputErrorResponse.ts";
 
 /**
  * The name of the context value that will hold the operation payload
@@ -103,7 +105,7 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
       if (err instanceof HttpError && err.code >= 400 && err.code < 500) {
         response = badInputErrorResponse(err);
       } else {
-        response = internalServerErrorResponse();
+        response = internalServerErrorResponse(underlyingRequest);
       }
     } finally {
       // this prevents Deno.serve from crashing.

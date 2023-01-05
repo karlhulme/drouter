@@ -1,6 +1,9 @@
 export * from "./interfaces/index.ts";
 export {
   badInputErrorResponse,
+  downstreamErrorResponse,
+} from "./responses/index.ts";
+export {
   CONTEXT_OPERATION_PAYLOAD,
   CONTEXT_OPERATION_RESPONSE_BODY,
   router,
