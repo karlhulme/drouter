@@ -332,7 +332,7 @@ function createOperationRequest(
     path: url.pathname,
     urlPattern: op.urlPattern,
     method: op.method,
-    cookies: getHttpCookieValues(underlyingRequest.headers.get("cookies")),
+    cookies: getHttpCookieValues(underlyingRequest.headers.get("cookie")),
     body: payload,
     headers: {
       getAllValues: () => headerValues,
