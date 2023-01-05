@@ -13,3 +13,8 @@ Deno.test("Parse cookies from a string.", async () => {
     value: "world",
   }]);
 });
+
+Deno.test("Parse cookies from an undefined or null variable.", async () => {
+  assertEquals(getHttpCookieValues(null), []);
+  assertEquals(getHttpCookieValues(), []);
+});

@@ -19,6 +19,7 @@ import { appendCorsHeaders } from "./appendCorsHeaders.ts";
 import { safeArrayLength } from "./safeArrayLength.ts";
 import { createApiVersionType } from "./createApiVersionType.ts";
 import { validateOperationPayload } from "./validateOperationPayload.ts";
+import { getHttpCookieValues } from "../index.ts";
 
 /**
  * The name of the context value that will hold the operation payload
@@ -331,6 +332,7 @@ function createOperationRequest(
     path: url.pathname,
     urlPattern: op.urlPattern,
     method: op.method,
+    cookies: getHttpCookieValues(underlyingRequest.headers.get("cookies")),
     body: payload,
     headers: {
       getAllValues: () => headerValues,

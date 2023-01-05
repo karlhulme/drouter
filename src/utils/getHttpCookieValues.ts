@@ -6,9 +6,9 @@ import { HttpCookie } from "../interfaces/index.ts";
  * @param cookieHeaderString A cookie header from a request.
  */
 export function getHttpCookieValues(
-  cookieHeaderString: string,
+  cookieHeaderString?: string | null,
 ): HttpCookie[] {
-  return cookieHeaderString
+  return (cookieHeaderString || "")
     .split(";")
     .filter((c) => c)
     .map((c) => {
