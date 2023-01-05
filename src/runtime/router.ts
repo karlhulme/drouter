@@ -97,14 +97,11 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
     try {
       response = await processRequest(underlyingRequest, config, internalOps);
     } catch (err) {
-      // Log the unexpected error to the console.
-      console.error(err);
-
-      // The badInputErrorResponse is provided as a backstop, but typically
-      // some middleware will convert these into responses before we get here.
       if (err instanceof HttpError && err.code >= 400 && err.code < 500) {
         response = badInputErrorResponse(err);
       } else {
+        // Log the unexpected error to the console.
+        console.error(err);
         response = internalServerErrorResponse(underlyingRequest);
       }
     } finally {
