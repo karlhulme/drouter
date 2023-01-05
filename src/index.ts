@@ -2,6 +2,7 @@ export * from "./interfaces/index.ts";
 export {
   badInputErrorResponse,
   downstreamErrorResponse,
+  internalServerErrorResponse,
 } from "./responses/index.ts";
 export {
   CONTEXT_OPERATION_PAYLOAD,
