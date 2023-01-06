@@ -5,4 +5,4 @@ export {
   CONTEXT_OPERATION_RESPONSE_BODY,
   router,
 } from "./runtime/index.ts";
-export * from "./utils/index.ts";
+export { getHttpCookieValues } from "./utils/index.ts";

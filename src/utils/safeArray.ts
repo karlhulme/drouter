@@ -3,6 +3,6 @@
  * if the array is not defined.
  * @param arr An array.
  */
-export function safeArrayLength(arr?: unknown[] | null) {
-  return Array.isArray(arr) ? arr.length : 0;
+export function safeArray<T>(arr?: T[] | null) {
+  return Array.isArray(arr) ? arr : [];
 }

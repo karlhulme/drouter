@@ -11,6 +11,7 @@ import {
   OperationNamedType,
   ServiceConfig,
 } from "../interfaces/index.ts";
+import { safeArray } from "../utils/safeArray.ts";
 import { convertUrlPatternToOpenApiPath } from "./convertUrlPatternToOpenApiPath.ts";
 
 /**
@@ -131,10 +132,10 @@ function createPathOperation(
     ? operation.responseSuccessCode.toString()
     : "200";
 
-  const middlewareSpecs = config.middleware
+  const middlewareSpecs = safeArray(config.middleware)
     .map((m) => m.specify(operation));
 
-  const payloadMiddlewareSpecs = config.payloadMiddleware
+  const payloadMiddlewareSpecs = safeArray(config.payloadMiddleware)
     .map((m) => m.specify(operation));
 
   const middlewareHeaders = [

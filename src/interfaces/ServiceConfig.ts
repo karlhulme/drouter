@@ -31,14 +31,14 @@ export interface ServiceConfig {
    * An array of middleware modules that operate before
    * the body has been read from the request.
    */
-  middleware: ServiceMiddleware[];
+  middleware?: ServiceMiddleware[];
 
   /**
    * An array of middleware modules that operate after
    * the body has been read from the request and placed
    * into the context.
    */
-  payloadMiddleware: ServiceMiddleware[];
+  payloadMiddleware?: ServiceMiddleware[];
 
   /**
    * An array of RESTful operations.

@@ -14,16 +14,15 @@ import {
   resourceNotFoundResponse,
   rootResponse,
 } from "../responses/index.ts";
+import { getHttpCookieValues, safeArray } from "../utils/index.ts";
 import { getHeaderValues } from "./getHeaderValues.ts";
 import { getQueryParamValues } from "./getQueryParamValues.ts";
 import { getRequestValue } from "./getRequestValue.ts";
 import { getUrlParamValues } from "./getUrlParamValues.ts";
 import { convertToResponseHeaderValue } from "./convertToResponseHeaderValue.ts";
 import { appendCorsHeaders } from "./appendCorsHeaders.ts";
-import { safeArrayLength } from "./safeArrayLength.ts";
 import { createApiVersionType } from "./createApiVersionType.ts";
 import { validateOperationPayload } from "./validateOperationPayload.ts";
-import { getHttpCookieValues } from "../index.ts";
 
 /**
  * The name of the context value that will hold the operation payload
@@ -82,12 +81,12 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
   // Concatenate the two types of middleware together
   // so that we can iterate thru all of them.
   const middlewareModules = [
-    ...config.middleware,
-    ...config.payloadMiddleware,
+    ...safeArray(config.middleware),
+    ...safeArray(config.payloadMiddleware),
   ];
 
   // Determine the index at which the payload should be loaded.
-  const loadPayloadIndex = config.middleware.length;
+  const loadPayloadIndex = safeArray(config.middleware).length;
 
   // Sort the ops such that the paths that require the
   // least number of parameters are matched first.
@@ -97,8 +96,8 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
       operation: op,
     }))
     .sort((a, b) =>
-      safeArrayLength(a.operation.requestUrlParams) -
-      safeArrayLength(b.operation.requestUrlParams)
+      safeArray(a.operation.requestUrlParams).length -
+      safeArray(b.operation.requestUrlParams).length
     );
 
   // Return a function that can process individual requests.
