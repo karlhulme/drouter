@@ -60,7 +60,7 @@ export interface Operation<
    * An array of string that are used by the middleware functions to
    * determine their applicability and behaviour.
    */
-  flags?: string[];
+  flags: string[];
 
   /**
    * A description of the approach to take given that this operation is deprecated.

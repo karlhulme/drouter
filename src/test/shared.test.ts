@@ -28,6 +28,7 @@ export function createOperation(props: CreateOperationProps) {
     summary: "The test operation",
     operationId: "testOp",
     tags: ["Tests"],
+    flags: [],
     method: "GET",
     handler: props.handler,
   };

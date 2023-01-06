@@ -23,6 +23,7 @@ Deno.test("Build an OpenAPI spec using all parts of the specification.", async (
       summary: "Get thing...",
       method: "GET",
       tags: ["Things"],
+      flags: [],
       requestUrlParams: [{
         name: "id",
         summary: "The id.",
@@ -55,6 +56,7 @@ Deno.test("Build an OpenAPI spec using all parts of the specification.", async (
       summary: "Get things...",
       method: "GET",
       tags: ["Things"],
+      flags: [],
       requestQueryParams: [{
         name: "from",
         summary: "The from.",
@@ -87,6 +89,7 @@ Deno.test("Build an OpenAPI spec using all parts of the specification.", async (
       summary: "Delete things...",
       method: "DELETE",
       tags: ["Things"],
+      flags: [],
       requestHeaders: [{
         name: "archive",
         summary: "The archive.",
@@ -111,6 +114,7 @@ Deno.test("Build an OpenAPI spec using all parts of the specification.", async (
       summary: "Put thing...",
       method: "PUT",
       tags: ["Things"],
+      flags: [],
       requestBodyType: {
         name: "thing",
         schema: {
@@ -131,6 +135,7 @@ Deno.test("Build an OpenAPI spec using all parts of the specification.", async (
       summary: "Post thing...",
       method: "POST",
       tags: ["Things"],
+      flags: [],
       requestBodyType: {
         name: "thing",
         schema: {
@@ -164,6 +169,7 @@ Deno.test("Build an OpenAPI spec using all parts of the specification.", async (
       summary: "Patch thing...",
       method: "PATCH",
       tags: ["Things"],
+      flags: [],
       requestBodyType: {
         name: "thing",
         schema: {
