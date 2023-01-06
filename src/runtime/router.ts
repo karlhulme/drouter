@@ -176,7 +176,6 @@ async function processRequest(
   }
 
   return await executeMatchedOp(
-    config,
     url,
     matchedOp.urlMatch,
     underlyingRequest,
@@ -227,7 +226,6 @@ function findMatchingOp(
  * @param op The operation that will handle the request.
  */
 async function executeMatchedOp(
-  config: ServiceConfig,
   url: URL,
   urlMatch: URLPatternResult,
   underlyingRequest: Request,
@@ -283,8 +281,6 @@ async function executeMatchedOp(
       const responseStatus = op.responseSuccessCode || 200;
 
       const responseHeaders = new Headers();
-
-      appendCorsHeaders(responseHeaders, config, underlyingRequest);
 
       for (const h of res.headers || []) {
         responseHeaders.append(
