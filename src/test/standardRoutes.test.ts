@@ -5,6 +5,8 @@ const emptyServiceConfig: ServiceConfig = {
   title: "Test service",
   description: "The test service.",
   version: "1.0.0",
+  middleware: [],
+  payloadMiddleware: [],
   operations: [],
   namedTypes: [],
 };

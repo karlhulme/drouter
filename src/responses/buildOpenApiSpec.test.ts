@@ -7,6 +7,46 @@ Deno.test("Build an OpenAPI spec using all parts of the specification.", async (
     title: "Test service",
     description: "The test service.",
     version: "1.0.0",
+    middleware: [{
+      process: async () => new Response(null),
+      specify: () => ({
+        headers: [{
+          name: "middlewareHeader",
+          summary: "A middleware header.",
+        }],
+        queryParams: [{
+          name: "middlewareQueryParam",
+          summary: "A middleware query param.",
+        }],
+        responseHeaders: [{
+          name: "middlewareOutboundHeader",
+          summary: "A middleware outbound header.",
+        }],
+      }),
+    }, {
+      process: async () => new Response(null),
+      specify: () => ({}),
+    }],
+    payloadMiddleware: [{
+      process: async () => new Response(null),
+      specify: () => ({
+        headers: [{
+          name: "middlewareHeader",
+          summary: "A middleware header.",
+        }],
+        queryParams: [{
+          name: "middlewareQueryParam",
+          summary: "A middleware query param.",
+        }],
+        responseHeaders: [{
+          name: "middlewareOutboundHeader",
+          summary: "A middleware outbound header.",
+        }],
+      }),
+    }, {
+      process: async () => new Response(null),
+      specify: () => ({}),
+    }],
     namedTypes: [{
       name: "someNumber",
       schema: {
@@ -22,27 +62,6 @@ Deno.test("Build an OpenAPI spec using all parts of the specification.", async (
       operationId: "getThing",
       summary: "Get thing...",
       method: "GET",
-      middleware: [{
-        process: async () => new Response(null),
-        specify: () => ({
-          headers: [{
-            name: "middlewareHeader",
-            summary: "A middleware header.",
-          }],
-          queryParams: [{
-            name: "middlewareQueryParam",
-            summary: "A middleware query param.",
-          }],
-          responseHeaders: [{
-            name: "middlewareOutboundHeader",
-            summary: "A middleware outbound header.",
-          }],
-        }),
-      }],
-      payloadMiddleware: [{
-        process: async () => new Response(null),
-        specify: () => ({}),
-      }],
       tags: ["Things"],
       flags: [],
       requestUrlParams: [{
@@ -78,10 +97,6 @@ Deno.test("Build an OpenAPI spec using all parts of the specification.", async (
       method: "GET",
       tags: ["Things"],
       flags: [],
-      middleware: [{
-        process: async () => new Response(null),
-        specify: () => ({}),
-      }],
       requestQueryParams: [{
         name: "from",
         summary: "The from.",

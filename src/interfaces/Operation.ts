@@ -7,7 +7,6 @@ import { OperationHeaderOutbound } from "./OperationHeaderOutbound.ts";
 import { OperationUrlParam } from "./OperationUrlParam.ts";
 import { OperationNamedType } from "./OperationNamedType.ts";
 import { OperationContext } from "./OperationContext.ts";
-import { OperationMiddleware } from "./OperationMiddleware.ts";
 
 /**
  * A RESTful operation.  If type parameters are not supplied
@@ -112,19 +111,6 @@ export interface Operation<
    * An array of failure definitions.
    */
   responseFailureDefinitions?: OperationFailureDefinition[];
-
-  /**
-   * An array of middleware modules that operate before
-   * the body has been read from the request.
-   */
-  middleware?: OperationMiddleware[];
-
-  /**
-   * An array of middleware modules that operate after
-   * the body has been read from the request and placed
-   * into the context.
-   */
-  payloadMiddleware?: OperationMiddleware[];
 
   /**
    * The implementation of the operation as an asynchronous function.

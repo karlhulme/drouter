@@ -3,6 +3,7 @@ import {
   Operation,
   OperationRequest,
   ServiceConfig,
+  ServiceMiddleware,
 } from "../interfaces/index.ts";
 import {
   docsPageResponse,
@@ -78,6 +79,16 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
     });
   }
 
+  // Concatenate the two types of middleware together
+  // so that we can iterate thru all of them.
+  const middlewareModules = [
+    ...config.middleware,
+    ...config.payloadMiddleware,
+  ];
+
+  // Determine the index at which the payload should be loaded.
+  const loadPayloadIndex = config.middleware.length;
+
   // Sort the ops such that the paths that require the
   // least number of parameters are matched first.
   const internalOps: InternalOp[] = config.operations
@@ -95,7 +106,13 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
     let response: Response;
 
     try {
-      response = await processRequest(underlyingRequest, config, internalOps);
+      response = await processRequest(
+        underlyingRequest,
+        config,
+        internalOps,
+        middlewareModules,
+        loadPayloadIndex,
+      );
     } catch (err) {
       if (err instanceof HttpError && err.code >= 400 && err.code < 500) {
         response = httpErrorResponse(err);
@@ -128,6 +145,8 @@ async function processRequest(
   underlyingRequest: Request,
   config: ServiceConfig,
   internalOps: InternalOp[],
+  middlewareModules: ServiceMiddleware[],
+  loadPayloadIndex: number,
 ) {
   const url = new URL(underlyingRequest.url);
 
@@ -163,6 +182,8 @@ async function processRequest(
     matchedOp.urlMatch,
     underlyingRequest,
     matchedOp.operation,
+    middlewareModules,
+    loadPayloadIndex,
   );
 }
 
@@ -212,24 +233,14 @@ async function executeMatchedOp(
   urlMatch: URLPatternResult,
   underlyingRequest: Request,
   op: Operation,
+  middlewareModules: ServiceMiddleware[],
+  loadPayloadIndex: number,
 ) {
   const ctx = new Map();
   ctx.set(CONTEXT_OPERATION_RESPONSE_BODY, null);
 
   let prevIndex = -1;
-
-  // Concatenate the two types of middleware together
-  // so that we can iterate thru all of them.
-  const middlewareModules = [
-    ...(Array.isArray(op.middleware) ? op.middleware : []),
-    ...(Array.isArray(op.payloadMiddleware) ? op.payloadMiddleware : []),
-  ];
-
-  // Determine the index at which the payload should be loaded.
   let payload: unknown = null;
-  const loadPayloadIndex = Array.isArray(op.middleware)
-    ? op.middleware.length
-    : 0;
 
   const runner = async (
     index: number,

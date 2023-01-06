@@ -1,7 +1,7 @@
 /**
  * A query parameter that is processed by a middleware module.
  */
-export interface OperationMiddlewareSpecificationQueryParam {
+export interface ServiceMiddlewareSpecificationQueryParam {
   /**
    * The name of a query parameter.
    */

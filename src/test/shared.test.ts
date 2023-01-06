@@ -47,6 +47,8 @@ export function createRouterHandler(
     description: "The test service.",
     version: "1.0.0",
     namedTypes: [],
+    middleware: [],
+    payloadMiddleware: [],
     optionalApiVersionHeader: true,
     operations: [op],
   };

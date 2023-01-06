@@ -1,6 +1,7 @@
 // import { GenericOperation } from "./Operation.ts";
 import { Operation } from "./Operation.ts";
 import { OperationNamedType } from "./OperationNamedType.ts";
+import { ServiceMiddleware } from "./ServiceMiddleware.ts";
 
 /**
  * The configuration of the service.
@@ -25,6 +26,19 @@ export interface ServiceConfig {
    * An array of named types.
    */
   namedTypes: OperationNamedType[];
+
+  /**
+   * An array of middleware modules that operate before
+   * the body has been read from the request.
+   */
+  middleware: ServiceMiddleware[];
+
+  /**
+   * An array of middleware modules that operate after
+   * the body has been read from the request and placed
+   * into the context.
+   */
+  payloadMiddleware: ServiceMiddleware[];
 
   /**
    * An array of RESTful operations.

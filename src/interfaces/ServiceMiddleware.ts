@@ -1,12 +1,12 @@
 import { Operation } from "./Operation.ts";
 import { OperationContext } from "./OperationContext.ts";
-import { OperationMiddlewareSpecification } from "./OperationMiddlewareSpecification.ts";
+import { ServiceMiddlewareSpecification } from "./ServiceMiddlewareSpecification.ts";
 
 /**
  * A middleware module that can defines processing and handling
  * that is shared by multiple operations.
  */
-export interface OperationMiddleware {
+export interface ServiceMiddleware {
   /**
    * An asynchronous request processing function that can be
    * used to augment context and wrap/edit the response before and after it is
@@ -32,5 +32,5 @@ export interface OperationMiddleware {
    * as a string type and validation must be done by the middleware.
    * @param op An operation.
    */
-  specify: (op: Operation) => OperationMiddlewareSpecification;
+  specify: (op: Operation) => ServiceMiddlewareSpecification;
 }

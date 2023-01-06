@@ -36,7 +36,7 @@ export function buildOpenApiSpec(config: ServiceConfig): OpenApiSpec {
     .sort((a, b) => a.name.localeCompare(b.name));
 
   for (const operation of sortedOperations) {
-    appendOperationToSpec(spec, operation, config.namedTypes);
+    appendOperationToSpec(config, spec, operation);
   }
 
   return spec;
@@ -47,12 +47,12 @@ export function buildOpenApiSpec(config: ServiceConfig): OpenApiSpec {
  * any path information, route parameters and associated types.
  * @param spec An OpenAPI specification.
  * @param operation An operation.
- * @param namedTypes An array of named types.
+ * @param config The service configuration.
  */
 function appendOperationToSpec(
+  config: ServiceConfig,
   spec: OpenApiSpec,
   operation: Operation,
-  namedTypes: OperationNamedType[],
 ) {
   const pathPattern = convertUrlPatternToOpenApiPath(operation.urlPattern);
 
@@ -75,46 +75,46 @@ function appendOperationToSpec(
   const path = spec.paths[pathPattern];
 
   if (operation.method === "DELETE") {
-    path.delete = createPathOperation(operation);
+    path.delete = createPathOperation(config, operation);
   } else if (operation.method === "GET") {
-    path.get = createPathOperation(operation);
+    path.get = createPathOperation(config, operation);
   } else if (operation.method === "PATCH") {
-    path.patch = createPathOperation(operation);
+    path.patch = createPathOperation(config, operation);
   } else if (operation.method === "POST") {
-    path.post = createPathOperation(operation);
+    path.post = createPathOperation(config, operation);
   } else if (operation.method === "PUT") {
-    path.put = createPathOperation(operation);
+    path.put = createPathOperation(config, operation);
   }
 
   if (operation.requestBodyType) {
-    appendTypeToSpec(spec, operation.requestBodyType, namedTypes);
+    appendTypeToSpec(spec, operation.requestBodyType, config.namedTypes);
   }
 
   if (operation.responseBodyType) {
-    appendTypeToSpec(spec, operation.responseBodyType, namedTypes);
+    appendTypeToSpec(spec, operation.responseBodyType, config.namedTypes);
   }
 
   if (Array.isArray(operation.requestUrlParams)) {
     for (const urlParam of operation.requestUrlParams) {
-      appendTypeToSpec(spec, urlParam.type, namedTypes);
+      appendTypeToSpec(spec, urlParam.type, config.namedTypes);
     }
   }
 
   if (Array.isArray(operation.requestQueryParams)) {
     for (const queryParams of operation.requestQueryParams) {
-      appendTypeToSpec(spec, queryParams.type, namedTypes);
+      appendTypeToSpec(spec, queryParams.type, config.namedTypes);
     }
   }
 
   if (Array.isArray(operation.requestHeaders)) {
     for (const header of operation.requestHeaders) {
-      appendTypeToSpec(spec, header.type, namedTypes);
+      appendTypeToSpec(spec, header.type, config.namedTypes);
     }
   }
 
   if (Array.isArray(operation.responseHeaders)) {
     for (const header of operation.responseHeaders) {
-      appendTypeToSpec(spec, header.type, namedTypes);
+      appendTypeToSpec(spec, header.type, config.namedTypes);
     }
   }
 }
@@ -124,16 +124,17 @@ function appendOperationToSpec(
  * @param operation An operation.
  */
 function createPathOperation(
+  config: ServiceConfig,
   operation: Operation,
 ): OpenApiSpecPathOperation {
   const successCode = operation.responseSuccessCode
     ? operation.responseSuccessCode.toString()
     : "200";
 
-  const middlewareSpecs = (operation.middleware || [])
+  const middlewareSpecs = config.middleware
     .map((m) => m.specify(operation));
 
-  const payloadMiddlewareSpecs = (operation.payloadMiddleware || [])
+  const payloadMiddlewareSpecs = config.payloadMiddleware
     .map((m) => m.specify(operation));
 
   const middlewareHeaders = [

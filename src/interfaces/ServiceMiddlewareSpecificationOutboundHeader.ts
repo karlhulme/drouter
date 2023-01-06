@@ -1,7 +1,7 @@
 /**
  * A header that is provided by a middleware module.
  */
-export interface OperationMiddlewareSpecificationOutboundHeader {
+export interface ServiceMiddlewareSpecificationOutboundHeader {
   /**
    * The name of the outbound header.
    */
