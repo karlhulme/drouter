@@ -5,9 +5,9 @@ import {
   ServiceConfig,
 } from "../interfaces/index.ts";
 import {
-  badInputErrorResponse,
   docsPageResponse,
   healthResponse,
+  httpErrorResponse,
   internalServerErrorResponse,
   openApiResponse,
   resourceNotFoundResponse,
@@ -98,7 +98,7 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
       response = await processRequest(underlyingRequest, config, internalOps);
     } catch (err) {
       if (err instanceof HttpError && err.code >= 400 && err.code < 500) {
-        response = badInputErrorResponse(err);
+        response = httpErrorResponse(err);
       } else {
         // Log the unexpected error to the console.
         console.error(err);

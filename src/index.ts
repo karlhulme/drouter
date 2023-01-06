@@ -1,7 +1,6 @@
 export * from "./interfaces/index.ts";
 export {
-  badInputErrorResponse,
-  downstreamErrorResponse,
+  errorResponse,
   internalServerErrorResponse,
 } from "./responses/index.ts";
 export {
