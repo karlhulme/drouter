@@ -220,7 +220,7 @@ async function executeMatchedOp(
 
   // Concatenate the two types of middleware together
   // so that we can iterate thru all of them.
-  const middlewareFuncs = [
+  const middlewareModules = [
     ...(Array.isArray(op.middleware) ? op.middleware : []),
     ...(Array.isArray(op.payloadMiddleware) ? op.payloadMiddleware : []),
   ];
@@ -249,12 +249,12 @@ async function executeMatchedOp(
     }
 
     // Draw down the next middleware function.
-    const middlewareFunc = index < middlewareFuncs.length
-      ? middlewareFuncs[index]
+    const middlewareMod = index < middlewareModules.length
+      ? middlewareModules[index]
       : null;
 
-    if (middlewareFunc) {
-      return await middlewareFunc(underlyingRequest, ctx, op, () => {
+    if (middlewareMod) {
+      return await middlewareMod.process(underlyingRequest, ctx, op, () => {
         return runner(index + 1);
       });
     } else {

@@ -7,6 +7,7 @@ import { OperationHeaderOutbound } from "./OperationHeaderOutbound.ts";
 import { OperationUrlParam } from "./OperationUrlParam.ts";
 import { OperationNamedType } from "./OperationNamedType.ts";
 import { OperationContext } from "./OperationContext.ts";
+import { OperationMiddleware } from "./OperationMiddleware.ts";
 
 /**
  * A RESTful operation.  If type parameters are not supplied
@@ -113,32 +114,17 @@ export interface Operation<
   responseFailureDefinitions?: OperationFailureDefinition[];
 
   /**
-   * An array of asynchronous request processing functions that can be
-   * used to augment context and wrap/edit the response before and after it is
-   * handled by an operation.  These functions uses the raw untyped and unvalidated
-   * request and response that is provided by the HTTP server.  These functions must
-   * not read the body of the request, use payloadMiddleware if you need the payload.
+   * An array of middleware modules that operate before
+   * the body has been read from the request.
    */
-  middleware?: ((
-    req: Request,
-    ctx: OperationContext,
-    op: Operation,
-    next: () => Promise<Response>,
-  ) => Promise<Response>)[];
+  middleware?: OperationMiddleware[];
 
   /**
-   * An array of asynchronous request processing functions that can be
-   * used to augment context and wrap/edit the response before and after it is
-   * handled by an operation.  These functions use the raw untyped and unvalidated
-   * request and response that is provided by the HTTP server.  These middleware
-   * functions will find the payload value available within the context.
+   * An array of middleware modules that operate after
+   * the body has been read from the request and placed
+   * into the context.
    */
-  payloadMiddleware?: ((
-    req: Request,
-    ctx: OperationContext,
-    op: Operation,
-    next: () => Promise<Response>,
-  ) => Promise<Response>)[];
+  payloadMiddleware?: OperationMiddleware[];
 
   /**
    * The implementation of the operation as an asynchronous function.
