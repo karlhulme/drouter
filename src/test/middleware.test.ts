@@ -20,12 +20,22 @@ Deno.test("Process an operation that uses middleware functions.", async () => {
               ctx.set("foo", "bar");
               return await next();
             },
+            specify: () => ({
+              headers: [],
+              queryParams: [],
+              responseHeaders: [],
+            }),
           },
           {
             process: async (_req, ctx, _op, next) => {
               ctx.set("hello", "world");
               return await next();
             },
+            specify: () => ({
+              headers: [],
+              queryParams: [],
+              responseHeaders: [],
+            }),
           },
         ],
           op.payloadMiddleware = [
@@ -34,12 +44,22 @@ Deno.test("Process an operation that uses middleware functions.", async () => {
                 ctx.set("another", "one");
                 return await next();
               },
+              specify: () => ({
+                headers: [],
+                queryParams: [],
+                responseHeaders: [],
+              }),
             },
             {
               process: async (_req, ctx, _op, next) => {
                 ctx.set("appears", "hre");
                 return await next();
               },
+              specify: () => ({
+                headers: [],
+                queryParams: [],
+                responseHeaders: [],
+              }),
             },
           ];
       },
@@ -63,6 +83,11 @@ Deno.test("Fail to process an operation where a middleware calls next twice.", a
             await next();
             return await next();
           },
+          specify: () => ({
+            headers: [],
+            queryParams: [],
+            responseHeaders: [],
+          }),
         }];
       },
     }),

@@ -130,6 +130,27 @@ function createPathOperation(
     ? operation.responseSuccessCode.toString()
     : "200";
 
+  const middlewareSpecs = (operation.middleware || [])
+    .map((m) => m.specify(operation));
+
+  const payloadMiddlewareSpecs = (operation.payloadMiddleware || [])
+    .map((m) => m.specify(operation));
+
+  const middlewareHeaders = [
+    ...middlewareSpecs.map((ms) => ms.headers || []).flat(),
+    ...payloadMiddlewareSpecs.map((pms) => pms.headers || []).flat(),
+  ];
+
+  const middlewareQueryParams = [
+    ...middlewareSpecs.map((ms) => ms.queryParams || []).flat(),
+    ...payloadMiddlewareSpecs.map((pms) => pms.queryParams || []).flat(),
+  ];
+
+  const middlewareResponseHeaders = [
+    ...middlewareSpecs.map((ms) => ms.responseHeaders || []).flat(),
+    ...payloadMiddlewareSpecs.map((pms) => pms.responseHeaders || []).flat(),
+  ];
+
   return {
     operationId: operation.operationId,
     tags: operation.tags,
@@ -148,6 +169,7 @@ function createPathOperation(
       }
       : undefined,
     parameters: [
+      // Bring in the request and middleware headers.
       ...(operation.requestHeaders || []).map((p) => ({
         name: p.name,
         in: "header",
@@ -158,12 +180,33 @@ function createPathOperation(
         deprecated: Boolean(p.deprecated),
         description: p.summary,
       } as OpenApiSpecPathOperationParameter)),
+      ...middlewareHeaders.map((p) => ({
+        name: p.name,
+        in: "header",
+        required: p.isRequired,
+        schema: {
+          type: "string",
+        },
+        deprecated: Boolean(p.deprecated),
+        description: p.summary,
+      } as OpenApiSpecPathOperationParameter)),
+      // Bring in the request and middleware query params.
       ...(operation.requestQueryParams || []).map((p) => ({
         name: p.name,
         in: "query",
         required: Boolean(p.isRequired),
         schema: {
           $ref: `#/components/schemas/${p.type.name}`,
+        },
+        deprecated: Boolean(p.deprecated),
+        description: p.summary,
+      } as OpenApiSpecPathOperationParameter)),
+      ...middlewareQueryParams.map((p) => ({
+        name: p.name,
+        in: "query",
+        required: p.isRequired,
+        schema: {
+          type: "string",
         },
         deprecated: Boolean(p.deprecated),
         description: p.summary,
@@ -181,18 +224,33 @@ function createPathOperation(
             },
           }
           : undefined,
-        headers: (operation.responseHeaders || []).reduce((agg, cur) => {
-          agg[cur.name] = {
-            description: cur.summary,
-            required: Boolean(cur.isGuaranteed),
-            deprecated: Boolean(cur.deprecated),
-            schema: {
-              $ref: `#/components/schemas/${cur.type.name}`,
-            },
-          };
+        headers: {
+          // Bring in the response and middleware headers.
+          ...(operation.responseHeaders || []).reduce((agg, cur) => {
+            agg[cur.name] = {
+              description: cur.summary,
+              required: Boolean(cur.isGuaranteed),
+              deprecated: Boolean(cur.deprecated),
+              schema: {
+                $ref: `#/components/schemas/${cur.type.name}`,
+              },
+            };
 
-          return agg;
-        }, {} as Record<string, OpenApiSpecPathOperationResponseHeader>),
+            return agg;
+          }, {} as Record<string, OpenApiSpecPathOperationResponseHeader>),
+          ...middlewareResponseHeaders.reduce((agg, cur) => {
+            agg[cur.name] = {
+              description: cur.summary,
+              required: Boolean(cur.isGuaranteed),
+              deprecated: Boolean(cur.deprecated),
+              schema: {
+                type: "string",
+              },
+            };
+
+            return agg;
+          }, {} as Record<string, OpenApiSpecPathOperationResponseHeader>),
+        },
       },
       ...(operation.responseFailureDefinitions || []).reduce((agg, cur) => {
         agg[cur.code.toString()] = {
