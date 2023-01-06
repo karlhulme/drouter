@@ -51,9 +51,16 @@ export interface Operation<
   summary?: string;
 
   /**
-   * An array of tags as used by the documentation generation.
+   * An array of strings that are used to group operations together in
+   * the documentation.
    */
   tags: string[];
+
+  /**
+   * An array of string that are used by the middleware functions to
+   * determine their applicability and behaviour.
+   */
+  flags?: string[];
 
   /**
    * A description of the approach to take given that this operation is deprecated.
