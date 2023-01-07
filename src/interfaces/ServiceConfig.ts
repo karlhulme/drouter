@@ -29,7 +29,7 @@ export interface ServiceConfig {
 
   /**
    * The name of the string type that is used for API version and
-   * headers handled by middleware.  For example: std/longString.
+   * headers handled by middleware.  For example: stdLongString.
    */
   stringTypeName: string;
 
