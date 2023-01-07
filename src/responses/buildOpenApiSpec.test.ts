@@ -56,6 +56,7 @@ Deno.test("Build an OpenAPI spec using all parts of the specification.", async (
       referencedSchemaTypes: [],
       validator: () => [],
     }],
+    stringTypeName: "std/longString",
     operations: [{
       urlPattern: "/things/:id",
       name: "Get thing",

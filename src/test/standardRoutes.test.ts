@@ -9,6 +9,7 @@ const emptyServiceConfig: ServiceConfig = {
   payloadMiddleware: [],
   operations: [],
   namedTypes: [],
+  stringTypeName: "std/longString",
 };
 
 Deno.test("A root request elicits a root response.", async () => {
@@ -29,7 +30,7 @@ Deno.test("A /health request elicits a health response.", async () => {
 Deno.test("An /openapi request elicits a openapi response.", async () => {
   const routerHandler = router(emptyServiceConfig);
   const response = await routerHandler(new Request("http://localhost/openapi"));
-  assertStringIncludes(await response.text(), '{"openapi":"3.');
+  assertStringIncludes(await response.text(), '"openapi": "3.');
 });
 
 Deno.test("A /docs request elicits a docs response.", async () => {

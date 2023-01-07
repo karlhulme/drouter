@@ -47,6 +47,7 @@ export function createRouterHandler(
     description: "The test service.",
     version: "1.0.0",
     namedTypes: [],
+    stringTypeName: "std/longString",
     middleware: [],
     payloadMiddleware: [],
     optionalApiVersionHeader: true,

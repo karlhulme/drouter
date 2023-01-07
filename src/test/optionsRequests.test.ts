@@ -9,6 +9,7 @@ const emptyServiceConfig: ServiceConfig = {
   payloadMiddleware: [],
   operations: [],
   namedTypes: [],
+  stringTypeName: "std/longString",
 };
 
 Deno.test("An OPTIONS request without permitted origin domains.", async () => {

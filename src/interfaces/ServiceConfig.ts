@@ -28,6 +28,12 @@ export interface ServiceConfig {
   namedTypes: OperationNamedType[];
 
   /**
+   * The name of the string type that is used for API version and
+   * headers handled by middleware.  For example: std/longString.
+   */
+  stringTypeName: string;
+
+  /**
    * An array of middleware modules that operate before
    * the body has been read from the request.
    */

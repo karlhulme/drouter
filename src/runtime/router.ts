@@ -21,7 +21,6 @@ import { getRequestValue } from "./getRequestValue.ts";
 import { getUrlParamValues } from "./getUrlParamValues.ts";
 import { convertToResponseHeaderValue } from "./convertToResponseHeaderValue.ts";
 import { appendCorsHeaders } from "./appendCorsHeaders.ts";
-import { createApiVersionType } from "./createApiVersionType.ts";
 import { validateOperationPayload } from "./validateOperationPayload.ts";
 
 /**
@@ -61,23 +60,6 @@ interface InternalOp {
  * this service can provide.
  */
 export function router(config: ServiceConfig): Deno.ServeHandler {
-  const apiVersionType = createApiVersionType();
-
-  // Add the api-version header to all operations and mark it
-  // as required if the config dictates it.
-  for (const op of config.operations) {
-    if (!Array.isArray(op.requestHeaders)) {
-      op.requestHeaders = [];
-    }
-
-    op.requestHeaders.push({
-      name: "api-version",
-      summary: "The api version to target for this operation.",
-      type: apiVersionType,
-      isRequired: !config.optionalApiVersionHeader,
-    });
-  }
-
   // Concatenate the two types of middleware together
   // so that we can iterate thru all of them.
   const middlewareModules = [

@@ -171,6 +171,16 @@ function createPathOperation(
       }
       : undefined,
     parameters: [
+      // Add api-version header as standard.
+      {
+        name: "api-version",
+        in: "header",
+        required: !config.optionalApiVersionHeader,
+        schema: {
+          $ref: `#/components/schemas/${config.stringTypeName}`,
+        },
+        description: "The version targetted by the request.",
+      },
       // Bring in the request and middleware headers.
       ...(operation.requestHeaders || []).map((p) => ({
         name: p.name,
@@ -187,7 +197,7 @@ function createPathOperation(
         in: "header",
         required: p.isRequired,
         schema: {
-          type: "string",
+          $ref: `#/components/schemas/${config.stringTypeName}`,
         },
         deprecated: Boolean(p.deprecated),
         description: p.summary,
@@ -208,7 +218,7 @@ function createPathOperation(
         in: "query",
         required: p.isRequired,
         schema: {
-          type: "string",
+          $ref: `#/components/schemas/${config.stringTypeName}`,
         },
         deprecated: Boolean(p.deprecated),
         description: p.summary,

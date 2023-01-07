@@ -9,7 +9,7 @@ import { buildOpenApiSpec } from "./buildOpenApiSpec.ts";
 export function openApiResponse(config: ServiceConfig) {
   const openApi = buildOpenApiSpec(config);
 
-  return new Response(JSON.stringify(openApi), {
+  return new Response(JSON.stringify(openApi, null, 2), {
     headers: {
       "content-type": "application/json",
     },
