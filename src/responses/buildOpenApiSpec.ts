@@ -256,7 +256,7 @@ function createPathOperation(
               required: Boolean(cur.isGuaranteed),
               deprecated: Boolean(cur.deprecated),
               schema: {
-                type: "string",
+                $ref: `#/components/schemas/${config.stringTypeName}`,
               },
             };
 
