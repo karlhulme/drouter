@@ -15,7 +15,7 @@ export function errorResponse(
   additionalHeaders?: HeadersInit,
 ) {
   return new Response(
-    `${code} ${errorCode} ${description}\n${details}`,
+    `${code} ${errorCode} ${description}\n${details || ""}`,
     {
       status: code,
       headers: {
