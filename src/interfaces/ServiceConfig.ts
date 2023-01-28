@@ -1,4 +1,3 @@
-// import { GenericOperation } from "./Operation.ts";
 import { Operation } from "./Operation.ts";
 import { OperationNamedType } from "./OperationNamedType.ts";
 import { ServiceMiddleware } from "./ServiceMiddleware.ts";
@@ -67,4 +66,13 @@ export interface ServiceConfig {
    * An array of acceptable request origins for CORs requests.
    */
   permittedCorsOrigins?: string[];
+
+  /**
+   * The name of the environment variables that contain the api keys.
+   * If an array with at least one element is supplied, then all
+   * operation routes will require an x-api-key header to be supplied.
+   * The common routes such as /, /openapi, /health and OPTIONS
+   * requests will not require the api key to work.
+   */
+  apiKeyEnvNames?: string[];
 }

@@ -1,9 +1,10 @@
 // deno-lint-ignore-file require-await
 import { assertEquals } from "../../deps.ts";
+import { ServiceConfig } from "../interfaces/index.ts";
 import { buildOpenApiSpec } from "./buildOpenApiSpec.ts";
 
-Deno.test("Build an OpenAPI spec using all parts of the specification.", async () => {
-  const openApiSpec = buildOpenApiSpec({
+function createServiceConfig(): ServiceConfig {
+  return {
     title: "Test service",
     description: "The test service.",
     version: "1.0.0",
@@ -230,7 +231,23 @@ Deno.test("Build an OpenAPI spec using all parts of the specification.", async (
         body: null,
       }),
     }],
-  });
+  };
+}
+
+Deno.test("Build an OpenAPI spec using all parts of the specification.", async () => {
+  const openApiSpec = buildOpenApiSpec(createServiceConfig());
 
   assertEquals(openApiSpec.info.title, "Test service");
+});
+
+Deno.test("Build an OpenAPI spec that uses API keys.", async () => {
+  const openApiSpec = buildOpenApiSpec({
+    ...createServiceConfig(),
+    apiKeyEnvNames: ["DROUTER_API_KEY"],
+  });
+
+  assertEquals(
+    typeof openApiSpec.components.securitySchemes.apiKeyAuth,
+    "object",
+  );
 });

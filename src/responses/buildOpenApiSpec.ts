@@ -19,6 +19,9 @@ import { convertUrlPatternToOpenApiPath } from "./convertUrlPatternToOpenApiPath
  * @param config The configuration of the service.
  */
 export function buildOpenApiSpec(config: ServiceConfig): OpenApiSpec {
+  const usingApiKeys = Array.isArray(config.apiKeyEnvNames) &&
+    config.apiKeyEnvNames.length > 0;
+
   const spec: OpenApiSpec = {
     openapi: "3.0.3",
     info: {
@@ -28,7 +31,15 @@ export function buildOpenApiSpec(config: ServiceConfig): OpenApiSpec {
     },
     components: {
       schemas: {},
-      securitySchemes: {},
+      securitySchemes: usingApiKeys
+        ? {
+          apiKeyAuth: {
+            type: "apiKey",
+            in: "header",
+            name: "x-api-key",
+          },
+        }
+        : {},
     },
     paths: {},
   };
@@ -153,11 +164,18 @@ function createPathOperation(
     ...payloadMiddlewareSpecs.map((pms) => pms.responseHeaders || []).flat(),
   ];
 
+  const usingApiKeys = Array.isArray(config.apiKeyEnvNames) &&
+    config.apiKeyEnvNames.length > 0;
+
   return {
     operationId: operation.operationId,
     tags: operation.tags,
     summary: operation.name,
-    security: [],
+    security: usingApiKeys
+      ? [{
+        apiKeyAuth: [],
+      }]
+      : [],
     deprecated: Boolean(operation.deprecated),
     requestBody: operation.requestBodyType
       ? {

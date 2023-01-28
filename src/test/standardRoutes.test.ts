@@ -10,6 +10,7 @@ const emptyServiceConfig: ServiceConfig = {
   operations: [],
   namedTypes: [],
   stringTypeName: "std/longString",
+  optionalApiVersionHeader: true,
 };
 
 Deno.test("A root request elicits a root response.", async () => {
@@ -49,5 +50,18 @@ Deno.test("An unknown route request elicits a 404 response.", async () => {
   assertStringIncludes(
     await response.text(),
     "OPERATION_NOT_FOUND",
+  );
+});
+
+Deno.test("A request without an API version elicits a 400 response.", async () => {
+  const routerHandler = router({
+    ...emptyServiceConfig,
+    optionalApiVersionHeader: false,
+  });
+  const response = await routerHandler(new Request("http://localhost/unknown"));
+  assertStrictEquals(response.status, 400);
+  assertStringIncludes(
+    await response.text(),
+    "API_VERSION_NOT_SUPPLIED",
   );
 });

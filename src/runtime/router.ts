@@ -6,6 +6,9 @@ import {
   ServiceMiddleware,
 } from "../interfaces/index.ts";
 import {
+  apiKeyNotSuppliedResponse,
+  apiKeyNotValidResponse,
+  apiVersionNotSuppliedResponse,
   docsPageResponse,
   healthResponse,
   httpErrorResponse,
@@ -22,6 +25,7 @@ import { getUrlParamValues } from "./getUrlParamValues.ts";
 import { convertToResponseHeaderValue } from "./convertToResponseHeaderValue.ts";
 import { appendCorsHeaders } from "./appendCorsHeaders.ts";
 import { validateOperationPayload } from "./validateOperationPayload.ts";
+import { isApiKeyValid } from "./isApiKeyValid.ts";
 
 /**
  * The name of the context value that will hold the operation payload
@@ -135,12 +139,20 @@ async function processRequest(
     return new Response();
   }
 
-  if (underlyingRequest.method === "GET" && url.pathname === "/") {
-    return rootResponse(config);
-  }
-
   if (underlyingRequest.method === "GET" && url.pathname === "/health") {
     return healthResponse();
+  }
+
+  if (!config.optionalApiVersionHeader) {
+    const apiVersion = underlyingRequest.headers.get("api-version");
+
+    if (!apiVersion) {
+      return apiVersionNotSuppliedResponse();
+    }
+  }
+
+  if (underlyingRequest.method === "GET" && url.pathname === "/") {
+    return rootResponse(config);
   }
 
   if (underlyingRequest.method === "GET" && url.pathname === "/docs") {
@@ -155,6 +167,21 @@ async function processRequest(
 
   if (!matchedOp) {
     return resourceNotFoundResponse();
+  }
+
+  const usingApiKeys = Array.isArray(config.apiKeyEnvNames) &&
+    config.apiKeyEnvNames.length > 0;
+
+  if (usingApiKeys) {
+    const suppliedApiKey = underlyingRequest.headers.get("x-api-key");
+
+    if (!suppliedApiKey) {
+      return apiKeyNotSuppliedResponse();
+    }
+
+    if (!isApiKeyValid(suppliedApiKey, config.apiKeyEnvNames!)) {
+      return apiKeyNotValidResponse();
+    }
   }
 
   return await executeMatchedOp(

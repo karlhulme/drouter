@@ -1,3 +1,6 @@
+export * from "./apiKeyNotSuppliedResponse.ts";
+export * from "./apiKeyNotValidResponse.ts";
+export * from "./apiVersionNotSuppliedResponse.ts";
 export * from "./docsPageResponse.ts";
 export * from "./errorResponse.ts";
 export * from "./healthResponse.ts";
