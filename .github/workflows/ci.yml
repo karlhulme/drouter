@@ -12,7 +12,7 @@ jobs:
 
     steps:
       - name: Setup repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup Deno
         uses: denoland/setup-deno@v1
@@ -26,4 +26,4 @@ jobs:
         run: deno lint
 
       - name: Run tests
-        run: deno test --coverage=cov_profile --unstable
+        run: deno test --coverage=cov_profile --unstable --allow-env
