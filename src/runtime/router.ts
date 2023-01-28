@@ -143,14 +143,6 @@ async function processRequest(
     return healthResponse();
   }
 
-  if (!config.optionalApiVersionHeader) {
-    const apiVersion = underlyingRequest.headers.get("api-version");
-
-    if (!apiVersion) {
-      return apiVersionNotSuppliedResponse();
-    }
-  }
-
   if (underlyingRequest.method === "GET" && url.pathname === "/") {
     return rootResponse(config);
   }
@@ -161,6 +153,14 @@ async function processRequest(
 
   if (underlyingRequest.method === "GET" && url.pathname === "/openapi") {
     return openApiResponse(config);
+  }
+
+  if (!config.optionalApiVersionHeader) {
+    const apiVersion = underlyingRequest.headers.get("api-version");
+
+    if (!apiVersion) {
+      return apiVersionNotSuppliedResponse();
+    }
   }
 
   const matchedOp = findMatchingOp(internalOps, underlyingRequest);
