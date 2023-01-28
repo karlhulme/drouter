@@ -57,7 +57,6 @@ function createServiceConfig(): ServiceConfig {
       referencedSchemaTypes: [],
       validator: () => [],
     }],
-    stringTypeName: "std/longString",
     operations: [{
       urlPattern: "/things/:id",
       name: "Get thing",
@@ -238,6 +237,7 @@ Deno.test("Build an OpenAPI spec using all parts of the specification.", async (
   const openApiSpec = buildOpenApiSpec(createServiceConfig());
 
   assertEquals(openApiSpec.info.title, "Test service");
+  assertEquals(typeof openApiSpec.components.schemas.svcString, "object");
 });
 
 Deno.test("Build an OpenAPI spec that uses API keys.", async () => {

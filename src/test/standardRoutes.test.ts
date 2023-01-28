@@ -9,7 +9,6 @@ const emptyServiceConfig: ServiceConfig = {
   payloadMiddleware: [],
   operations: [],
   namedTypes: [],
-  stringTypeName: "std/longString",
   optionalApiVersionHeader: true,
 };
 

@@ -44,6 +44,17 @@ export function buildOpenApiSpec(config: ServiceConfig): OpenApiSpec {
     paths: {},
   };
 
+  appendTypeToSpec(spec, {
+    name: "svcString",
+    referencedSchemaTypes: [],
+    schema: {
+      type: "string",
+      description: "A string for service level headers and query parameters.",
+    },
+    underlyingType: "string",
+    validator: () => [],
+  }, config.namedTypes);
+
   const sortedOperations = config.operations
     .sort((a, b) => a.name.localeCompare(b.name));
 
@@ -195,7 +206,7 @@ function createPathOperation(
         in: "header",
         required: !config.optionalApiVersionHeader,
         schema: {
-          $ref: `#/components/schemas/${config.stringTypeName}`,
+          $ref: `#/components/schemas/svcString`,
         },
         description: "The version targetted by the request.",
       },
@@ -215,7 +226,7 @@ function createPathOperation(
         in: "header",
         required: p.isRequired,
         schema: {
-          $ref: `#/components/schemas/${config.stringTypeName}`,
+          $ref: `#/components/schemas/svcString`,
         },
         deprecated: Boolean(p.deprecated),
         description: p.summary,
@@ -236,7 +247,7 @@ function createPathOperation(
         in: "query",
         required: p.isRequired,
         schema: {
-          $ref: `#/components/schemas/${config.stringTypeName}`,
+          $ref: `#/components/schemas/svcString`,
         },
         deprecated: Boolean(p.deprecated),
         description: p.summary,
@@ -274,7 +285,7 @@ function createPathOperation(
               required: Boolean(cur.isGuaranteed),
               deprecated: Boolean(cur.deprecated),
               schema: {
-                $ref: `#/components/schemas/${config.stringTypeName}`,
+                $ref: `#/components/schemas/svcString`,
               },
             };
 
