@@ -23,6 +23,7 @@ import { getQueryParamValues } from "./getQueryParamValues.ts";
 import { getRequestValue } from "./getRequestValue.ts";
 import { getUrlParamValues } from "./getUrlParamValues.ts";
 import { convertToResponseHeaderValue } from "./convertToResponseHeaderValue.ts";
+import { appendBuildVersionHeaders } from "./appendBuildVersionHeaders.ts";
 import { appendCorsHeaders } from "./appendCorsHeaders.ts";
 import { validateOperationPayload } from "./validateOperationPayload.ts";
 import { isApiKeyValid } from "./isApiKeyValid.ts";
@@ -115,6 +116,10 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
 
     // In all cases we append the CORs headers to the response.
     appendCorsHeaders(response.headers, config, underlyingRequest);
+
+    // In all cases we append the version information to the response.
+    appendBuildVersionHeaders(response.headers);
+
     return response;
   };
 }

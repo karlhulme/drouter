@@ -266,7 +266,23 @@ function createPathOperation(
           }
           : undefined,
         headers: {
-          // Bring in the response and middleware headers.
+          // Standard reponse headers.
+          "build-gh-commit": {
+            description:
+              "The SHA of the commit that defines the source code that the service was built from.",
+            schema: {
+              $ref: `#/components/schemas/svcString`,
+            },
+            required: true,
+          },
+          "build-date-time": {
+            description: "The date and time that the service was built.",
+            schema: {
+              $ref: `#/components/schemas/svcString`,
+            },
+            required: true,
+          },
+          // Bring in the response headers.
           ...(operation.responseHeaders || []).reduce((agg, cur) => {
             agg[cur.name] = {
               description: cur.summary,
@@ -279,6 +295,7 @@ function createPathOperation(
 
             return agg;
           }, {} as Record<string, OpenApiSpecPathOperationResponseHeader>),
+          // Bring in the response headers.
           ...middlewareResponseHeaders.reduce((agg, cur) => {
             agg[cur.name] = {
               description: cur.summary,
