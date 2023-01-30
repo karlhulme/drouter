@@ -241,10 +241,13 @@ Deno.test("Build an OpenAPI spec using all parts of the specification.", async (
 });
 
 Deno.test("Build an OpenAPI spec that uses API keys.", async () => {
-  const openApiSpec = buildOpenApiSpec({
-    ...createServiceConfig(),
-    apiKeyEnvNames: ["DROUTER_API_KEY"],
-  });
+  const sc = createServiceConfig();
+  sc.apiKeyConfig = {
+    envVarNames: ["DROUTER_API_KEY"],
+  };
+  sc.operations[0].requiresApiKey = true;
+
+  const openApiSpec = buildOpenApiSpec(sc);
 
   assertEquals(
     typeof openApiSpec.components.securitySchemes.apiKeyAuth,

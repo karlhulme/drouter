@@ -124,4 +124,11 @@ export interface Operation<
     >,
     ctx: OperationContext,
   ) => Promise<OperationResponse<ResponseBodyType, ResponseHeaderNames>>;
+
+  /**
+   * True if the operation requires an x-api-key header to be supplied.
+   * This can be made optional specifying the -- property of the constructors
+   * ServiceConfig object, which is useful for development.
+   */
+  requiresApiKey?: boolean;
 }

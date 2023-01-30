@@ -174,8 +174,9 @@ async function processRequest(
     return resourceNotFoundResponse();
   }
 
-  const usingApiKeys = Array.isArray(config.apiKeyEnvNames) &&
-    config.apiKeyEnvNames.length > 0;
+  const usingApiKeys = Boolean(config.apiKeyConfig) &&
+    !config.apiKeyConfig?.optional &&
+    matchedOp.operation.requiresApiKey;
 
   if (usingApiKeys) {
     const suppliedApiKey = underlyingRequest.headers.get("x-api-key");
@@ -184,7 +185,7 @@ async function processRequest(
       return apiKeyNotSuppliedResponse();
     }
 
-    if (!isApiKeyValid(suppliedApiKey, config.apiKeyEnvNames!)) {
+    if (!isApiKeyValid(suppliedApiKey, config.apiKeyConfig!.envVarNames!)) {
       return apiKeyNotValidResponse();
     }
   }

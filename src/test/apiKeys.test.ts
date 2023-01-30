@@ -10,10 +10,14 @@ Deno.test("Successfully process an operation where an API key is required and su
       handler: async () => ({
         body: {},
       }),
-      setup: () => {},
+      setup: (op) => {
+        op.requiresApiKey = true;
+      },
     }),
     (sc) => {
-      sc.apiKeyEnvNames = ["DROUTER_API_KEY"];
+      sc.apiKeyConfig = {
+        envVarNames: ["DROUTER_API_KEY"],
+      };
     },
   );
 
@@ -35,10 +39,14 @@ Deno.test("Fail to process an operation where an API key is required but an inva
       handler: async () => ({
         body: {},
       }),
-      setup: () => {},
+      setup: (op) => {
+        op.requiresApiKey = true;
+      },
     }),
     (sc) => {
-      sc.apiKeyEnvNames = ["DROUTER_API_KEY"];
+      sc.apiKeyConfig = {
+        envVarNames: ["DROUTER_API_KEY"],
+      };
     },
   );
 
@@ -62,10 +70,14 @@ Deno.test("Fail to process an operation where an API key is required but not sup
       handler: async () => ({
         body: {},
       }),
-      setup: () => {},
+      setup: (op) => {
+        op.requiresApiKey = true;
+      },
     }),
     (sc) => {
-      sc.apiKeyEnvNames = ["DROUTER_API_KEY_MISSING"];
+      sc.apiKeyConfig = {
+        envVarNames: ["DROUTER_API_KEY_MISSING"],
+      };
     },
   );
 
