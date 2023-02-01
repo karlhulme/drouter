@@ -110,7 +110,8 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
         response = httpErrorResponse(err);
       } else {
         // Log the unexpected error to the console.
-        console.error(err);
+        console.log(err);
+        // console.error(err);
         response = internalServerErrorResponse(underlyingRequest);
       }
     } finally {

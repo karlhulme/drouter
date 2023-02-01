@@ -18,10 +18,10 @@ Deno.test("Fail to process an operation with where an undeclared parameter is re
     }),
   );
 
-  // Redirect the console.error function temporarily.
+  // Redirect the console.log function temporarily.
   const errors: any[] = [];
-  const fn = console.error;
-  console.error = (x) => errors.push(x);
+  const fn = console.log;
+  console.log = (x) => errors.push(x);
 
   try {
     const internalErrorResponse = await routerHandler(
@@ -37,6 +37,6 @@ Deno.test("Fail to process an operation with where an undeclared parameter is re
       "was not declared for GET",
     );
   } finally {
-    console.error = fn;
+    console.log = fn;
   }
 });

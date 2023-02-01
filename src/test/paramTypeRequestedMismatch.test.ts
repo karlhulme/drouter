@@ -28,10 +28,10 @@ Deno.test("Fail to process an operation where a non-number parameter is read as 
     }),
   );
 
-  // Redirect the console.error function temporarily.
+  // Redirect the console.log function temporarily.
   const errors: any[] = [];
-  const fn = console.error;
-  console.error = (x) => errors.push(x);
+  const fn = console.log;
+  console.log = (x) => errors.push(x);
 
   try {
     const internalErrorResponse = await routerHandler(
@@ -52,7 +52,7 @@ Deno.test("Fail to process an operation where a non-number parameter is read as 
       "was not declared as a number",
     );
   } finally {
-    console.error = fn;
+    console.log = fn;
   }
 });
 
@@ -82,10 +82,10 @@ Deno.test("Fail to process an operation where a non-string parameter is read as 
     }),
   );
 
-  // Redirect the console.error function temporarily.
+  // Redirect the console.log function temporarily.
   const errors: any[] = [];
-  const fn = console.error;
-  console.error = (x) => errors.push(x);
+  const fn = console.log;
+  console.log = (x) => errors.push(x);
 
   try {
     const internalErrorResponse = await routerHandler(
@@ -106,7 +106,7 @@ Deno.test("Fail to process an operation where a non-string parameter is read as 
       "was not declared as a string",
     );
   } finally {
-    console.error = fn;
+    console.log = fn;
   }
 });
 
@@ -136,10 +136,10 @@ Deno.test("Fail to process an operation where a non-boolean parameter is read as
     }),
   );
 
-  // Redirect the console.error function temporarily.
+  // Redirect the console.log function temporarily.
   const errors: any[] = [];
-  const fn = console.error;
-  console.error = (x) => errors.push(x);
+  const fn = console.log;
+  console.log = (x) => errors.push(x);
 
   try {
     const internalErrorResponse = await routerHandler(
@@ -160,6 +160,6 @@ Deno.test("Fail to process an operation where a non-boolean parameter is read as
       "was not declared as a boolean",
     );
   } finally {
-    console.error = fn;
+    console.log = fn;
   }
 });

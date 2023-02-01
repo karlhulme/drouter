@@ -32,10 +32,10 @@ Deno.test("Fail to process an operation with where an optional parameter is read
     }),
   );
 
-  // Redirect the console.error function temporarily.
+  // Redirect the console.log function temporarily.
   const errors: any[] = [];
-  const fn = console.error;
-  console.error = (x) => errors.push(x);
+  const fn = console.log;
+  console.log = (x) => errors.push(x);
 
   try {
     const internalErrorResponse = await routerHandler(
@@ -51,6 +51,6 @@ Deno.test("Fail to process an operation with where an optional parameter is read
       "not declared as required but the route tried",
     );
   } finally {
-    console.error = fn;
+    console.log = fn;
   }
 });
