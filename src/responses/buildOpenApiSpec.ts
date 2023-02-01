@@ -38,7 +38,7 @@ export function buildOpenApiSpec(config: ServiceConfig): OpenApiSpec {
       title: config.title,
       version: latestVersion,
       description: config.description +
-        `\n\nBuild Github Commit: ${ghCommit}\nBuild Date/time: ${dateTime}`,
+        `\n\nBuild Github Commit: ${ghCommit}\n\nBuild Date/time: ${dateTime}`,
     },
     components: {
       schemas: {},
