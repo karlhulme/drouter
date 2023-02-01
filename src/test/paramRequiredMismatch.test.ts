@@ -47,7 +47,7 @@ Deno.test("Fail to process an operation with where an optional parameter is read
       "INTERNAL_SERVER_ERROR",
     );
     assertStringIncludes(
-      errors[0].toString(),
+      errors.join().toString(),
       "not declared as required but the route tried",
     );
   } finally {

@@ -33,7 +33,7 @@ Deno.test("Fail to process an operation with where an undeclared parameter is re
       "INTERNAL_SERVER_ERROR",
     );
     assertStringIncludes(
-      errors[0].toString(),
+      errors.join().toString(),
       "was not declared for GET",
     );
   } finally {

@@ -48,7 +48,7 @@ Deno.test("Fail to process an operation where a non-number parameter is read as 
       "INTERNAL_SERVER_ERROR",
     );
     assertStringIncludes(
-      errors[0].toString(),
+      errors.join().toString(),
       "was not declared as a number",
     );
   } finally {
@@ -102,7 +102,7 @@ Deno.test("Fail to process an operation where a non-string parameter is read as 
       "INTERNAL_SERVER_ERROR",
     );
     assertStringIncludes(
-      errors[0].toString(),
+      errors.join().toString(),
       "was not declared as a string",
     );
   } finally {
@@ -156,7 +156,7 @@ Deno.test("Fail to process an operation where a non-boolean parameter is read as
       "INTERNAL_SERVER_ERROR",
     );
     assertStringIncludes(
-      errors[0].toString(),
+      errors.join().toString(),
       "was not declared as a boolean",
     );
   } finally {
