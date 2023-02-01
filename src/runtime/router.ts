@@ -98,6 +98,9 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
     let response: Response;
 
     try {
+      // Log the request.
+      console.log(`${underlyingRequest.method} ${underlyingRequest.url}`);
+
       response = await processRequest(
         underlyingRequest,
         config,
