@@ -7,6 +7,6 @@ export function apiVersionNotSuppliedResponse() {
   return errorResponse(
     400,
     "API_VERSION_NOT_SUPPLIED",
-    "You must supply an api-version header.  Valid values are: 2021-01-01.",
+    "You must supply an api-version header in the form YYYY-MM-DD.",
   );
 }
