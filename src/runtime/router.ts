@@ -6,6 +6,7 @@ import {
   ServiceMiddleware,
 } from "../interfaces/index.ts";
 import {
+  apiKeyHandlerNotDefinedResponse,
   apiKeyNotSuppliedResponse,
   apiKeyNotValidResponse,
   apiVersionNotSuppliedResponse,
@@ -26,7 +27,6 @@ import { convertToResponseHeaderValue } from "./convertToResponseHeaderValue.ts"
 import { appendBuildVersionHeaders } from "./appendBuildVersionHeaders.ts";
 import { appendCorsHeaders } from "./appendCorsHeaders.ts";
 import { validateOperationPayload } from "./validateOperationPayload.ts";
-import { isApiKeyValid } from "./isApiKeyValid.ts";
 
 /**
  * The name of the context value that will hold the operation payload
@@ -35,6 +35,12 @@ import { isApiKeyValid } from "./isApiKeyValid.ts";
  * typed and validated value.
  */
 export const CONTEXT_OPERATION_PAYLOAD = "operationPayload";
+
+/**
+ * The name of the context value that will hold the user associated
+ * with the given API key.
+ */
+export const CONTEXT_OPERATION_API_KEY_USER = "operationApiKeyUser";
 
 /**
  * The name of the context value that will hold the operation response body.
@@ -174,20 +180,29 @@ async function processRequest(
     return resourceNotFoundResponse();
   }
 
-  const usingApiKeys = Boolean(config.apiKeyConfig) &&
-    !config.apiKeyConfig?.optional &&
-    matchedOp.operation.requiresApiKey;
+  const ctx = new Map<string, unknown>();
 
-  if (usingApiKeys) {
+  if (matchedOp.operation.requiresApiKey) {
+    if (!config.apiKeyHandler) {
+      return apiKeyHandlerNotDefinedResponse();
+    }
+
     const suppliedApiKey = underlyingRequest.headers.get("x-api-key");
 
     if (!suppliedApiKey) {
       return apiKeyNotSuppliedResponse();
     }
 
-    if (!isApiKeyValid(suppliedApiKey, config.apiKeyConfig!.envVarNames!)) {
+    const apiKeyUser = await config.apiKeyHandler(
+      matchedOp.operation,
+      suppliedApiKey,
+    );
+
+    if (!apiKeyUser) {
       return apiKeyNotValidResponse();
     }
+
+    ctx.set(CONTEXT_OPERATION_API_KEY_USER, apiKeyUser);
   }
 
   return await executeMatchedOp(
@@ -195,6 +210,7 @@ async function processRequest(
     matchedOp.urlMatch,
     underlyingRequest,
     matchedOp.operation,
+    ctx,
     middlewareModules,
     loadPayloadIndex,
   );
@@ -239,16 +255,20 @@ function findMatchingOp(
  * @param urlMatch The url values.
  * @param underlyingRequest The underlying request.
  * @param op The operation that will handle the request.
+ * @param middlewareModules An array of middleware processing
+ * to occur before and after the operation handler.
+ * @param loadPayloadIndex The index, within the middleware
+ * modules, at which the payload should be loaded into context.
  */
 async function executeMatchedOp(
   url: URL,
   urlMatch: URLPatternResult,
   underlyingRequest: Request,
   op: Operation,
+  ctx: Map<string, unknown>,
   middlewareModules: ServiceMiddleware[],
   loadPayloadIndex: number,
 ) {
-  const ctx = new Map();
   ctx.set(CONTEXT_OPERATION_RESPONSE_BODY, null);
 
   let prevIndex = -1;

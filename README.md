@@ -30,3 +30,11 @@ needs to be maintained.
 
 This information should also be used to produce multiple versions of the OpenAPI
 documentation so that a client can use whichever version they like.
+
+## Api Key
+
+Mark any operation as `requiresApi` key. This will trigger the `x-api-key`
+header to be expected in the openapi documentation.
+
+If an operation is marked as `requiresApi` key then an `apiKeyHandler` function
+will need to be supplied with the service config.

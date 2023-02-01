@@ -15,9 +15,7 @@ Deno.test("Successfully process an operation where an API key is required and su
       },
     }),
     (sc) => {
-      sc.apiKeyConfig = {
-        envVarNames: ["DROUTER_API_KEY"],
-      };
+      sc.apiKeyHandler = async (_, apiKey) => apiKey === "1234";
     },
   );
 
@@ -44,9 +42,7 @@ Deno.test("Fail to process an operation where an API key is required but an inva
       },
     }),
     (sc) => {
-      sc.apiKeyConfig = {
-        envVarNames: ["DROUTER_API_KEY"],
-      };
+      sc.apiKeyHandler = async (_, apiKey) => apiKey === "1234";
     },
   );
 
@@ -75,9 +71,7 @@ Deno.test("Fail to process an operation where an API key is required but not sup
       },
     }),
     (sc) => {
-      sc.apiKeyConfig = {
-        envVarNames: ["DROUTER_API_KEY_MISSING"],
-      };
+      sc.apiKeyHandler = async (_, apiKey) => apiKey === "1234";
     },
   );
 
@@ -88,5 +82,27 @@ Deno.test("Fail to process an operation where an API key is required but not sup
   assertStringIncludes(
     await response.text(),
     "API_KEY_NOT_SUPPLIED",
+  );
+});
+
+Deno.test("Fail to process an operation where an API key is required but a handler is not supplied.", async () => {
+  const routerHandler = createRouterHandler(
+    createOperation({
+      handler: async () => ({
+        body: {},
+      }),
+      setup: (op) => {
+        op.requiresApiKey = true;
+      },
+    }),
+  );
+
+  const response = await routerHandler(
+    new Request("http://localhost/test"),
+  );
+  assertEquals(response.status, 501);
+  assertStringIncludes(
+    await response.text(),
+    "API_KEY_HANDLER_NOT_IMPLEMENTED",
   );
 });

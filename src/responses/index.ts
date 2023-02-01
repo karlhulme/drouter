@@ -1,3 +1,4 @@
+export * from "./apiKeyHandlerNotDefinedResponse.ts";
 export * from "./apiKeyNotSuppliedResponse.ts";
 export * from "./apiKeyNotValidResponse.ts";
 export * from "./apiVersionNotSuppliedResponse.ts";

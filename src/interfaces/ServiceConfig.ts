@@ -1,7 +1,6 @@
 import { Operation } from "./Operation.ts";
 import { OperationNamedType } from "./OperationNamedType.ts";
 import { ServiceMiddleware } from "./ServiceMiddleware.ts";
-import { ServiceApiKeyConfig } from "./ServiceApiKeyConfig.ts";
 
 /**
  * The configuration of the service.
@@ -58,10 +57,12 @@ export interface ServiceConfig {
   optionalApiVersionHeader?: boolean;
 
   /**
-   * An object that configures the usage of the x-api-key header.
-   * If api-keys are not supported then leave this value undefined.
+   * A function that is invoked to parse an Api Key and return an object
+   * that represents the authenticated user which is written into the
+   * context as 'operationApiKeyUser'.  If the api key is invalid then a
+   * falsey value should be returned so that an HTTP 401 can be returned.
    */
-  apiKeyConfig?: ServiceApiKeyConfig;
+  apiKeyHandler?: (op: Operation, apiKey: string) => Promise<unknown>;
 
   /**
    * An array of acceptable request origins for CORs requests.

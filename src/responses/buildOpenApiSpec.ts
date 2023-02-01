@@ -19,7 +19,9 @@ import { convertUrlPatternToOpenApiPath } from "./convertUrlPatternToOpenApiPath
  * @param config The configuration of the service.
  */
 export function buildOpenApiSpec(config: ServiceConfig): OpenApiSpec {
-  const usingApiKeys = Boolean(config.apiKeyConfig);
+  const usingApiKeys = Boolean(
+    config.operations.find((op) => op.requiresApiKey),
+  );
 
   const spec: OpenApiSpec = {
     openapi: "3.0.3",
@@ -174,13 +176,11 @@ function createPathOperation(
     ...payloadMiddlewareSpecs.map((pms) => pms.responseHeaders || []).flat(),
   ];
 
-  const usingApiKeys = config.apiKeyConfig && operation.requiresApiKey;
-
   return {
     operationId: operation.operationId,
     tags: operation.tags,
     summary: operation.name,
-    security: usingApiKeys
+    security: operation.requiresApiKey
       ? [{
         apiKeyAuth: [],
       }]
