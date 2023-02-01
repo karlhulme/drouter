@@ -1,7 +1,11 @@
 // deno-lint-ignore-file require-await
 import { assertEquals } from "../../deps.ts";
 import { router } from "../runtime/index.ts";
-import { createOperation, createRouterHandler } from "./shared.test.ts";
+import {
+  createOperation,
+  createRouterHandler,
+  stdReqInit,
+} from "./shared.test.ts";
 
 Deno.test("Process an operation without url parameters, query params, headers, inbound payload or response body.", async () => {
   const routerHandler = createRouterHandler(
@@ -11,7 +15,9 @@ Deno.test("Process an operation without url parameters, query params, headers, i
     }),
   );
 
-  const response = await routerHandler(new Request("http://localhost/test"));
+  const response = await routerHandler(
+    new Request("http://localhost/test", stdReqInit),
+  );
   assertEquals(response.status, 200);
 });
 
@@ -27,7 +33,9 @@ Deno.test("Process an operation with a custom success code.", async () => {
     }),
   );
 
-  const response = await routerHandler(new Request("http://localhost/test"));
+  const response = await routerHandler(
+    new Request("http://localhost/test", stdReqInit),
+  );
   const result = await response.json();
   assertEquals(response.status, 201);
   assertEquals(result, { foo: "bar" });
@@ -57,7 +65,9 @@ Deno.test("Process an operation where the implementation uses an optional parame
     }),
   );
 
-  const response = await routerHandler(new Request("http://localhost/test"));
+  const response = await routerHandler(
+    new Request("http://localhost/test", stdReqInit),
+  );
   const result = await response.json();
   assertEquals(result, { value: null });
 });
@@ -66,11 +76,9 @@ Deno.test("Process an operation by selecting the correct one based on method.", 
   const routerHandler = router({
     title: "Test service",
     description: "The test service.",
-    version: "1.0.0",
     namedTypes: [],
     middleware: [],
     payloadMiddleware: [],
-    optionalApiVersionHeader: true,
     operations: [
       createOperation({
         handler: async () => ({
@@ -92,6 +100,9 @@ Deno.test("Process an operation by selecting the correct one based on method.", 
   const response = await routerHandler(
     new Request("http://localhost/test", {
       method: "POST",
+      headers: {
+        "api-version": "2000-01-01",
+      },
     }),
   );
   const result = await response.json();

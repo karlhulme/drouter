@@ -29,6 +29,7 @@ Deno.test("Process an operation with a valid payload.", async () => {
       method: "POST",
       headers: {
         "content-type": "application/json",
+        "api-version": "2000-01-01",
       },
       body: JSON.stringify({
         hello: "world",
@@ -66,6 +67,7 @@ Deno.test("Fail to process an operation with an invalid payload.", async () => {
       method: "POST",
       headers: {
         "content-type": "application/json",
+        "api-version": "2000-01-01",
       },
       body: JSON.stringify({
         hello: "world",
@@ -106,6 +108,7 @@ Deno.test("Fail to process an operation with a malformed payload.", async () => 
       method: "POST",
       headers: {
         "content-type": "application/json",
+        "api-version": "2000-01-01",
       },
       body: "not_a_json_object",
     }),

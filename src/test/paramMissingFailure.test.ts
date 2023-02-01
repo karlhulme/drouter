@@ -1,6 +1,10 @@
 // deno-lint-ignore-file require-await
 import { assertEquals, assertStringIncludes } from "../../deps.ts";
-import { createOperation, createRouterHandler } from "./shared.test.ts";
+import {
+  createOperation,
+  createRouterHandler,
+  stdReqInit,
+} from "./shared.test.ts";
 
 Deno.test("Fail to process an operation that is not given a required parameter.", async () => {
   const routerHandler = createRouterHandler(
@@ -28,7 +32,7 @@ Deno.test("Fail to process an operation that is not given a required parameter."
   );
 
   const missingNumResponse = await routerHandler(
-    new Request("http://localhost/test"),
+    new Request("http://localhost/test", stdReqInit),
   );
   assertEquals(missingNumResponse.status, 400);
   assertStringIncludes(

@@ -1,6 +1,10 @@
 // deno-lint-ignore-file require-await
 import { assertEquals } from "../../deps.ts";
-import { createOperation, createRouterHandler } from "./shared.test.ts";
+import {
+  createOperation,
+  createRouterHandler,
+  stdReqInit,
+} from "./shared.test.ts";
 
 Deno.test("Get all the information passed to the request.", async () => {
   const routerHandler = createRouterHandler(
@@ -24,6 +28,8 @@ Deno.test("Get all the information passed to the request.", async () => {
     }),
   );
 
-  const response = await routerHandler(new Request("http://localhost/test"));
+  const response = await routerHandler(
+    new Request("http://localhost/test", stdReqInit),
+  );
   assertEquals(response.status, 200);
 });

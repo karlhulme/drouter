@@ -1,6 +1,10 @@
 // deno-lint-ignore-file require-await no-explicit-any
 import { assertEquals, assertStringIncludes } from "../../deps.ts";
-import { createOperation, createRouterHandler } from "./shared.test.ts";
+import {
+  createOperation,
+  createRouterHandler,
+  stdReqInit,
+} from "./shared.test.ts";
 
 Deno.test("Fail to process an operation with where an optional parameter is read as required.", async () => {
   const routerHandler = createRouterHandler(
@@ -35,7 +39,7 @@ Deno.test("Fail to process an operation with where an optional parameter is read
 
   try {
     const internalErrorResponse = await routerHandler(
-      new Request("http://localhost/test"),
+      new Request("http://localhost/test", stdReqInit),
     );
     assertEquals(internalErrorResponse.status, 500);
     assertStringIncludes(

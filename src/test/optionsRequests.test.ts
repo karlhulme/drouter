@@ -4,7 +4,6 @@ import { router, ServiceConfig } from "../index.ts";
 const emptyServiceConfig: ServiceConfig = {
   title: "Test service",
   description: "The test service.",
-  version: "1.0.0",
   middleware: [],
   payloadMiddleware: [],
   operations: [],
@@ -16,6 +15,9 @@ Deno.test("An OPTIONS request without permitted origin domains.", async () => {
   const response = await routerHandler(
     new Request("http://localhost/some/url", {
       method: "OPTIONS",
+      headers: {
+        "api-version": "2000-01-01",
+      },
     }),
   );
   const allowHeader = response.headers.get("Allow");
@@ -38,7 +40,8 @@ Deno.test("An OPTIONS request with a permitted origin domain that matches the re
     new Request("http://localhost/some/url", {
       method: "OPTIONS",
       headers: {
-        "Origin": "HTTPS://MYDOMAIN.COM",
+        "origin": "HTTPS://MYDOMAIN.COM",
+        "api-version": "2000-01-01",
       },
     }),
   );
@@ -72,7 +75,8 @@ Deno.test("An OPTIONS request with permitted origin domains that do not match th
     new Request("http://localhost/some/url", {
       method: "OPTIONS",
       headers: {
-        "Origin": "https://other.com",
+        "origin": "https://other.com",
+        "api-version": "2000-01-01",
       },
     }),
   );
@@ -93,6 +97,9 @@ Deno.test("An OPTIONS request without an origin header specified in the request.
   const response = await routerHandler(
     new Request("http://localhost/some/url", {
       method: "OPTIONS",
+      headers: {
+        "api-version": "2000-01-01",
+      },
     }),
   );
 

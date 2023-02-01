@@ -1,6 +1,10 @@
 // deno-lint-ignore-file require-await
 import { assertEquals } from "../../deps.ts";
-import { createOperation, createRouterHandler } from "./shared.test.ts";
+import {
+  createOperation,
+  createRouterHandler,
+  stdReqInit,
+} from "./shared.test.ts";
 
 Deno.test("Process an operation with optional query params.", async () => {
   const routerHandler = createRouterHandler(
@@ -70,6 +74,7 @@ Deno.test("Process an operation with optional query params.", async () => {
   const response = await routerHandler(
     new Request(
       "http://localhost/test?num=5&str=foo&bool=True&obj=%7B%22foo%22%3A%20%22bar%22%7D",
+      stdReqInit,
     ),
   );
 
@@ -155,6 +160,7 @@ Deno.test("Process an operation with required query params.", async () => {
   const response = await routerHandler(
     new Request(
       "http://localhost/test?num=5&str=foo&bool=True&obj=%7B%22foo%22%3A%20%22bar%22%7D",
+      stdReqInit,
     ),
   );
 

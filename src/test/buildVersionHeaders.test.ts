@@ -1,5 +1,9 @@
 import { assertEquals } from "../../deps.ts";
-import { createOperation, createRouterHandler } from "./shared.test.ts";
+import {
+  createOperation,
+  createRouterHandler,
+  stdReqInit,
+} from "./shared.test.ts";
 
 Deno.test("Operations include blank build version headers.", async () => {
   Deno.env.delete("BUILD_GH_COMMIT");
@@ -15,7 +19,9 @@ Deno.test("Operations include blank build version headers.", async () => {
     }),
   );
 
-  const response = await routerHandler(new Request("http://localhost/test"));
+  const response = await routerHandler(
+    new Request("http://localhost/test", stdReqInit),
+  );
   assertEquals(response.headers.get("build-gh-commit"), "<blank>");
   assertEquals(response.headers.get("build-date-time"), "<blank>");
 });
@@ -34,7 +40,9 @@ Deno.test("Operations include specified build version headers from the env vars.
     }),
   );
 
-  const response = await routerHandler(new Request("http://localhost/test"));
+  const response = await routerHandler(
+    new Request("http://localhost/test", stdReqInit),
+  );
   assertEquals(response.headers.get("build-gh-commit"), "1234");
   assertEquals(response.headers.get("build-date-time"), "today");
 });

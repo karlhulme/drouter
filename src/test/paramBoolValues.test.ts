@@ -1,6 +1,10 @@
 // deno-lint-ignore-file require-await
 import { assertEquals } from "../../deps.ts";
-import { createOperation, createRouterHandler } from "./shared.test.ts";
+import {
+  createOperation,
+  createRouterHandler,
+  stdReqInit,
+} from "./shared.test.ts";
 
 Deno.test("Process an operation recognising the various bool options.", async () => {
   const routerHandler = createRouterHandler(
@@ -39,6 +43,7 @@ Deno.test("Process an operation recognising the various bool options.", async ()
     const response = await routerHandler(
       new Request(
         `http://localhost/test?bool=${boolVariant}`,
+        stdReqInit,
       ),
     );
 

@@ -34,6 +34,7 @@ Deno.test("Fail to process an operation with a parameter that fails validation."
     new Request("http://localhost/test", {
       headers: {
         "num": "-5",
+        "api-version": "2000-01-01",
       },
     }),
   );

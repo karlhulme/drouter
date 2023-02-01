@@ -38,6 +38,7 @@ Deno.test("Fail to process an operation where a non-number parameter is read as 
       new Request("http://localhost/test", {
         headers: {
           "obj": '{ "foo": "bar" }',
+          "api-version": "2000-01-01",
         },
       }),
     );
@@ -91,6 +92,7 @@ Deno.test("Fail to process an operation where a non-string parameter is read as 
       new Request("http://localhost/test", {
         headers: {
           "obj": '{ "foo": "bar" }',
+          "api-version": "2000-01-01",
         },
       }),
     );
@@ -144,6 +146,7 @@ Deno.test("Fail to process an operation where a non-boolean parameter is read as
       new Request("http://localhost/test", {
         headers: {
           "obj": '{ "foo": "bar" }',
+          "api-version": "2000-01-01",
         },
       }),
     );

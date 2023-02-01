@@ -29,6 +29,7 @@ export function createOperation(props: CreateOperationProps) {
     operationId: "testOp",
     tags: ["Tests"],
     flags: [],
+    apiVersion: "2000-01-01",
     method: "GET",
     handler: props.handler,
   };
@@ -45,11 +46,9 @@ export function createRouterHandler(
   const serviceConfig: ServiceConfig = {
     title: "Test service",
     description: "The test service.",
-    version: "1.0.0",
     namedTypes: [],
     middleware: [],
     payloadMiddleware: [],
-    optionalApiVersionHeader: true,
     operations: [op],
   };
 
@@ -59,3 +58,9 @@ export function createRouterHandler(
 
   return router(serviceConfig);
 }
+
+export const stdReqInit: RequestInit = {
+  headers: {
+    "api-version": "2000-01-01",
+  },
+};

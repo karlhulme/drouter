@@ -7,7 +7,6 @@ function createServiceConfig(): ServiceConfig {
   return {
     title: "Test service",
     description: "The test service.",
-    version: "1.0.0",
     middleware: [{
       process: async () => new Response(null),
       specify: () => ({
@@ -65,6 +64,7 @@ function createServiceConfig(): ServiceConfig {
       method: "GET",
       tags: ["Things"],
       flags: [],
+      apiVersion: "2000-01-01",
       requestUrlParams: [{
         name: "id",
         summary: "The id.",
@@ -98,6 +98,7 @@ function createServiceConfig(): ServiceConfig {
       method: "GET",
       tags: ["Things"],
       flags: [],
+      apiVersion: "2000-01-01",
       requestQueryParams: [{
         name: "from",
         summary: "The from.",
@@ -131,6 +132,7 @@ function createServiceConfig(): ServiceConfig {
       method: "DELETE",
       tags: ["Things"],
       flags: [],
+      apiVersion: "2000-01-01",
       requestHeaders: [{
         name: "archive",
         summary: "The archive.",
@@ -156,6 +158,7 @@ function createServiceConfig(): ServiceConfig {
       method: "PUT",
       tags: ["Things"],
       flags: [],
+      apiVersion: "2000-01-01",
       requestBodyType: {
         name: "thing",
         schema: {
@@ -177,6 +180,7 @@ function createServiceConfig(): ServiceConfig {
       method: "POST",
       tags: ["Things"],
       flags: [],
+      apiVersion: "2000-01-01",
       requestBodyType: {
         name: "thing",
         schema: {
@@ -211,6 +215,7 @@ function createServiceConfig(): ServiceConfig {
       method: "PATCH",
       tags: ["Things"],
       flags: [],
+      apiVersion: "2000-01-01",
       requestBodyType: {
         name: "thing",
         schema: {

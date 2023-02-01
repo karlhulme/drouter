@@ -12,11 +12,6 @@ export interface ServiceConfig {
   title: string;
 
   /**
-   * The version of the service.
-   */
-  version: string;
-
-  /**
    * A description of the service.
    */
   description: string;
@@ -47,14 +42,6 @@ export interface ServiceConfig {
    * unknown, so operations will need to be explicitly cast down.
    */
   operations: Operation[];
-
-  /**
-   * True if the api-version header is optional rather than required.
-   * This is typically enabled explictly for dev environments.  On
-   * production environments clients should be required to specify
-   * a version.
-   */
-  optionalApiVersionHeader?: boolean;
 
   /**
    * A function that is invoked to parse an Api Key and return an object

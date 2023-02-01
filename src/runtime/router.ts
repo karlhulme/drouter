@@ -166,12 +166,10 @@ async function processRequest(
     return openApiResponse(config);
   }
 
-  if (!config.optionalApiVersionHeader) {
-    const apiVersion = underlyingRequest.headers.get("api-version");
+  const apiVersion = underlyingRequest.headers.get("api-version");
 
-    if (!apiVersion) {
-      return apiVersionNotSuppliedResponse();
-    }
+  if (!apiVersion) {
+    return apiVersionNotSuppliedResponse();
   }
 
   const matchedOp = findMatchingOp(internalOps, underlyingRequest);

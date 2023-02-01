@@ -1,6 +1,10 @@
 // deno-lint-ignore-file require-await
 import { assertEquals, assertStringIncludes } from "../../deps.ts";
-import { createOperation, createRouterHandler } from "./shared.test.ts";
+import {
+  createOperation,
+  createRouterHandler,
+  stdReqInit,
+} from "./shared.test.ts";
 
 Deno.test("Successfully process an operation where an API key is required and supplied.", async () => {
   Deno.env.set("DROUTER_API_KEY", "1234");
@@ -23,6 +27,7 @@ Deno.test("Successfully process an operation where an API key is required and su
     new Request("http://localhost/test", {
       headers: {
         "x-api-key": "1234",
+        "api-version": "2000-01-01",
       },
     }),
   );
@@ -50,6 +55,7 @@ Deno.test("Fail to process an operation where an API key is required but an inva
     new Request("http://localhost/test", {
       headers: {
         "x-api-key": "4321",
+        "api-version": "2000-01-01",
       },
     }),
   );
@@ -76,7 +82,7 @@ Deno.test("Fail to process an operation where an API key is required but not sup
   );
 
   const response = await routerHandler(
-    new Request("http://localhost/test"),
+    new Request("http://localhost/test", stdReqInit),
   );
   assertEquals(response.status, 401);
   assertStringIncludes(
@@ -98,7 +104,7 @@ Deno.test("Fail to process an operation where an API key is required but a handl
   );
 
   const response = await routerHandler(
-    new Request("http://localhost/test"),
+    new Request("http://localhost/test", stdReqInit),
   );
   assertEquals(response.status, 501);
   assertStringIncludes(

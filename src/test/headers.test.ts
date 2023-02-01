@@ -74,6 +74,7 @@ Deno.test("Process an operation with optional headers and mismatching cases.", a
         "str": "foo",
         "bool": "true",
         "obj": '{"foo": "bar"}',
+        "api-version": "2000-01-01",
       },
     }),
   );
@@ -164,6 +165,7 @@ Deno.test("Process an operation with required headers.", async () => {
         "str": "foo",
         "bool": "true",
         "obj": '{"foo": "bar"}',
+        "api-version": "2000-01-01",
       },
     }),
   );

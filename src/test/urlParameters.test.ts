@@ -1,6 +1,10 @@
 // deno-lint-ignore-file require-await
 import { assertEquals } from "../../deps.ts";
-import { createOperation, createRouterHandler } from "./shared.test.ts";
+import {
+  createOperation,
+  createRouterHandler,
+  stdReqInit,
+} from "./shared.test.ts";
 
 Deno.test("Process an operation without url parameters.", async () => {
   const routerHandler = createRouterHandler(
@@ -12,7 +16,9 @@ Deno.test("Process an operation without url parameters.", async () => {
     }),
   );
 
-  const response = await routerHandler(new Request("http://localhost/test"));
+  const response = await routerHandler(
+    new Request("http://localhost/test", stdReqInit),
+  );
   const result = await response.json();
   assertEquals(result, { foo: "bar" });
 });
@@ -71,7 +77,7 @@ Deno.test("Process an operation with url parameters.", async () => {
   );
 
   const response = await routerHandler(
-    new Request("http://localhost/test/5/foo/TRUE"),
+    new Request("http://localhost/test/5/foo/TRUE", stdReqInit),
   );
 
   const result = await response.json();

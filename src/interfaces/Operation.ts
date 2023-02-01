@@ -113,6 +113,12 @@ export interface Operation<
   responseFailureDefinitions?: OperationFailureDefinition[];
 
   /**
+   * The first api version where this operation is available.
+   * This should be in the format YYYY-MM-DD.
+   */
+  apiVersion: string;
+
+  /**
    * The implementation of the operation as an asynchronous function.
    */
   handler: (
@@ -124,6 +130,9 @@ export interface Operation<
     >,
     ctx: OperationContext,
   ) => Promise<OperationResponse<ResponseBodyType, ResponseHeaderNames>>;
+
+  // apiVersionRequestHandler?: (payload: unknown, reqApiVersion: string) => unknown
+  // apiVersionResponseHandler?: (payload: unknown, resApiVersion: string) => unknown
 
   /**
    * True if the operation requires an x-api-key header to be supplied.

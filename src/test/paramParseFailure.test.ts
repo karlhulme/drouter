@@ -46,6 +46,7 @@ Deno.test("Fail to process an operation with unparseable number or object parame
     new Request("http://localhost/test", {
       headers: {
         "num": "not_a_num",
+        "api-version": "2000-01-01",
       },
     }),
   );
@@ -59,6 +60,7 @@ Deno.test("Fail to process an operation with unparseable number or object parame
     new Request("http://localhost/test", {
       headers: {
         "obj": "not_an_obj",
+        "api-version": "2000-01-01",
       },
     }),
   );

@@ -11,7 +11,7 @@ import {
   OperationNamedType,
   ServiceConfig,
 } from "../interfaces/index.ts";
-import { safeArray } from "../utils/safeArray.ts";
+import { getLatestVersion, safeArray } from "../utils/index.ts";
 import { convertUrlPatternToOpenApiPath } from "./convertUrlPatternToOpenApiPath.ts";
 
 /**
@@ -23,11 +23,17 @@ export function buildOpenApiSpec(config: ServiceConfig): OpenApiSpec {
     config.operations.find((op) => op.requiresApiKey),
   );
 
+  // The version should actually be passed to this function so that
+  // we can build an API version based on the request.
+  const latestVersion = getLatestVersion(
+    config.operations.map((op) => op.apiVersion),
+  );
+
   const spec: OpenApiSpec = {
     openapi: "3.0.3",
     info: {
       title: config.title,
-      version: config.version,
+      version: latestVersion,
       description: config.description,
     },
     components: {
@@ -202,7 +208,7 @@ function createPathOperation(
       {
         name: "api-version",
         in: "header",
-        required: !config.optionalApiVersionHeader,
+        required: true,
         schema: {
           $ref: `#/components/schemas/svcString`,
         },
