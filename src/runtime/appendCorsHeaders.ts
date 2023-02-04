@@ -43,7 +43,7 @@ export function appendCorsHeaders(
 
     responseHeaders.append(
       "Access-Control-Allow-Headers",
-      "Set-Cookie,Api-Version",
+      "Set-Cookie,Api-Version,Content-Type",
     );
   }
 }
