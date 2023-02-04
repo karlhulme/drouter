@@ -361,7 +361,7 @@ export async function readJsonBody(
 ): Promise<unknown> {
   try {
     console.log(`BodyUsed: ${underlyingRequest.bodyUsed}`);
-    console.log(`Headers: ${new Map(underlyingRequest.headers)}`);
+    console.log(`Headers: ${JSON.stringify([...underlyingRequest.headers], null, 2)}`);
     return await underlyingRequest.json();
   } catch {
     // We use false here because it will fail validation
