@@ -56,7 +56,7 @@ Deno.test("An OPTIONS request with a permitted origin domain that matches the re
   assertStrictEquals(corsCreds, "true");
 
   const corsAllowOrigin = response.headers.get("Access-Control-Allow-Origin");
-  assertStrictEquals(corsAllowOrigin, "HTTPS://MYDOMAIN.COM");
+  assertStrictEquals(corsAllowOrigin, "https://mydomain.com");
 
   const allowHeaders = response.headers.get("Access-Control-Allow-Headers");
   assertStrictEquals(allowHeaders, "Set-Cookie,Api-Version,Content-Type");

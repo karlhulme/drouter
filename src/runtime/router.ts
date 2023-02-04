@@ -360,6 +360,8 @@ export async function readJsonBody(
   underlyingRequest: Request,
 ): Promise<unknown> {
   try {
+    console.log(`BodyUsed: ${underlyingRequest.bodyUsed}`)
+    console.log(`Headers: ${underlyingRequest.headers}`)
     return await underlyingRequest.json();
   } catch {
     // We use false here because it will fail validation

@@ -23,7 +23,7 @@ export function appendCorsHeaders(
   ) {
     const requestOrigin = underlyingRequest.headers.get("origin") || "";
 
-    const acceptCors = config.permittedCorsOrigins
+    const matchedOrigin = config.permittedCorsOrigins
       .find((pco) => pco.toLowerCase() === requestOrigin.toLowerCase());
 
     responseHeaders.append(
@@ -38,7 +38,7 @@ export function appendCorsHeaders(
 
     responseHeaders.append(
       "Access-Control-Allow-Origin",
-      acceptCors ? requestOrigin : config.permittedCorsOrigins[0],
+      matchedOrigin || config.permittedCorsOrigins[0],
     );
 
     responseHeaders.append(
