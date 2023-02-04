@@ -59,7 +59,7 @@ Deno.test("An OPTIONS request with a permitted origin domain that matches the re
   assertStrictEquals(corsAllowOrigin, "HTTPS://MYDOMAIN.COM");
 
   const allowHeaders = response.headers.get("Access-Control-Allow-Headers");
-  assertStrictEquals(allowHeaders, "Set-Cookie,Api-Version");
+  assertStrictEquals(allowHeaders, "Set-Cookie,Api-Version,Content-Type");
 });
 
 Deno.test("An OPTIONS request with permitted origin domains that do not match the request.", async () => {

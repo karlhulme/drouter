@@ -53,7 +53,7 @@
     "https://raw.githubusercontent.com/karlhulme/dopenapi/main/deps.ts": "3b17a2919432059e367e44b71b8ed40a81e4a63264d59323fddb8f49ea01271e",
     "https://raw.githubusercontent.com/karlhulme/dopenapi/main/mod.ts": "8950f261c03b03d1474eb7a092ca892fd7b11f84d8e1d9ff6facb7844d685779",
     "https://raw.githubusercontent.com/karlhulme/dopenapi/main/src/converter/buildPathOperationFunction.ts": "03a7ae0f594cc2f676ee99e56a01d4f5e98cfd24ae9c90a4702f84c6a851127b",
-    "https://raw.githubusercontent.com/karlhulme/dopenapi/main/src/converter/buildPathOperationFunctionRequestLines.ts": "6211f5123916723850a503a3a5f77ebd5d68f5ece086fba99c2abf5f104032de",
+    "https://raw.githubusercontent.com/karlhulme/dopenapi/main/src/converter/buildPathOperationFunctionRequestLines.ts": "e670b5f222468a2a8459af23eb0c98a03df68e9d71d1d69b11a40b8f9991904a",
     "https://raw.githubusercontent.com/karlhulme/dopenapi/main/src/converter/buildPathOperationFunctionResponseHeaderParser.ts": "8c6eb648c6cbcdbdabbbb0f14ee3611783b9b6468f774a545c6c43f6e8effa0b",
     "https://raw.githubusercontent.com/karlhulme/dopenapi/main/src/converter/buildPathOperationFunctionResponseLines.ts": "077a6ccaac2c9e5cfaabd432349bd197568a6b01f4a720cdb31ffb4d0eb450aa",
     "https://raw.githubusercontent.com/karlhulme/dopenapi/main/src/converter/buildPathOperationFunctionUrlLines.ts": "d3ad5052663af999367847898826eef35f9423f7c6fe50fa33df36962e65f721",
