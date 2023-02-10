@@ -97,10 +97,11 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
   return async function (underlyingRequest: Request): Promise<Response> {
     let response: Response;
 
-    try {
-      // Log the request.
-      console.log(`${underlyingRequest.method} ${underlyingRequest.url}`);
+    // Log the request.
+    console.log(`${underlyingRequest.method} ${underlyingRequest.url} (start)`);
+    const start = performance.now();
 
+    try {
       response = await processRequest(
         underlyingRequest,
         config,
@@ -128,6 +129,14 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
 
     // In all cases we append the version information to the response.
     appendBuildVersionHeaders(response.headers);
+
+    // Log out the performance
+    const duration = performance.now() - start;
+    console.log(
+      `${underlyingRequest.method} ${underlyingRequest.url} (${
+        duration.toFixed(0)
+      }ms)`,
+    );
 
     return response;
   };
