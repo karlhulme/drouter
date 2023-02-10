@@ -2,7 +2,7 @@
 
 ![Image](https://img.shields.io/badge/coverage-100%25-green)
 
-A router that generates an OpenAPI spec and validates inputs.
+A router that generates an OpenAPI spec and validates inputs..
 
 ## Unstable
 
