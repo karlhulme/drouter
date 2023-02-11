@@ -95,14 +95,17 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
 
   // Return a function that can process individual requests.
   return async function (underlyingRequest: Request): Promise<Response> {
-    let response: Response;
-
-    // Log the request.
-    console.log(`${underlyingRequest.method} ${underlyingRequest.url} (start)`);
     const start = performance.now();
+    let response: Response;
+    const url = new URL(underlyingRequest.url);
 
     try {
+      console.log(
+        `${underlyingRequest.method} ${url.pathname}${url.search} (start)`,
+      );
+
       response = await processRequest(
+        url,
         underlyingRequest,
         config,
         internalOps,
@@ -133,7 +136,7 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
     // Log out the performance
     const duration = performance.now() - start;
     console.log(
-      `${underlyingRequest.method} ${underlyingRequest.url} (${
+      `${underlyingRequest.method} ${url.pathname}${url.search} (${
         duration.toFixed(0)
       }ms)`,
     );
@@ -150,14 +153,13 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
  * of matching preference.
  */
 async function processRequest(
+  url: URL,
   underlyingRequest: Request,
   config: ServiceConfig,
   internalOps: InternalOp[],
   middlewareModules: ServiceMiddleware[],
   loadPayloadIndex: number,
 ) {
-  const url = new URL(underlyingRequest.url);
-
   if (underlyingRequest.method === "OPTIONS") {
     return new Response();
   }

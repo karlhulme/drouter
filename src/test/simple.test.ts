@@ -34,7 +34,7 @@ Deno.test("Process an operation with a custom success code.", async () => {
   );
 
   const response = await routerHandler(
-    new Request("http://localhost/test", stdReqInit),
+    new Request("http://localhost/test?foo=bar", stdReqInit),
   );
   const result = await response.json();
   assertEquals(response.status, 201);
