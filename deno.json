@@ -1,5 +1,6 @@
 {
   "tasks": {
+    "favicon": "deno run --allow-read --allow-write --unstable ./autogen.ts favicon && deno fmt",
     "rapidoc": "deno run --allow-net --allow-write --unstable ./autogen.ts rapidoc && deno fmt",
     "test": "rm -rf cov_profile && deno test --coverage=cov_profile --allow-env --unstable && deno fmt && deno coverage cov_profile",
     "recache": "rm -f deno.lock && deno cache -r ./deps.ts"

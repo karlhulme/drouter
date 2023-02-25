@@ -12,10 +12,25 @@ async function autogenRapidoc() {
   );
 }
 
+async function autogenFavicon() {
+  const contents = await Deno.readFile("./favicon.ico");
+
+  const contentsAsString = `JSON.parse("[${contents.join(",")}]")`;
+
+  await Deno.writeTextFile(
+    "./src/autogen.favicon.ts",
+    `export function favicon() {
+      return new Uint8Array(${contentsAsString});
+    }`,
+  );
+}
+
 const arg = Deno.args.length > 0 ? Deno.args[0] : "";
 
 if (arg === "rapidoc") {
   await autogenRapidoc();
+} else if (arg === "favicon") {
+  await autogenFavicon();
 } else {
   console.log(`Autogen instruction not recognised: ${arg}`);
 }

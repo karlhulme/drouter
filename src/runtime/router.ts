@@ -11,6 +11,7 @@ import {
   apiKeyNotValidResponse,
   apiVersionNotSuppliedResponse,
   docsPageResponse,
+  faviconResponse,
   healthResponse,
   httpErrorResponse,
   internalServerErrorResponse,
@@ -173,6 +174,10 @@ async function processRequest(
 
   if (underlyingRequest.method === "GET" && url.pathname === "/") {
     return rootResponse(config);
+  }
+
+  if (underlyingRequest.method === "GET" && url.pathname === "/favicon.ico") {
+    return faviconResponse();
   }
 
   if (underlyingRequest.method === "GET" && url.pathname === "/docs") {

@@ -2,5 +2,6 @@
   "deno.enable": true,
   "deno.unstable": true,
   "editor.inlayHints.enabled": "offUnlessPressed",
-  "editor.formatOnSave": true
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "denoland.vscode-deno"
 }

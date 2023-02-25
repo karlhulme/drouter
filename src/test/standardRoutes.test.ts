@@ -58,6 +58,16 @@ Deno.test("A root request with defined operations elicits a root response.", asy
   );
 });
 
+Deno.test("A /favicon.ico request elicits a byte response.", async () => {
+  const routerHandler = router(emptyServiceConfig);
+  const response = await routerHandler(
+    new Request("http://localhost/favicon.ico", stdReqInit),
+    stdReqInfo,
+  );
+  const buffer = await response.arrayBuffer();
+  assertStrictEquals(buffer.byteLength, 67646);
+});
+
 Deno.test("A /health request elicits a health response.", async () => {
   const routerHandler = router(emptyServiceConfig);
   const response = await routerHandler(
