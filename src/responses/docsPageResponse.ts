@@ -1,3 +1,5 @@
+import { rapidoc } from "../autogen.rapidoc.ts";
+
 /**
  * Returns a response containing a documentation page.
  */
@@ -8,13 +10,15 @@ export function docsPageResponse(): Response {
       <head>
         <meta charset="utf-8">
         <meta name="description" content="Service documentation.">
-        <script type="module" src="https://unpkg.com/rapidoc/dist/rapidoc-min.js"></script>
+        <script type="module">
+          ${rapidoc()}
+        </script>
       </head>
       <body>
         <rapi-doc
           spec-url="/openapi"
-          theme = "dark"
-        > </rapi-doc>
+          theme="dark"
+        ></rapi-doc>
       </body>
     </html>
   `;
