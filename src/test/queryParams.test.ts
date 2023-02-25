@@ -3,6 +3,7 @@ import { assertEquals } from "../../deps.ts";
 import {
   createOperation,
   createRouterHandler,
+  stdReqInfo,
   stdReqInit,
 } from "./shared.test.ts";
 
@@ -76,6 +77,7 @@ Deno.test("Process an operation with optional query params.", async () => {
       "http://localhost/test?num=5&str=foo&bool=True&obj=%7B%22foo%22%3A%20%22bar%22%7D",
       stdReqInit,
     ),
+    stdReqInfo,
   );
 
   const result = await response.json();
@@ -162,6 +164,7 @@ Deno.test("Process an operation with required query params.", async () => {
       "http://localhost/test?num=5&str=foo&bool=True&obj=%7B%22foo%22%3A%20%22bar%22%7D",
       stdReqInit,
     ),
+    stdReqInfo,
   );
 
   const result = await response.json();

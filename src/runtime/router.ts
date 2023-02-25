@@ -94,7 +94,10 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
     );
 
   // Return a function that can process individual requests.
-  return async function (underlyingRequest: Request): Promise<Response> {
+  return async function (
+    underlyingRequest: Request,
+    _info: Deno.ServeHandlerInfo,
+  ): Promise<Response> {
     const start = performance.now();
     let response: Response;
     const url = new URL(underlyingRequest.url);

@@ -1,6 +1,10 @@
 // deno-lint-ignore-file require-await
 import { assertEquals, assertStringIncludes } from "../../deps.ts";
-import { createOperation, createRouterHandler } from "./shared.test.ts";
+import {
+  createOperation,
+  createRouterHandler,
+  stdReqInfo,
+} from "./shared.test.ts";
 
 // Validation for parameters is unified, so only need to test one type,
 // such as number.
@@ -37,6 +41,7 @@ Deno.test("Fail to process an operation with a parameter that fails validation."
         "api-version": "2000-01-01",
       },
     }),
+    stdReqInfo,
   );
   assertEquals(invalidNumResponse.status, 400);
   assertStringIncludes(

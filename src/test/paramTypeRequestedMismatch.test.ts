@@ -1,6 +1,10 @@
 // deno-lint-ignore-file require-await no-explicit-any
 import { assertEquals, assertStringIncludes } from "../../deps.ts";
-import { createOperation, createRouterHandler } from "./shared.test.ts";
+import {
+  createOperation,
+  createRouterHandler,
+  stdReqInfo,
+} from "./shared.test.ts";
 
 Deno.test("Fail to process an operation where a non-number parameter is read as a number by the implementation.", async () => {
   const routerHandler = createRouterHandler(
@@ -41,6 +45,7 @@ Deno.test("Fail to process an operation where a non-number parameter is read as 
           "api-version": "2000-01-01",
         },
       }),
+      stdReqInfo,
     );
     assertEquals(internalErrorResponse.status, 500);
     assertStringIncludes(
@@ -95,6 +100,7 @@ Deno.test("Fail to process an operation where a non-string parameter is read as 
           "api-version": "2000-01-01",
         },
       }),
+      stdReqInfo,
     );
     assertEquals(internalErrorResponse.status, 500);
     assertStringIncludes(
@@ -149,6 +155,7 @@ Deno.test("Fail to process an operation where a non-boolean parameter is read as
           "api-version": "2000-01-01",
         },
       }),
+      stdReqInfo,
     );
     assertEquals(internalErrorResponse.status, 500);
     assertStringIncludes(

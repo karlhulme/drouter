@@ -3,6 +3,7 @@ import { assertEquals } from "../../deps.ts";
 import {
   createOperation,
   createRouterHandler,
+  stdReqInfo,
   stdReqInit,
 } from "./shared.test.ts";
 
@@ -73,6 +74,7 @@ Deno.test("Process an operation that uses middleware functions.", async () => {
 
   const response = await routerHandler(
     new Request("http://localhost/test", stdReqInit),
+    stdReqInfo,
   );
   assertEquals(response.status, 200);
   assertEquals(await response.json(), { foo: "bar", hello: "world" });
@@ -106,6 +108,7 @@ Deno.test("Fail to process an operation where a middleware calls next twice.", a
 
   const response = await routerHandler(
     new Request("http://localhost/test", stdReqInit),
+    stdReqInfo,
   );
   assertEquals(response.status, 500);
 });

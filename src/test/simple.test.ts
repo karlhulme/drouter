@@ -4,6 +4,7 @@ import { router } from "../runtime/index.ts";
 import {
   createOperation,
   createRouterHandler,
+  stdReqInfo,
   stdReqInit,
 } from "./shared.test.ts";
 
@@ -17,6 +18,7 @@ Deno.test("Process an operation without url parameters, query params, headers, i
 
   const response = await routerHandler(
     new Request("http://localhost/test", stdReqInit),
+    stdReqInfo,
   );
   assertEquals(response.status, 200);
 });
@@ -35,6 +37,7 @@ Deno.test("Process an operation with a custom success code.", async () => {
 
   const response = await routerHandler(
     new Request("http://localhost/test?foo=bar", stdReqInit),
+    stdReqInfo,
   );
   const result = await response.json();
   assertEquals(response.status, 201);
@@ -67,6 +70,7 @@ Deno.test("Process an operation where the implementation uses an optional parame
 
   const response = await routerHandler(
     new Request("http://localhost/test", stdReqInit),
+    stdReqInfo,
   );
   const result = await response.json();
   assertEquals(result, { value: null });
@@ -104,6 +108,7 @@ Deno.test("Process an operation by selecting the correct one based on method.", 
         "api-version": "2000-01-01",
       },
     }),
+    stdReqInfo,
   );
   const result = await response.json();
   assertEquals(result, { foo: "post" });

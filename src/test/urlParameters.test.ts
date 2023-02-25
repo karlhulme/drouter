@@ -3,6 +3,7 @@ import { assertEquals } from "../../deps.ts";
 import {
   createOperation,
   createRouterHandler,
+  stdReqInfo,
   stdReqInit,
 } from "./shared.test.ts";
 
@@ -18,6 +19,7 @@ Deno.test("Process an operation without url parameters.", async () => {
 
   const response = await routerHandler(
     new Request("http://localhost/test", stdReqInit),
+    stdReqInfo,
   );
   const result = await response.json();
   assertEquals(result, { foo: "bar" });
@@ -78,6 +80,7 @@ Deno.test("Process an operation with url parameters.", async () => {
 
   const response = await routerHandler(
     new Request("http://localhost/test/5/foo/TRUE", stdReqInit),
+    stdReqInfo,
   );
 
   const result = await response.json();

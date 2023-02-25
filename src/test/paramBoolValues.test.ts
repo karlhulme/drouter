@@ -3,6 +3,7 @@ import { assertEquals } from "../../deps.ts";
 import {
   createOperation,
   createRouterHandler,
+  stdReqInfo,
   stdReqInit,
 } from "./shared.test.ts";
 
@@ -45,6 +46,7 @@ Deno.test("Process an operation recognising the various bool options.", async ()
         `http://localhost/test?bool=${boolVariant}`,
         stdReqInit,
       ),
+      stdReqInfo,
     );
 
     const result = await response.json();

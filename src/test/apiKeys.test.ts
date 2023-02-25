@@ -3,6 +3,7 @@ import { assertEquals, assertStringIncludes } from "../../deps.ts";
 import {
   createOperation,
   createRouterHandler,
+  stdReqInfo,
   stdReqInit,
 } from "./shared.test.ts";
 
@@ -30,6 +31,7 @@ Deno.test("Successfully process an operation where an API key is required and su
         "api-version": "2000-01-01",
       },
     }),
+    stdReqInfo,
   );
   assertEquals(response.status, 200);
 });
@@ -58,6 +60,7 @@ Deno.test("Fail to process an operation where an API key is required but an inva
         "api-version": "2000-01-01",
       },
     }),
+    stdReqInfo,
   );
   assertEquals(response.status, 401);
   assertStringIncludes(
@@ -83,6 +86,7 @@ Deno.test("Fail to process an operation where an API key is required but not sup
 
   const response = await routerHandler(
     new Request("http://localhost/test", stdReqInit),
+    stdReqInfo,
   );
   assertEquals(response.status, 401);
   assertStringIncludes(
@@ -105,6 +109,7 @@ Deno.test("Fail to process an operation where an API key is required but a handl
 
   const response = await routerHandler(
     new Request("http://localhost/test", stdReqInit),
+    stdReqInfo,
   );
   assertEquals(response.status, 501);
   assertStringIncludes(

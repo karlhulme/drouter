@@ -1,5 +1,6 @@
 import { assertStrictEquals } from "../../deps.ts";
 import { router, ServiceConfig } from "../index.ts";
+import { stdReqInfo } from "./shared.test.ts";
 
 const emptyServiceConfig: ServiceConfig = {
   title: "Test service",
@@ -19,6 +20,7 @@ Deno.test("An OPTIONS request without permitted origin domains.", async () => {
         "api-version": "2000-01-01",
       },
     }),
+    stdReqInfo,
   );
   const allowHeader = response.headers.get("Allow");
   assertStrictEquals(allowHeader, "DELETE, GET, OPTIONS, PATCH, POST, POST");
@@ -44,6 +46,7 @@ Deno.test("An OPTIONS request with a permitted origin domain that matches the re
         "api-version": "2000-01-01",
       },
     }),
+    stdReqInfo,
   );
 
   const allow = response.headers.get("Allow");
@@ -79,6 +82,7 @@ Deno.test("An OPTIONS request with permitted origin domains that do not match th
         "api-version": "2000-01-01",
       },
     }),
+    stdReqInfo,
   );
 
   const corsAllowOrigin = response.headers.get("Access-Control-Allow-Origin");
@@ -101,6 +105,7 @@ Deno.test("An OPTIONS request without an origin header specified in the request.
         "api-version": "2000-01-01",
       },
     }),
+    stdReqInfo,
   );
 
   const corsAllowOrigin = response.headers.get("Access-Control-Allow-Origin");

@@ -3,6 +3,7 @@ import { assertEquals } from "../../deps.ts";
 import {
   createOperation,
   createRouterHandler,
+  stdReqInfo,
   stdReqInit,
 } from "./shared.test.ts";
 
@@ -30,6 +31,7 @@ Deno.test("Get all the information passed to the request.", async () => {
 
   const response = await routerHandler(
     new Request("http://localhost/test", stdReqInit),
+    stdReqInfo,
   );
   assertEquals(response.status, 200);
 });

@@ -1,6 +1,10 @@
 // deno-lint-ignore-file require-await
 import { assertEquals } from "../../deps.ts";
-import { createOperation, createRouterHandler } from "./shared.test.ts";
+import {
+  createOperation,
+  createRouterHandler,
+  stdReqInfo,
+} from "./shared.test.ts";
 
 Deno.test("Process an operation with optional headers and mismatching cases.", async () => {
   const routerHandler = createRouterHandler(
@@ -77,6 +81,7 @@ Deno.test("Process an operation with optional headers and mismatching cases.", a
         "api-version": "2000-01-01",
       },
     }),
+    stdReqInfo,
   );
 
   const result = await response.json();
@@ -168,6 +173,7 @@ Deno.test("Process an operation with required headers.", async () => {
         "api-version": "2000-01-01",
       },
     }),
+    stdReqInfo,
   );
 
   const result = await response.json();

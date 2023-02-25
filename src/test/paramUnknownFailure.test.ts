@@ -3,6 +3,7 @@ import { assertEquals, assertStringIncludes } from "../../deps.ts";
 import {
   createOperation,
   createRouterHandler,
+  stdReqInfo,
   stdReqInit,
 } from "./shared.test.ts";
 
@@ -26,6 +27,7 @@ Deno.test("Fail to process an operation with where an undeclared parameter is re
   try {
     const internalErrorResponse = await routerHandler(
       new Request("http://localhost/test", stdReqInit),
+      stdReqInfo,
     );
     assertEquals(internalErrorResponse.status, 500);
     assertStringIncludes(

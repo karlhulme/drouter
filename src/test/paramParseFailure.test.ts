@@ -1,6 +1,10 @@
 // deno-lint-ignore-file require-await
 import { assertEquals, assertStringIncludes } from "../../deps.ts";
-import { createOperation, createRouterHandler } from "./shared.test.ts";
+import {
+  createOperation,
+  createRouterHandler,
+  stdReqInfo,
+} from "./shared.test.ts";
 
 // Only need to test parsing of numbers and objects.  Strings are returned
 // unchanged and not parsed.  Booleans are tested against known boolean values,
@@ -49,6 +53,7 @@ Deno.test("Fail to process an operation with unparseable number or object parame
         "api-version": "2000-01-01",
       },
     }),
+    stdReqInfo,
   );
   assertEquals(invalidNumResponse.status, 400);
   assertStringIncludes(
@@ -63,6 +68,7 @@ Deno.test("Fail to process an operation with unparseable number or object parame
         "api-version": "2000-01-01",
       },
     }),
+    stdReqInfo,
   );
   assertEquals(invalidObjResponse.status, 400);
   assertStringIncludes(

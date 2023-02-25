@@ -1,7 +1,10 @@
 // deno-lint-ignore-file require-await
-import { assertStringIncludes } from "https://deno.land/std@0.128.0/testing/asserts.ts";
-import { assertEquals } from "../../deps.ts";
-import { createOperation, createRouterHandler } from "./shared.test.ts";
+import { assertEquals, assertStringIncludes } from "../../deps.ts";
+import {
+  createOperation,
+  createRouterHandler,
+  stdReqInfo,
+} from "./shared.test.ts";
 
 Deno.test("Process an operation with a valid payload.", async () => {
   const routerHandler = createRouterHandler(
@@ -35,6 +38,7 @@ Deno.test("Process an operation with a valid payload.", async () => {
         hello: "world",
       }),
     }),
+    stdReqInfo,
   );
 
   const result = await response.json();
@@ -73,6 +77,7 @@ Deno.test("Fail to process an operation with an invalid payload.", async () => {
         hello: "world",
       }),
     }),
+    stdReqInfo,
   );
 
   assertEquals(response.status, 400);
@@ -112,6 +117,7 @@ Deno.test("Fail to process an operation with a malformed payload.", async () => 
       },
       body: "not_a_json_object",
     }),
+    stdReqInfo,
   );
 
   assertEquals(response.status, 400);

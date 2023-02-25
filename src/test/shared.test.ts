@@ -64,3 +64,11 @@ export const stdReqInit: RequestInit = {
     "api-version": "2000-01-01",
   },
 };
+
+export const stdReqInfo: Deno.ServeHandlerInfo = {
+  remoteAddr: {
+    hostname: "200.199.198.197",
+    port: 4321,
+    transport: "tcp",
+  },
+};

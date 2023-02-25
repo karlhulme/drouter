@@ -3,6 +3,7 @@ import { assertEquals, assertStringIncludes } from "../../deps.ts";
 import {
   createOperation,
   createRouterHandler,
+  stdReqInfo,
   stdReqInit,
 } from "./shared.test.ts";
 
@@ -33,6 +34,7 @@ Deno.test("Fail to process an operation that is not given a required parameter."
 
   const missingNumResponse = await routerHandler(
     new Request("http://localhost/test", stdReqInit),
+    stdReqInfo,
   );
   assertEquals(missingNumResponse.status, 400);
   assertStringIncludes(
