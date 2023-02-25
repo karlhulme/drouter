@@ -2,13 +2,25 @@ async function autogenRapidoc() {
   const response = await fetch(
     "https://unpkg.com/rapidoc@9.3.4/dist/rapidoc-min.js",
   );
+
   const sourceCode = await response.text();
+
+  const mapResponse = await fetch(
+    "https://unpkg.com/rapidoc@9.3.4/dist/rapidoc-min.js.map",
+  );
+
+  const mapSourceCode = await mapResponse.text();
 
   await Deno.writeTextFile(
     "./src/autogen.rapidoc.ts",
     `export function rapidoc() {
       return decodeURIComponent(\`${encodeURIComponent(sourceCode)}\`);
-    }`,
+    }
+    
+    export function rapidocMap() {
+      return decodeURIComponent(\`${encodeURIComponent(mapSourceCode)}\`);
+    }
+    `,
   );
 }
 

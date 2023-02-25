@@ -1,4 +1,4 @@
-import { rapidoc } from "../autogen.rapidoc.ts";
+import { rapidoc, rapidocMap } from "../autogen.rapidoc.ts";
 
 /**
  * Returns a response containing a documentation page.
@@ -26,6 +26,17 @@ export function docsPageResponse(): Response {
   return new Response(html, {
     headers: {
       "content-type": "text/html;charset=utf-8",
+    },
+  });
+}
+
+/**
+ * Returns the source code maps for the docs page.
+ */
+export function docsPageMapResponse(): Response {
+  return new Response(rapidocMap(), {
+    headers: {
+      "content-type": "text/plain; charset=utf-8",
     },
   });
 }

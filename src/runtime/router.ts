@@ -28,6 +28,7 @@ import { convertToResponseHeaderValue } from "./convertToResponseHeaderValue.ts"
 import { appendBuildVersionHeaders } from "./appendBuildVersionHeaders.ts";
 import { appendCorsHeaders } from "./appendCorsHeaders.ts";
 import { validateOperationPayload } from "./validateOperationPayload.ts";
+import { docsPageMapResponse } from "../responses/docsPageResponse.ts";
 
 /**
  * The name of the context value that will hold the operation payload
@@ -182,6 +183,12 @@ async function processRequest(
 
   if (underlyingRequest.method === "GET" && url.pathname === "/docs") {
     return docsPageResponse();
+  }
+
+  if (
+    underlyingRequest.method === "GET" && url.pathname === "/rapidoc-min.js.map"
+  ) {
+    return docsPageMapResponse();
   }
 
   if (underlyingRequest.method === "GET" && url.pathname === "/openapi") {
