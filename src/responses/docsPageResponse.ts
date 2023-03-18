@@ -18,6 +18,11 @@ export function docsPageResponse(): Response {
         <rapi-doc
           spec-url="/openapi"
           theme="dark"
+          render-style="focused"
+          show-header="false"
+          schema-style="table"
+          schema-description-expanded="true"
+          default-schema-tab="schema"
         ></rapi-doc>
       </body>
     </html>
