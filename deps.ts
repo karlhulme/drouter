@@ -4,11 +4,6 @@ export {
   assertStringIncludes,
 } from "https://deno.land/std@0.156.0/testing/asserts.ts";
 
-export {
-  decode as decodeBase64,
-  encode as encodeBase64,
-} from "https://deno.land/std@0.156.0/encoding/base64.ts";
-
 export type {
   OpenApiSpec,
   OpenApiSpecComponentsSchema,

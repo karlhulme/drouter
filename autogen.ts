@@ -1,5 +1,3 @@
-// import { encodeBase64 } from "./deps.ts";
-
 async function autogenRapidoc() {
   const response = await fetch(
     "https://unpkg.com/rapidoc@9.3.4/dist/rapidoc-min.js",
@@ -16,10 +14,7 @@ async function autogenRapidoc() {
   // URI encoding increases size from 1.1MB to 1.7MB.
   await Deno.writeTextFile(
     "./src/autogen.rapidoc.ts",
-    `
-    import { decodeBase64 } from "../deps.ts"
-
-    export function rapidoc() {
+    `export function rapidoc() {
       return decodeURIComponent(\`${encodeURIComponent(sourceCode)}\`);
     }
     
