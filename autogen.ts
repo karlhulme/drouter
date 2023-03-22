@@ -1,3 +1,5 @@
+import { encodeBase64 } from "./deps.ts";
+
 async function autogenRapidoc() {
   const response = await fetch(
     "https://unpkg.com/rapidoc@9.3.4/dist/rapidoc-min.js",
@@ -13,12 +15,15 @@ async function autogenRapidoc() {
 
   await Deno.writeTextFile(
     "./src/autogen.rapidoc.ts",
-    `export function rapidoc() {
-      return decodeURIComponent(\`${encodeURIComponent(sourceCode)}\`);
+    `
+    import { decodeBase64 } from "../deps.ts"
+
+    export function rapidoc() {
+      return decodeBase64(\`${encodeBase64(sourceCode)}\`);
     }
     
     export function rapidocMap() {
-      return decodeURIComponent(\`${encodeURIComponent(mapSourceCode)}\`);
+      return decodeBase64(\`${encodeBase64(mapSourceCode)}\`);
     }
     `,
   );

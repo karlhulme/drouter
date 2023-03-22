@@ -43,6 +43,7 @@
     "https://deno.land/std@0.156.0/encoding/_yaml/type/timestamp.ts": "3db0667dd9bdc3b3f0e8596fff023e87bc9fca230a545bb67d0bf3b732c1c656",
     "https://deno.land/std@0.156.0/encoding/_yaml/type/undefined.ts": "5b595082d064cf50a3345f5fdda8c02beb0768e9d97d4bd4c53ac81a9f94e185",
     "https://deno.land/std@0.156.0/encoding/_yaml/utils.ts": "c7e6bf055b08fffe700c7cbdfa2939cab7b9676ff75b6dc98d72d41b3b173d37",
+    "https://deno.land/std@0.156.0/encoding/base64.ts": "c57868ca7fa2fbe919f57f88a623ad34e3d970d675bdc1ff3a9d02bba7409db2",
     "https://deno.land/std@0.156.0/encoding/yaml.ts": "4c02197eb797e40dfe0720fbe32a9990c935f02cf75b6091b36c0710c3218cf6",
     "https://deno.land/std@0.156.0/fmt/colors.ts": "ff7dc9c9f33a72bd48bc24b21bbc1b4545d8494a431f17894dbc5fe92a938fc4",
     "https://deno.land/std@0.156.0/io/buffer.ts": "fae02290f52301c4e0188670e730cd902f9307fb732d79c4aa14ebdc82497289",
