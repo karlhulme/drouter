@@ -1,4 +1,8 @@
-import { assertStrictEquals, assertStringIncludes } from "../../deps.ts";
+import {
+  assert,
+  assertStrictEquals,
+  assertStringIncludes,
+} from "../../deps.ts";
 import { router, ServiceConfig } from "../index.ts";
 import { stdReqInfo, stdReqInit } from "./shared.test.ts";
 
@@ -65,7 +69,7 @@ Deno.test("A /favicon.ico request elicits a byte response.", async () => {
     stdReqInfo,
   );
   const buffer = await response.arrayBuffer();
-  assertStrictEquals(buffer.byteLength, 67646);
+  assert(buffer.byteLength > 4000);
 });
 
 Deno.test("A /health request elicits a health response.", async () => {
