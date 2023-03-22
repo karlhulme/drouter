@@ -35,6 +35,9 @@ async function autogenFavicon() {
 
   const contentsAsString = `JSON.parse("[${contents.join(",")}]")`;
 
+  // Develop icon using https://www.xiconeditor.com/.
+  // Upload existing favicon, edit, and re-download.
+
   await Deno.writeTextFile(
     "./src/autogen.favicon.ts",
     `export function favicon() {
