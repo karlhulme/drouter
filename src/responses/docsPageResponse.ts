@@ -10,9 +10,7 @@ export function docsPageResponse(): Response {
       <head>
         <meta charset="utf-8">
         <meta name="description" content="Service documentation.">
-        <script type="module">
-          ${rapidoc()}
-        </script>
+        <script type="module" src="/rapidoc-min.js" />
       </head>
       <body>
         <rapi-doc
@@ -36,9 +34,20 @@ export function docsPageResponse(): Response {
 }
 
 /**
- * Returns the source code maps for the docs page.
+ * Returns the rapidoc code for the docs page.
  */
-export function docsPageMapResponse(): Response {
+export function docsPageRapidocCodeResponse(): Response {
+  return new Response(rapidoc(), {
+    headers: {
+      "content-type": "text/javascript; charset=utf-8",
+    },
+  });
+}
+
+/**
+ * Returns the rapidoc source code map for the docs page.
+ */
+export function docsPageRapidocMapResponse(): Response {
   return new Response(rapidocMap(), {
     headers: {
       "content-type": "text/plain; charset=utf-8",

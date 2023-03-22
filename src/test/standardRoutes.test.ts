@@ -98,6 +98,19 @@ Deno.test("A /docs request elicits a docs response.", async () => {
   );
 });
 
+Deno.test("A /rapidoc-min.js request elicits a source code response.", async () => {
+  const routerHandler = router(emptyServiceConfig);
+  const response = await routerHandler(
+    new Request("http://localhost/rapidoc-min.js", stdReqInit),
+    stdReqInfo,
+  );
+  const text = await response.text();
+  assertStringIncludes(
+    text,
+    '"use strict"',
+  );
+});
+
 Deno.test("A /rapidoc-min.js.map request elicits a source map response.", async () => {
   const routerHandler = router(emptyServiceConfig);
   const response = await routerHandler(
