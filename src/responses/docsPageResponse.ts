@@ -10,7 +10,7 @@ export function docsPageResponse(): Response {
       <head>
         <meta charset="utf-8">
         <meta name="description" content="Service documentation.">
-        <script type="module" src="/rapidoc-min.js" />
+        <script type="module" src="/rapidoc-min.js"></script>
       </head>
       <body>
         <rapi-doc
@@ -20,7 +20,6 @@ export function docsPageResponse(): Response {
           show-header="false"
           schema-style="table"
           schema-description-expanded="true"
-          default-schema-tab="schema"
         ></rapi-doc>
       </body>
     </html>
