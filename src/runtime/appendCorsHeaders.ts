@@ -14,7 +14,7 @@ export function appendCorsHeaders(
 ) {
   responseHeaders.append(
     "allow",
-    "DELETE, GET, OPTIONS, PATCH, POST, POST",
+    "DELETE, GET, OPTIONS, PATCH, POST, PUT",
   );
 
   if (
@@ -28,7 +28,7 @@ export function appendCorsHeaders(
 
     responseHeaders.append(
       "Access-Control-Allow-Methods",
-      "DELETE, GET, OPTIONS, PATCH, POST, POST",
+      "DELETE, GET, OPTIONS, PATCH, POST, PUT",
     );
 
     responseHeaders.append(
