@@ -50,7 +50,7 @@ Deno.test("Fail to process an operation where a non-number parameter is read as 
     assertEquals(internalErrorResponse.status, 500);
     assertStringIncludes(
       await internalErrorResponse.text(),
-      "INTERNAL_SERVER_ERROR",
+      "internal-server-error",
     );
     assertStringIncludes(
       errors.join().toString(),
@@ -105,7 +105,7 @@ Deno.test("Fail to process an operation where a non-string parameter is read as 
     assertEquals(internalErrorResponse.status, 500);
     assertStringIncludes(
       await internalErrorResponse.text(),
-      "INTERNAL_SERVER_ERROR",
+      "internal-server-error",
     );
     assertStringIncludes(
       errors.join().toString(),
@@ -160,7 +160,7 @@ Deno.test("Fail to process an operation where a non-boolean parameter is read as
     assertEquals(internalErrorResponse.status, 500);
     assertStringIncludes(
       await internalErrorResponse.text(),
-      "INTERNAL_SERVER_ERROR",
+      "internal-server-error",
     );
     assertStringIncludes(
       errors.join().toString(),

@@ -6,7 +6,8 @@ import { errorResponse } from "./errorResponse.ts";
 export function apiKeyNotSuppliedResponse() {
   return errorResponse(
     401,
-    "API_KEY_NOT_SUPPLIED",
+    "/common",
+    "api-key-not-supplied",
     "An x-api-key header was not included in the request.",
   );
 }

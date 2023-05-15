@@ -7,7 +7,8 @@ import { errorResponse } from "./errorResponse.ts";
 export function apiKeyNotValidResponse() {
   return errorResponse(
     401,
-    "API_KEY_NOT_VALID",
+    "/common",
+    "api-key-not-valid",
     "An x-api-key header was included in the request but that value was not valid.",
   );
 }

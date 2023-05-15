@@ -24,7 +24,10 @@ Deno.test("Return 500 if an unknown error is raised.", async () => {
     stdReqInfo,
   );
   assertEquals(response.status, 500);
-  assertStringIncludes(await response.text(), "INTERNAL_SERVER_ERROR");
+  assertStringIncludes(
+    await response.text(),
+    "/common/errors/internal-server-error",
+  );
 });
 
 Deno.test("Return 501 if an HTTP 501 error is raised.", async () => {
@@ -33,13 +36,14 @@ Deno.test("Return 501 if an HTTP 501 error is raised.", async () => {
       handler: async () => {
         throw new HttpError(
           501,
-          "NOT_WRITTEN_YET",
+          // Include the extra trailing slash here to test
+          // the path normalisation code.
+          "/common/",
+          "not-written-yet",
           "Code is not written for this route.",
         );
       },
-      setup: (op) => {
-        op.responseSuccessCode = 201;
-      },
+      setup: () => {},
     }),
   );
 
@@ -48,5 +52,8 @@ Deno.test("Return 501 if an HTTP 501 error is raised.", async () => {
     stdReqInfo,
   );
   assertEquals(response.status, 501);
-  assertStringIncludes(await response.text(), "NOT_WRITTEN_YET");
+  assertStringIncludes(
+    await response.text(),
+    "/common/errors/not-written-yet",
+  );
 });

@@ -46,6 +46,6 @@ Deno.test("Fail to process an operation with a parameter that fails validation."
   assertEquals(invalidNumResponse.status, 400);
   assertStringIncludes(
     await invalidNumResponse.text(),
-    "REQUEST_PARAMETER_DID_NOT_VALIDATE",
+    "request-parameter-did-not-validate",
   );
 });

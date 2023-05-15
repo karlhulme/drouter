@@ -7,7 +7,8 @@ import { errorResponse } from "./errorResponse.ts";
 export function apiKeyHandlerNotDefinedResponse() {
   return errorResponse(
     501,
-    "API_KEY_HANDLER_NOT_IMPLEMENTED",
+    "/common",
+    "api-key-handler-not-implemented",
     "A handler for the x-api-key has not been defined.",
   );
 }

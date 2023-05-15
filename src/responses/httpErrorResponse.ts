@@ -12,9 +12,10 @@ export function httpErrorResponse(
 ) {
   return errorResponse(
     err.code,
-    err.errorCode,
-    err.description,
-    err.details,
+    err.path,
+    err.type,
+    err.detail,
+    err.properties,
     additionalHeaders,
   );
 }

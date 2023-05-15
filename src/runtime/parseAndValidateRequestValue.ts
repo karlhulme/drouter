@@ -1,4 +1,5 @@
 import { HttpError, OperationNamedType } from "../interfaces/index.ts";
+import { validationErrorToString } from "./validationErrorToString.ts";
 
 /**
  * Parses the given string request value, validates it using the
@@ -26,9 +27,14 @@ export function parseAndValidateRequestValue(
     if (Array.isArray(validationResult) && validationResult.length > 0) {
       throw new HttpError(
         400,
-        "REQUEST_PARAMETER_DID_NOT_VALIDATE",
+        "/common",
+        "request-parameter-did-not-validate",
         `${displayName} failed validation.`,
-        JSON.stringify(validationResult, null, 2),
+        {
+          validationResult: validationResult
+            .map(validationErrorToString)
+            .join("\n"),
+        },
       );
     }
 
@@ -36,7 +42,8 @@ export function parseAndValidateRequestValue(
   } else if (markedRequired) {
     throw new HttpError(
       400,
-      "REQUEST_PARAMETER_MISSING",
+      "/common",
+      "request-parameter-missing",
       `${displayName} is required and must be supplied in the request.`,
     );
   } else {
@@ -65,7 +72,8 @@ function parseRequestValue(
     if (isNaN(value)) {
       throw new HttpError(
         400,
-        "REQUEST_PARAMETER_VALUE_NOT_A_NUMBER",
+        "/common",
+        "request-parameter-value-not-a-number",
         `${displayName} with value '${rawValue}' cannot be converted to a number.`,
       );
     }
@@ -81,7 +89,8 @@ function parseRequestValue(
     } catch {
       throw new HttpError(
         400,
-        "UNABLE_TO_READ_REQUEST_PARAMETER_AS_JSON",
+        "/common",
+        "unable-to-read-request-parameter-as-json",
         `${displayName} cannot be parsed into JSON.`,
       );
     }
