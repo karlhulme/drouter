@@ -1,5 +1,4 @@
 import { HttpError, Operation } from "../interfaces/index.ts";
-import { validationErrorToString } from "./validationErrorToString.ts";
 
 /**
  * Validates an operation payload according to the
@@ -25,9 +24,7 @@ export function validateOperationPayload(
         "request-body-json-did-not-validate",
         "The request body JSON failed validation.",
         {
-          validationResult: validationResult
-            .map(validationErrorToString)
-            .join("\n"),
+          validationResult,
         },
       );
     }

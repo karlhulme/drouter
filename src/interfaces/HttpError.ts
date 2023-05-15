@@ -13,14 +13,14 @@ export class HttpError extends Error {
    * @param detail A description of the error that is specific to this
    * occurence of the problem.
    * @param properties Additional properties for the error defined as a record
-   * of strings.
+   * of JSON serialisable types.
    */
   constructor(
     readonly code: number,
     readonly path: string,
     readonly type: string,
     readonly detail: string,
-    readonly properties?: Record<string, string | undefined>,
+    readonly properties?: Record<string, unknown>,
   ) {
     const normalisedPath = path.endsWith("/") ? path : path + "/";
 

@@ -1,5 +1,4 @@
 import { HttpError, OperationNamedType } from "../interfaces/index.ts";
-import { validationErrorToString } from "./validationErrorToString.ts";
 
 /**
  * Parses the given string request value, validates it using the
@@ -31,9 +30,7 @@ export function parseAndValidateRequestValue(
         "request-parameter-did-not-validate",
         `${displayName} failed validation.`,
         {
-          validationResult: validationResult
-            .map(validationErrorToString)
-            .join("\n"),
+          validationResult,
         },
       );
     }

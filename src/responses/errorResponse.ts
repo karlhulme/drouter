@@ -22,7 +22,7 @@ export function errorResponse(
   path: string,
   type: string,
   detail: string,
-  properties?: Record<string, string | undefined>,
+  properties?: Record<string, unknown>,
   additionalHeaders?: HeadersInit,
 ) {
   const normalisedPath = path.endsWith("/") ? path : path + "/";
