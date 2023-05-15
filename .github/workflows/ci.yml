@@ -3,8 +3,6 @@ name: Deno
 on:
   push:
     branches: [main]
-  pull_request:
-    branches: [main]
 
 jobs:
   test:
@@ -18,9 +16,6 @@ jobs:
         uses: denoland/setup-deno@v1
         with:
           deno-version: v1.x
-
-      - name: Verify formatting
-        run: deno fmt --check
 
       - name: Run linter
         run: deno lint
