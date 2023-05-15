@@ -119,7 +119,10 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
         loadPayloadIndex,
       );
     } catch (err) {
-      if (err instanceof HttpError && err.code >= 400 && err.code < 500) {
+      if (
+        err instanceof HttpError && (err.code >= 400 && err.code < 500) ||
+        (err.code === 501)
+      ) {
         response = httpErrorResponse(err);
       } else {
         // Log the unexpected error to the console.
@@ -614,5 +617,6 @@ function createOperationRequest(
         ) as boolean,
     },
     underlyingRequest,
+    start: new Date(),
   };
 }

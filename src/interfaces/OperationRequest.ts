@@ -56,4 +56,9 @@ export interface OperationRequest<
    * The validated url parameter values passed with the request.
    */
   urlParams: OperationRequestUrlParamsBlock<RequestUrlParamNames>;
+
+  /**
+   * The point that request processing began.
+   */
+  start: Date;
 }
