@@ -8,7 +8,7 @@ import { parseAndValidateRequestValue } from "./parseAndValidateRequestValue.ts"
  * @param op An operation.
  */
 export function getUrlParamValues(
-  urlParams: Record<string, string>,
+  urlParams: Record<string, string | undefined>,
   op: Operation,
 ) {
   const urlParamValues: OperationRequestValue[] = [];

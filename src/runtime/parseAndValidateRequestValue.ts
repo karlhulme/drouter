@@ -5,14 +5,16 @@ import { HttpError, OperationNamedType } from "../interfaces/index.ts";
  * given type information and returns the value converted to
  * the target type.
  * @param displayName The display name of the value, e.g. "Header 'abc'".
- * @param rawValue The raw value extracted from the request.
+ * @param rawValue The raw value extracted from the request.  A missing url
+ * parameter will be undefined, and a missing header or query parameter will
+ * be null.
  * @param type The type of the value.
  * @param markedRequired True if the value is marked as required in the
  * configuration of the operation.
  */
 export function parseAndValidateRequestValue(
   displayName: string,
-  rawValue: string | null,
+  rawValue: string | undefined | null,
   type: OperationNamedType,
   markedRequired: boolean,
 ): unknown {
