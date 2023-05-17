@@ -226,7 +226,10 @@ function createPathOperation(
     .map((rfd) => ({
       code: rfd.code,
       summary: rfd.summary,
-      localType: operation.urlPattern.replaceAll(/:[^/]+/g, "-") + "/" +
+      localType: "/errors" +
+        operation.urlPattern.replaceAll(/:[^/]+/g, "-") +
+        "/" +
+        operation.method.toLowerCase() + "/" +
         rfd.localType,
     }));
 

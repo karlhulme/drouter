@@ -27,6 +27,7 @@ export function createHttpError(
     const qualifiedType = "/errors" +
       op.urlPattern.replaceAll(/:[^/]+/g, "-") +
       "/" +
+      op.method.toLowerCase() + "/" +
       localType;
 
     return new HttpError(

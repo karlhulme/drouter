@@ -29,7 +29,7 @@ Deno.test("Produce http error for known error local type.", () => {
 
   assertEquals(err.code, 456);
   assertEquals(err.title, "A specific type of problem.");
-  assertEquals(err.type, "/errors/base/-/leaf/-/aKnownType");
+  assertEquals(err.type, "/errors/base/-/leaf/-/post/aKnownType");
   assertEquals(err.detail, "Specific issue with this call.");
   assertEquals(err.properties?.foo, 123);
   assertEquals(err.properties?.bar, true);

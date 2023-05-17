@@ -32,6 +32,6 @@ Deno.test("Return an error raised from a route.", async () => {
   assertEquals(response.status, 456);
   assertStringIncludes(
     await response.text(),
-    "/errors/path/here/-/there/bespokeError",
+    "/errors/path/here/-/there/get/bespokeError",
   );
 });
