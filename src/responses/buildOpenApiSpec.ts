@@ -194,6 +194,13 @@ function createPathOperation(
         rfd.localType,
     }));
 
+  failureDefinitions.push({
+    code: 400,
+    localType: "errors/common/apiVersionNotSupplied",
+    summary:
+      "The request did not contain an api-version header in the form YYYY-MM-DD.",
+  });
+
   if (operation.requestBodyType) {
     failureDefinitions.push({
       code: 400,
@@ -217,6 +224,21 @@ function createPathOperation(
       code: 400,
       localType: "errors/common/requestParameterMissing",
       summary: "A required request parameter is missing.",
+    });
+  }
+
+  if (operation.requiresApiKey) {
+    failureDefinitions.push({
+      code: 401,
+      localType: "errors/common/apiKeyNotSupplied",
+      summary: "An x-api-key header was not included in the request.",
+    });
+
+    failureDefinitions.push({
+      code: 401,
+      localType: "errors/common/apiKeyNotValid",
+      summary:
+        "An x-api-key header was included in the request but that value was not valid.",
     });
   }
 

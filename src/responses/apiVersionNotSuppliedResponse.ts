@@ -7,6 +7,6 @@ export function apiVersionNotSuppliedResponse() {
   return errorResponse(
     400,
     "/errors/common/apiVersionNotSupplied",
-    "You must supply an api-version header in the form YYYY-MM-DD.",
+    "The request did not contain an api-version header in the form YYYY-MM-DD.",
   );
 }
