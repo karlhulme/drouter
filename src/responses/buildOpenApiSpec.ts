@@ -292,6 +292,7 @@ function createPathOperation(
     operationId: operation.operationId,
     tags: operation.tags,
     summary: operation.name,
+    description: operation.markdown,
     security: operation.requiresApiKey
       ? [{
         apiKeyAuth: [],
