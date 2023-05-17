@@ -87,28 +87,20 @@ export function buildOpenApiSpec(config: ServiceConfig): OpenApiSpec {
       properties: {
         status: {
           description: "The HTTP status code returned with the error.",
-          schema: {
-            $ref: `#/components/schemas/svcNumber`,
-          },
+          $ref: `#/components/schemas/svcNumber`,
         },
         type: {
           description: "The unique URI for the type of error.",
-          schema: {
-            $ref: `#/components/schemas/svcString`,
-          },
+          $ref: `#/components/schemas/svcString`,
         },
         title: {
           description: "A short description of the error type.",
-          schema: {
-            $ref: `#/components/schemas/svcString`,
-          },
+          $ref: `#/components/schemas/svcString`,
         },
         detail: {
           description:
             "A description of this specific occurrence of the error.",
-          schema: {
-            $ref: `#/components/schemas/svcString`,
-          },
+          $ref: `#/components/schemas/svcString`,
         },
       },
       required: [
