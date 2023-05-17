@@ -29,6 +29,7 @@ export interface Operation<
   RequestHeaderNames extends string = string,
   RequestQueryParamNames extends string = string,
   ResponseHeaderNames extends string = string,
+  RequestFailureCodes extends string = string,
 > {
   /**
    * The url to match including any url parameters, e.g /users/:id
@@ -127,7 +128,8 @@ export interface Operation<
       RequestBodyType,
       RequestUrlParamNames,
       RequestHeaderNames,
-      RequestQueryParamNames
+      RequestQueryParamNames,
+      RequestFailureCodes
     >,
     ctx: OperationContext,
   ) => Promise<OperationResponse<ResponseBodyType, ResponseHeaderNames>>;
