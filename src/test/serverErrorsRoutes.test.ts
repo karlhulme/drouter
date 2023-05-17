@@ -1,6 +1,5 @@
 // deno-lint-ignore-file require-await
-import { assertStringIncludes } from "https://deno.land/std@0.156.0/testing/asserts.ts";
-import { assertEquals } from "../../deps.ts";
+import { assertEquals, assertStringIncludes } from "../../deps.ts";
 import { HttpError } from "../index.ts";
 import {
   createOperation,
@@ -30,12 +29,31 @@ Deno.test("Return 500 if an unknown error is raised.", async () => {
   );
 });
 
-Deno.test("Return 501 if an HTTP 501 error is raised.", async () => {
+Deno.test("Return 501 if no handler defined.", async () => {
+  const routerHandler = createRouterHandler(
+    createOperation({
+      handler: undefined,
+      setup: () => {},
+    }),
+  );
+
+  const response = await routerHandler(
+    new Request("http://localhost/test", stdReqInit),
+    stdReqInfo,
+  );
+  assertEquals(response.status, 501);
+  assertStringIncludes(
+    await response.text(),
+    "/errors/common/operationNotImplemented",
+  );
+});
+
+Deno.test("Return given code for bespoke HTTP error.", async () => {
   const routerHandler = createRouterHandler(
     createOperation({
       handler: async () => {
         throw new HttpError(
-          501,
+          456,
           // Include the extra trailing slash here to test
           // the path normalisation code.
           "/errors/testing/myBespokeError",
@@ -50,7 +68,7 @@ Deno.test("Return 501 if an HTTP 501 error is raised.", async () => {
     new Request("http://localhost/test", stdReqInit),
     stdReqInfo,
   );
-  assertEquals(response.status, 501);
+  assertEquals(response.status, 456);
   assertStringIncludes(
     await response.text(),
     "/errors/testing/myBespokeError",

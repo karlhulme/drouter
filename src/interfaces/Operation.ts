@@ -123,7 +123,7 @@ export interface Operation<
   /**
    * The implementation of the operation as an asynchronous function.
    */
-  handler: (
+  handler?: (
     req: OperationRequest<
       RequestBodyType,
       RequestUrlParamNames,

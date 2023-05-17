@@ -10,7 +10,7 @@ import {
 
 interface CreateOperationProps {
   setup: (op: Operation) => void;
-  handler: (
+  handler?: (
     req: OperationRequest<
       any,
       string,

@@ -18,6 +18,7 @@ import {
   httpErrorResponse,
   internalServerErrorResponse,
   openApiResponse,
+  operationNotImplementedResponse,
   resourceNotFoundResponse,
   rootResponse,
 } from "../responses/index.ts";
@@ -218,6 +219,10 @@ async function processRequest(
     return resourceNotFoundResponse();
   }
 
+  if (!matchedOp.operation.handler) {
+    return operationNotImplementedResponse();
+  }
+
   const ctx = new Map<string, unknown>();
 
   if (matchedOp.operation.requiresApiKey) {
@@ -349,7 +354,7 @@ async function executeMatchedOp(
         payload,
       );
 
-      const res = await op.handler(req, ctx);
+      const res = await op.handler!(req, ctx);
 
       const responseStatus = op.responseSuccessCode || 200;
 
