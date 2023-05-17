@@ -20,6 +20,7 @@ export function docsPageResponse(): Response {
           show-header="false"
           schema-style="table"
           schema-description-expanded="true"
+          persist-auth="true"
         ></rapi-doc>
       </body>
     </html>
