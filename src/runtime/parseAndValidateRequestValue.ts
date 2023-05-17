@@ -26,8 +26,8 @@ export function parseAndValidateRequestValue(
     if (Array.isArray(validationResult) && validationResult.length > 0) {
       throw new HttpError(
         400,
-        "/common",
-        "request-parameter-did-not-validate",
+        "/errors/common/requestParameterDidNotValidate",
+        "A request parameter did not validate.",
         `${displayName} failed validation.`,
         {
           validationResult,
@@ -39,8 +39,8 @@ export function parseAndValidateRequestValue(
   } else if (markedRequired) {
     throw new HttpError(
       400,
-      "/common",
-      "request-parameter-missing",
+      "/errors/common/requestParameterMissing",
+      "A required request parameter is missing.",
       `${displayName} is required and must be supplied in the request.`,
     );
   } else {
@@ -69,8 +69,8 @@ function parseRequestValue(
     if (isNaN(value)) {
       throw new HttpError(
         400,
-        "/common",
-        "request-parameter-value-not-a-number",
+        "/errors/common/requestParameterDidNotValidate",
+        "A request parameter did not validate.",
         `${displayName} with value '${rawValue}' cannot be converted to a number.`,
       );
     }
@@ -86,8 +86,8 @@ function parseRequestValue(
     } catch {
       throw new HttpError(
         400,
-        "/common",
-        "unable-to-read-request-parameter-as-json",
+        "/errors/common/requestParameterDidNotValidate",
+        "A request parameter did not validate.",
         `${displayName} cannot be parsed into JSON.`,
       );
     }

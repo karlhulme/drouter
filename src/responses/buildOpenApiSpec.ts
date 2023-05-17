@@ -186,6 +186,47 @@ function createPathOperation(
     ...payloadMiddlewareSpecs.map((pms) => pms.responseHeaders || []).flat(),
   ];
 
+  const failureDefinitions = (operation.responseFailureDefinitions || [])
+    .map((rfd) => ({
+      code: rfd.code,
+      summary: rfd.summary,
+      localType: operation.urlPattern.replaceAll(/:[^/]+/g, "-") + "/" +
+        rfd.localType,
+    }));
+
+  if (operation.requestBodyType) {
+    failureDefinitions.push({
+      code: 400,
+      localType: "errors/common/requestBodyJsonDidNotValidate",
+      summary: "The request body JSON failed validation.",
+    });
+  }
+
+  if (
+    (operation.requestQueryParams || []).length > 0 ||
+    (operation.requestHeaders || []).length > 0 ||
+    (operation.requestUrlParams || []).length > 0
+  ) {
+    failureDefinitions.push({
+      code: 400,
+      localType: "errors/common/requestParameterDidNotValidate",
+      summary: "A request parameter did not validate.",
+    });
+
+    failureDefinitions.push({
+      code: 400,
+      localType: "errors/common/requestParameterMissing",
+      summary: "A required request parameter is missing.",
+    });
+  }
+
+  const uniqueFailureCodes = Array.from(
+    failureDefinitions.reduce((agg, cur) => {
+      agg.add(cur.code);
+      return agg;
+    }, new Set<number>()),
+  );
+
   return {
     operationId: operation.operationId,
     tags: operation.tags,
@@ -318,9 +359,24 @@ function createPathOperation(
           }, {} as Record<string, OpenApiSpecPathOperationResponseHeader>),
         },
       },
-      ...(operation.responseFailureDefinitions || []).reduce((agg, cur) => {
-        agg[cur.code.toString()] = {
-          description: cur.summary,
+      ...uniqueFailureCodes.reduce((agg, cur) => {
+        let description =
+          "Errors are returned in the format described by IETF 7807: Problem details for HTTP APIs.";
+        description +=
+          " The list below shows the possible values for type and the associated meaning.";
+
+        failureDefinitions
+          .filter((fd) => fd.code === cur)
+          .forEach((fd) => {
+            description += `\n\n- **${fd.localType}**`;
+            description += `\n  ${fd.summary}`;
+          });
+
+        description +=
+          "\n\nThe content-type for error responses will be `application/problem+json`.";
+
+        agg[cur.toString()] = {
+          description,
         };
 
         return agg;

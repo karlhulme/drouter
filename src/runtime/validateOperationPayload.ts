@@ -20,9 +20,9 @@ export function validateOperationPayload(
     if (Array.isArray(validationResult) && validationResult.length > 0) {
       throw new HttpError(
         400,
-        "/common",
-        "request-body-json-did-not-validate",
+        "/errors/common/requestBodyJsonDidNotValidate",
         "The request body JSON failed validation.",
+        undefined,
         {
           validationResult,
         },

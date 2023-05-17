@@ -56,9 +56,14 @@ Deno.test("Fail to process an operation with unparseable number or object parame
     stdReqInfo,
   );
   assertEquals(invalidNumResponse.status, 400);
+  const responseText = await invalidNumResponse.text();
   assertStringIncludes(
-    await invalidNumResponse.text(),
-    "request-parameter-value-not-a-number",
+    responseText,
+    "/errors/common/requestParameterDidNotValidate",
+  );
+  assertStringIncludes(
+    responseText,
+    "cannot be converted to a number",
   );
 
   const invalidObjResponse = await routerHandler(
@@ -71,8 +76,13 @@ Deno.test("Fail to process an operation with unparseable number or object parame
     stdReqInfo,
   );
   assertEquals(invalidObjResponse.status, 400);
+  const responseText2 = await invalidObjResponse.text();
   assertStringIncludes(
-    await invalidObjResponse.text(),
-    "unable-to-read-request-parameter-as-json",
+    responseText2,
+    "/errors/common/requestParameterDidNotValidate",
+  );
+  assertStringIncludes(
+    responseText2,
+    "cannot be parsed into JSON",
   );
 });
