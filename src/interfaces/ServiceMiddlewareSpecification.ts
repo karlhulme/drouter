@@ -1,3 +1,4 @@
+import { ServiceMiddlewareSpecificationFailureDefinition } from "./ServiceMiddlewareSpecificationFailureDefinition.ts";
 import { ServiceMiddlewareSpecificationHeader } from "./ServiceMiddlewareSpecificationHeader.ts";
 import { ServiceMiddlewareSpecificationOutboundHeader } from "./ServiceMiddlewareSpecificationOutboundHeader.ts";
 import { ServiceMiddlewareSpecificationQueryParam } from "./ServiceMiddlewareSpecificationQueryParam.ts";
@@ -22,4 +23,10 @@ export interface ServiceMiddlewareSpecification {
    * An array of the header names that the middleware will supply.
    */
   responseHeaders?: ServiceMiddlewareSpecificationOutboundHeader[];
+
+  /**
+   * An array of the failure definitions that the middleware might
+   * generate instead of completing the processing of a request.
+   */
+  failureDefinitions?: ServiceMiddlewareSpecificationFailureDefinition[];
 }

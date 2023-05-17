@@ -226,7 +226,7 @@ function createPathOperation(
     .map((rfd) => ({
       code: rfd.code,
       summary: rfd.summary,
-      localType: "/errors" +
+      type: "/errors" +
         operation.urlPattern.replaceAll(/:[^/]+/g, "-") +
         "/" +
         operation.method.toLowerCase() + "/" +
@@ -235,7 +235,7 @@ function createPathOperation(
 
   failureDefinitions.push({
     code: 400,
-    localType: "/errors/common/apiVersionNotSupplied",
+    type: "/errors/common/apiVersionNotSupplied",
     summary:
       "The request did not contain an api-version header in the form YYYY-MM-DD.",
   });
@@ -243,7 +243,7 @@ function createPathOperation(
   if (operation.requestBodyType) {
     failureDefinitions.push({
       code: 400,
-      localType: "/errors/common/requestBodyJsonDidNotValidate",
+      type: "/errors/common/requestBodyJsonDidNotValidate",
       summary: "The request body JSON failed validation.",
     });
   }
@@ -255,13 +255,13 @@ function createPathOperation(
   ) {
     failureDefinitions.push({
       code: 400,
-      localType: "/errors/common/requestParameterDidNotValidate",
+      type: "/errors/common/requestParameterDidNotValidate",
       summary: "A request parameter did not validate.",
     });
 
     failureDefinitions.push({
       code: 400,
-      localType: "/errors/common/requestParameterMissing",
+      type: "/errors/common/requestParameterMissing",
       summary: "A required request parameter is missing.",
     });
   }
@@ -269,17 +269,22 @@ function createPathOperation(
   if (operation.requiresApiKey) {
     failureDefinitions.push({
       code: 401,
-      localType: "/errors/common/apiKeyNotSupplied",
+      type: "/errors/common/apiKeyNotSupplied",
       summary: "An x-api-key header was not included in the request.",
     });
 
     failureDefinitions.push({
       code: 401,
-      localType: "/errors/common/apiKeyNotValid",
+      type: "/errors/common/apiKeyNotValid",
       summary:
         "An x-api-key header was included in the request but that value was not valid.",
     });
   }
+
+  failureDefinitions.push(...[
+    ...middlewareSpecs.map((ms) => ms.failureDefinitions || []).flat(),
+    ...payloadMiddlewareSpecs.map((ms) => ms.failureDefinitions || []).flat(),
+  ]);
 
   const uniqueFailureCodes = Array.from(
     failureDefinitions.reduce((agg, cur) => {
@@ -430,7 +435,7 @@ function createPathOperation(
         failureDefinitions
           .filter((fd) => fd.code === cur)
           .forEach((fd) => {
-            description += `\n\n- **${fd.localType}**`;
+            description += `\n\n- **${fd.type}**`;
             description += `\n  ${fd.summary}`;
           });
 

@@ -31,6 +31,7 @@ Deno.test("Process an operation that uses middleware functions.", async () => {
             headers: [],
             queryParams: [],
             responseHeaders: [],
+            failureDefinitions: [],
           }),
         },
         {
@@ -42,6 +43,7 @@ Deno.test("Process an operation that uses middleware functions.", async () => {
             headers: [],
             queryParams: [],
             responseHeaders: [],
+            failureDefinitions: [],
           }),
         },
       ],
@@ -55,6 +57,7 @@ Deno.test("Process an operation that uses middleware functions.", async () => {
               headers: [],
               queryParams: [],
               responseHeaders: [],
+              failureDefinitions: [],
             }),
           },
           {
@@ -66,6 +69,7 @@ Deno.test("Process an operation that uses middleware functions.", async () => {
               headers: [],
               queryParams: [],
               responseHeaders: [],
+              failureDefinitions: [],
             }),
           },
         ];
