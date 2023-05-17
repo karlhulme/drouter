@@ -73,7 +73,7 @@ export function buildOpenApiSpec(config: ServiceConfig): OpenApiSpec {
       type: "object",
       description: "An IETF 7807 problem.",
       additionalProperties: true,
-      properties: [{
+      properties: {
         status: {
           type: "number",
           description: "The HTTP status code returned with the error.",
@@ -91,7 +91,7 @@ export function buildOpenApiSpec(config: ServiceConfig): OpenApiSpec {
           description:
             "A description of this specific occurrence of the error.",
         },
-      }],
+      },
       required: [
         "status",
         "type",
