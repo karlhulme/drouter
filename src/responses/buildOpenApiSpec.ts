@@ -67,6 +67,17 @@ export function buildOpenApiSpec(config: ServiceConfig): OpenApiSpec {
   }, config.namedTypes);
 
   appendTypeToSpec(spec, {
+    name: "svcNumber",
+    referencedSchemaTypes: [],
+    schema: {
+      type: "number",
+      description: "A number for service level headers and query parameters.",
+    },
+    underlyingType: "number",
+    validator: () => [],
+  }, config.namedTypes);
+
+  appendTypeToSpec(spec, {
     name: "svcProblem",
     referencedSchemaTypes: [],
     schema: {
@@ -75,21 +86,29 @@ export function buildOpenApiSpec(config: ServiceConfig): OpenApiSpec {
       additionalProperties: true,
       properties: {
         status: {
-          type: "number",
           description: "The HTTP status code returned with the error.",
+          schema: {
+            $ref: `#/components/schemas/svcNumber`,
+          },
         },
         type: {
-          type: "string",
           description: "The unique URI for the type of error.",
+          schema: {
+            $ref: `#/components/schemas/svcString`,
+          },
         },
         title: {
-          type: "string",
           description: "A short description of the error type.",
+          schema: {
+            $ref: `#/components/schemas/svcString`,
+          },
         },
         detail: {
-          type: "string",
           description:
             "A description of this specific occurrence of the error.",
+          schema: {
+            $ref: `#/components/schemas/svcString`,
+          },
         },
       },
       required: [
