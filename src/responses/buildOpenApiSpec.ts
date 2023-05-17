@@ -66,6 +66,42 @@ export function buildOpenApiSpec(config: ServiceConfig): OpenApiSpec {
     validator: () => [],
   }, config.namedTypes);
 
+  appendTypeToSpec(spec, {
+    name: "svcProblem",
+    referencedSchemaTypes: [],
+    schema: {
+      type: "object",
+      description: "An IETF 7807 problem.",
+      additionalProperties: true,
+      properties: [{
+        status: {
+          type: "number",
+          description: "The HTTP status code returned with the error.",
+        },
+        type: {
+          type: "string",
+          description: "The unique URI for the type of error.",
+        },
+        title: {
+          type: "string",
+          description: "A short description of the error type.",
+        },
+        detail: {
+          type: "string",
+          description:
+            "A description of this specific occurrence of the error.",
+        },
+      }],
+      required: [
+        "status",
+        "type",
+        "title",
+      ],
+    },
+    underlyingType: "object",
+    validator: () => [],
+  }, config.namedTypes);
+
   const sortedOperations = config.operations
     .sort((a, b) => a.name.localeCompare(b.name));
 
@@ -399,6 +435,13 @@ function createPathOperation(
 
         agg[cur.toString()] = {
           description,
+          content: {
+            "application/json": {
+              schema: {
+                $ref: `#/components/schemas/svcProblem`,
+              },
+            },
+          },
         };
 
         return agg;
