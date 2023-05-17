@@ -11,9 +11,9 @@ export function internalServerErrorResponse(
 ) {
   return errorResponse(
     500,
-    "/common",
-    "internal-server-error",
+    "/errors/common/internalServerError",
     "Unexpected error raised processing request.",
+    undefined,
     {
       method: underlyingRequest.method,
       url: underlyingRequest.url,

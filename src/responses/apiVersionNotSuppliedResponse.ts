@@ -6,8 +6,7 @@ import { errorResponse } from "./errorResponse.ts";
 export function apiVersionNotSuppliedResponse() {
   return errorResponse(
     400,
-    "/common",
-    "api-version-not-supplied",
+    "/errors/common/apiVersionNotSupplied",
     "You must supply an api-version header in the form YYYY-MM-DD.",
   );
 }

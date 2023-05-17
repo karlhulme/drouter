@@ -46,9 +46,10 @@ export interface Operation<
   operationId: string;
 
   /**
-   * A summary of the operation's behaviour.
+   * A summary of the operation's behaviour in markdown.
+   * This may include markdown.
    */
-  summary?: string;
+  markdown?: string;
 
   /**
    * An array of strings that are used to group operations together in

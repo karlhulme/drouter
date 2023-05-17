@@ -1,4 +1,5 @@
 import { HttpCookie } from "./HttpCookie.ts";
+import { HttpError } from "./HttpError.ts";
 import { OperationRequestHeadersBlock } from "./OperationRequestHeadersBlock.ts";
 import { OperationRequestQueryParamsBlock } from "./OperationRequestQueryParamsBlock.ts";
 import { OperationRequestUrlParamsBlock } from "./OperationRequestUrlParamsBlock.ts";
@@ -11,6 +12,7 @@ export interface OperationRequest<
   RequestUrlParamNames extends string = string,
   RequestHeaderNames extends string = string,
   RequestQueryParamNames extends string = string,
+  RequestFailureCodes extends string = string,
 > {
   /**
    * The relative path of the request.
@@ -56,6 +58,21 @@ export interface OperationRequest<
    * The validated url parameter values passed with the request.
    */
   urlParams: OperationRequestUrlParamsBlock<RequestUrlParamNames>;
+
+  /**
+   * Constructs an HttpError that can be thrown, based on one
+   * of the recognised failure codes.
+   * @param localType The local type name of the failure.
+   * @param detail A description of the error, personalised for this
+   * specific instance.
+   * @param properties A record of any additional properties that
+   * might be useful to the client in handling the error.
+   */
+  error: (
+    localType: RequestFailureCodes,
+    detail?: string,
+    properties?: Record<string, unknown>,
+  ) => HttpError;
 
   /**
    * The point that request processing began.

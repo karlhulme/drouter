@@ -65,7 +65,7 @@ Deno.test("Fail to process an operation where an API key is required but an inva
   assertEquals(response.status, 401);
   assertStringIncludes(
     await response.text(),
-    "api-key-not-valid",
+    "/errors/common/apiKeyNotValid",
   );
 });
 
@@ -91,7 +91,7 @@ Deno.test("Fail to process an operation where an API key is required but not sup
   assertEquals(response.status, 401);
   assertStringIncludes(
     await response.text(),
-    "api-key-not-supplied",
+    "errors/common/apiKeyNotSupplied",
   );
 });
 
@@ -114,6 +114,6 @@ Deno.test("Fail to process an operation where an API key is required but a handl
   assertEquals(response.status, 501);
   assertStringIncludes(
     await response.text(),
-    "api-key-handler-not-implemented",
+    "/errors/common/apiKeyHandlerNotImplemented",
   );
 });

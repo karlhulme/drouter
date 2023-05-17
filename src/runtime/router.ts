@@ -30,6 +30,7 @@ import { convertToResponseHeaderValue } from "./convertToResponseHeaderValue.ts"
 import { appendBuildVersionHeaders } from "./appendBuildVersionHeaders.ts";
 import { appendCorsHeaders } from "./appendCorsHeaders.ts";
 import { validateOperationPayload } from "./validateOperationPayload.ts";
+import { createHttpError } from "./createHttpError.ts";
 
 /**
  * The name of the context value that will hold the operation payload
@@ -617,6 +618,8 @@ function createOperationRequest(
         ) as boolean,
     },
     underlyingRequest,
+    error: (localType, detail, properties) =>
+      createHttpError(op, localType, detail, properties),
     start: new Date(),
   };
 }

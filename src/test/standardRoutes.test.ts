@@ -141,7 +141,7 @@ Deno.test("An unknown route request elicits a 404 response.", async () => {
   assertStrictEquals(response.status, 404);
   assertStringIncludes(
     await response.text(),
-    "operation-not-found",
+    "/errors/common/operationNotFound",
   );
 });
 
@@ -154,6 +154,6 @@ Deno.test("A request without an API version elicits a 400 response.", async () =
   assertStrictEquals(response.status, 400);
   assertStringIncludes(
     await response.text(),
-    "api-version-not-supplied",
+    "/errors/common/apiVersionNotSupplied",
   );
 });

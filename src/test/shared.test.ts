@@ -25,7 +25,7 @@ export function createOperation(props: CreateOperationProps) {
   const shellOp: Operation = {
     urlPattern: "/test",
     name: "Test operation",
-    summary: "The test operation",
+    markdown: "The test operation",
     operationId: "testOp",
     tags: ["Tests"],
     flags: [],

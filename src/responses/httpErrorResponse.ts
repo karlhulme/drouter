@@ -12,8 +12,8 @@ export function httpErrorResponse(
 ) {
   return errorResponse(
     err.code,
-    err.path,
     err.type,
+    err.title,
     err.detail,
     err.properties,
     additionalHeaders,

@@ -3,14 +3,13 @@
  * IETF Standard https://datatracker.ietf.org/doc/html/rfc7807
  * Writeup https://lakitna.medium.com/understanding-problem-json-adf68e5cf1f8
  * The standard defines a title property that describes the error but
- * may not change from occurence to occurence.  We therefore use the detail
- * property which is instance-specific and thus more likely to be useful.
+ * may not change from occurence to occurence, and a detail
+ * property which is instance-specific.
  * @param code An HTTP status code.
- * @param path The path that was originally requested.  The error will be
- * scoped underneath this path as "/<path>/errors/<type>".  The path should
- * include a leading slash.  If the error is common to multiple routes
- * then supply '/common'.
- * @param type The lowercase hyphen-separated type code for the error.
+ * @param type A unique URI for the error which is usually prefixed
+ * with /errors and will include a representation of the path that
+ * raised the error.
+ * @param title A description of the scenario when this error is raised.
  * @param detail A description of this specific instance of the issue.
  * @param properties Additional properties for the error defined as a record
  * of strings.
@@ -19,17 +18,16 @@
  */
 export function errorResponse(
   code: number,
-  path: string,
   type: string,
-  detail: string,
+  title: string,
+  detail?: string,
   properties?: Record<string, unknown>,
   additionalHeaders?: HeadersInit,
 ) {
-  const normalisedPath = path.endsWith("/") ? path : path + "/";
-
   const problem = {
     status: code,
-    type: normalisedPath + "errors/" + type,
+    type,
+    title,
     detail,
     ...properties,
   };
