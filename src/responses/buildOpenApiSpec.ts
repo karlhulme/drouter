@@ -56,51 +56,29 @@ export function buildOpenApiSpec(config: ServiceConfig): OpenApiSpec {
   };
 
   appendTypeToSpec(spec, {
-    name: "svcString",
-    referencedSchemaTypes: [],
-    schema: {
-      type: "string",
-      description: "A string for service level headers and query parameters.",
-    },
-    underlyingType: "string",
-    validator: () => [],
-  }, config.namedTypes);
-
-  appendTypeToSpec(spec, {
-    name: "svcNumber",
-    referencedSchemaTypes: [],
-    schema: {
-      type: "number",
-      description: "A number for service level headers and query parameters.",
-    },
-    underlyingType: "number",
-    validator: () => [],
-  }, config.namedTypes);
-
-  appendTypeToSpec(spec, {
-    name: "svcProblem",
+    name: "rfc7807Problem",
     referencedSchemaTypes: [],
     schema: {
       type: "object",
-      description: "An IETF 7807 problem.",
+      description: "A problem detail object as defined by IETF RFC 7807.",
       additionalProperties: true,
       properties: {
         status: {
           description: "The HTTP status code returned with the error.",
-          $ref: `#/components/schemas/svcNumber`,
+          type: "number",
         },
         type: {
           description: "The unique URI for the type of error.",
-          $ref: `#/components/schemas/svcString`,
+          type: "string",
         },
         title: {
           description: "A short description of the error type.",
-          $ref: `#/components/schemas/svcString`,
+          type: "string",
         },
         detail: {
           description:
             "A description of this specific occurrence of the error.",
-          $ref: `#/components/schemas/svcString`,
+          type: "string",
         },
       },
       required: [
@@ -333,9 +311,9 @@ function createPathOperation(
         in: "header",
         required: true,
         schema: {
-          $ref: `#/components/schemas/svcString`,
+          type: "string",
         },
-        description: "The version targetted by the request.",
+        description: "The version targeted by the request.",
       },
       // Bring in the request and middleware headers.
       ...(operation.requestHeaders || []).map((p) => ({
@@ -353,7 +331,7 @@ function createPathOperation(
         in: "header",
         required: p.isRequired,
         schema: {
-          $ref: `#/components/schemas/svcString`,
+          type: "string",
         },
         deprecated: Boolean(p.deprecated),
         description: p.summary,
@@ -374,7 +352,7 @@ function createPathOperation(
         in: "query",
         required: p.isRequired,
         schema: {
-          $ref: `#/components/schemas/svcString`,
+          type: "string",
         },
         deprecated: Boolean(p.deprecated),
         description: p.summary,
@@ -398,14 +376,14 @@ function createPathOperation(
             description:
               "The SHA of the commit that defines the source code that the service was built from.",
             schema: {
-              $ref: `#/components/schemas/svcString`,
+              type: "string",
             },
             required: true,
           },
           "build-date-time": {
             description: "The date and time that the service was built.",
             schema: {
-              $ref: `#/components/schemas/svcString`,
+              type: "string",
             },
             required: true,
           },
@@ -429,7 +407,7 @@ function createPathOperation(
               required: Boolean(cur.isGuaranteed),
               deprecated: Boolean(cur.deprecated),
               schema: {
-                $ref: `#/components/schemas/svcString`,
+                type: "string",
               },
             };
 
@@ -458,7 +436,7 @@ function createPathOperation(
           content: {
             "application/json": {
               schema: {
-                $ref: `#/components/schemas/svcProblem`,
+                $ref: `#/components/schemas/rfc7807Problem`,
               },
             },
           },
