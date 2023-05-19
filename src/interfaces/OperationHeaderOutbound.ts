@@ -15,9 +15,9 @@ export interface OperationHeaderOutbound<ResponseHeaderNames extends string> {
   summary: string;
 
   /**
-   * True if the header will always be returned.
+   * A value that indicates if the header can only be included on a success response.
    */
-  isGuaranteed?: boolean;
+  successOnly?: boolean;
 
   /**
    * The type of data expected in the header.

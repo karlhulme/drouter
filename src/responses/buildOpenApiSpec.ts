@@ -282,6 +282,22 @@ function createPathOperation(
     }, new Set<number>()),
   );
 
+  const buildGhCommitResponseHeader: OpenApiSpecPathOperationResponseHeader = {
+    description:
+      "The SHA of the commit that defines the source code that the service was built from.",
+    schema: {
+      type: "string",
+    },
+    required: true,
+  };
+  const buildDateTimeResponseHeader: OpenApiSpecPathOperationResponseHeader = {
+    description: "The date and time that the service was built in ISO format.",
+    schema: {
+      type: "string",
+    },
+    required: true,
+  };
+
   return {
     operationId: operation.operationId,
     tags: operation.tags,
@@ -371,27 +387,12 @@ function createPathOperation(
           }
           : undefined,
         headers: {
-          // Standard reponse headers.
-          "build-gh-commit": {
-            description:
-              "The SHA of the commit that defines the source code that the service was built from.",
-            schema: {
-              type: "string",
-            },
-            required: true,
-          },
-          "build-date-time": {
-            description: "The date and time that the service was built.",
-            schema: {
-              type: "string",
-            },
-            required: true,
-          },
-          // Bring in the response headers.
+          "build-gh-commit": buildGhCommitResponseHeader,
+          "build-date-time": buildDateTimeResponseHeader,
+          // Bring in the operation response headers.
           ...(operation.responseHeaders || []).reduce((agg, cur) => {
             agg[cur.name] = {
               description: cur.summary,
-              required: Boolean(cur.isGuaranteed),
               deprecated: Boolean(cur.deprecated),
               schema: {
                 $ref: `#/components/schemas/${cur.type.name}`,
@@ -400,11 +401,10 @@ function createPathOperation(
 
             return agg;
           }, {} as Record<string, OpenApiSpecPathOperationResponseHeader>),
-          // Bring in the response headers.
+          // Bring in the middleware response headers.
           ...middlewareResponseHeaders.reduce((agg, cur) => {
             agg[cur.name] = {
               description: cur.summary,
-              required: Boolean(cur.isGuaranteed),
               deprecated: Boolean(cur.deprecated),
               schema: {
                 type: "string",
@@ -439,6 +439,38 @@ function createPathOperation(
                 $ref: `#/components/schemas/rfc7807Problem`,
               },
             },
+          },
+          headers: {
+            "build-gh-commit": buildGhCommitResponseHeader,
+            "build-date-time": buildDateTimeResponseHeader,
+            // Bring in the operation response headers.
+            ...(operation.responseHeaders || []).filter((h) => !h.successOnly)
+              .reduce((agg, cur) => {
+                agg[cur.name] = {
+                  description: cur.summary,
+                  deprecated: Boolean(cur.deprecated),
+                  schema: {
+                    $ref: `#/components/schemas/${cur.type.name}`,
+                  },
+                };
+
+                return agg;
+              }, {} as Record<string, OpenApiSpecPathOperationResponseHeader>),
+            // Bring in the middleware response headers.
+            ...middlewareResponseHeaders.filter((h) => !h.successOnly).reduce(
+              (agg, cur) => {
+                agg[cur.name] = {
+                  description: cur.summary,
+                  deprecated: Boolean(cur.deprecated),
+                  schema: {
+                    type: "string",
+                  },
+                };
+
+                return agg;
+              },
+              {} as Record<string, OpenApiSpecPathOperationResponseHeader>,
+            ),
           },
         };
 

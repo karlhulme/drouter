@@ -18,7 +18,7 @@ export interface ServiceMiddlewareSpecificationOutboundHeader {
   summary: string;
 
   /**
-   * True if the header is guaranteed to be supplied, otherwise false.
+   * A value that indicates if the header can only be included on a success response.
    */
-  isGuaranteed?: boolean;
+  successOnly?: boolean;
 }
