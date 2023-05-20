@@ -17,4 +17,4 @@ export type {
   OpenApiSpecPathOperationParameter,
   OpenApiSpecPathOperationResponse,
   OpenApiSpecPathOperationResponseHeader,
-} from "https://raw.githubusercontent.com/karlhulme/dopenapi/v1.6.0/mod.ts";
+} from "https://raw.githubusercontent.com/karlhulme/dopenapi/v1.6.2/mod.ts";
