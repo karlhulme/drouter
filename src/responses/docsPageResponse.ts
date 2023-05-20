@@ -16,12 +16,22 @@ export function docsPageResponse(): Response {
         <rapi-doc
           spec-url="/openapi"
           theme="dark"
+          sort-tags="true"
+          sort-endpoints-by="summary"
           render-style="focused"
           show-header="false"
           schema-style="table"
           schema-description-expanded="true"
           persist-auth="true"
-        ></rapi-doc>
+        >
+          <div slot="auth">
+            This service uses cookie based authentication.  To obtain an authorisation
+            cookie use the <strong>Users > registerUser</strong> endpoint followed by
+            the <strong>Users > newWebSession</strong> endpoint.  The server will return
+            a cookie that your browser will store.  You will then be able to make requests
+            to any of the other endpoints.
+          </div>
+        </rapi-doc>
       </body>
     </html>
   `;
