@@ -50,7 +50,13 @@ export function buildOpenApiSpec(config: ServiceConfig): OpenApiSpec {
             name: "x-api-key",
           },
         }
-        : {},
+        : {
+          cookieAuth: {
+            type: "apiKey",
+            in: "cookie",
+            name: "jz_active_user_id",
+          },
+        },
     },
     paths: {},
   };
@@ -307,7 +313,9 @@ function createPathOperation(
       ? [{
         apiKeyAuth: [],
       }]
-      : [],
+      : [{
+        cookieAuth: [],
+      }],
     deprecated: Boolean(operation.deprecated),
     requestBody: operation.requestBodyType
       ? {
