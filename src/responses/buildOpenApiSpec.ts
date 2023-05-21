@@ -57,7 +57,9 @@ export function buildOpenApiSpec(config: ServiceConfig): OpenApiSpec {
     info: {
       title: config.title,
       version: latestVersion,
-      description: config.description,
+      description: config.overviewHtml ? undefined : config.description,
+      // Do not supply description if we have overviewHtml because
+      // it appears underneath which looks weird.
     },
     components: {
       schemas: {},
