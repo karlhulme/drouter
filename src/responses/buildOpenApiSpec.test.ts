@@ -169,7 +169,6 @@ function createServiceConfig(): ServiceConfig {
         validator: () => [],
       },
       responseSuccessCode: 200,
-      acceptIdempotencyKey: true,
       handler: async () => ({
         body: null,
       }),
