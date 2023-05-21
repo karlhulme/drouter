@@ -156,4 +156,9 @@ export interface Operation<
    * True if the operation will honour an idempotency key if supplied in the request.
    */
   acceptIdempotencyKey?: boolean;
+
+  /**
+   * True if the operation uses the user agent header.
+   */
+  usesUserAgent?: boolean;
 }
