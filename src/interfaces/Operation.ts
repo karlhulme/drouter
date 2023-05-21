@@ -146,4 +146,14 @@ export interface Operation<
    * True if the operation requires a cookie to be supplied for authentication.
    */
   requiresCookieAuth?: boolean;
+
+  /**
+   * True if the operation may send Set-Cookie headers in the response.
+   */
+  usesSetCookie?: boolean;
+
+  /**
+   * True if the operation will honour an idempotency key if supplied in the request.
+   */
+  acceptIdempotencyKey?: boolean;
 }

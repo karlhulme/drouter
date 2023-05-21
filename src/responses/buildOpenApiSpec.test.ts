@@ -169,6 +169,7 @@ function createServiceConfig(): ServiceConfig {
         validator: () => [],
       },
       responseSuccessCode: 200,
+      acceptIdempotencyKey: true,
       handler: async () => ({
         body: null,
       }),
@@ -244,6 +245,19 @@ Deno.test("Build an OpenAPI spec using all parts of the specification.", async (
 
   assertEquals(openApiSpec.info.title, "Test service");
   assertEquals(typeof openApiSpec.components.schemas.rfc7807Problem, "object");
+});
+
+Deno.test("Build an OpenAPI spec that uses html (instead of a description).", async () => {
+  const sc = createServiceConfig();
+  sc.overviewHtml = "This is an overview.";
+  sc.authHtml = "This is auth information";
+
+  const openApiSpec = buildOpenApiSpec(sc);
+
+  assertEquals(
+    typeof openApiSpec,
+    "object",
+  );
 });
 
 Deno.test("Build an OpenAPI spec that uses an API key.", async () => {

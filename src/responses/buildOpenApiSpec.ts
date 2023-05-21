@@ -310,6 +310,13 @@ function createPathOperation(
     },
     required: true,
   };
+  const setCookieResponseHeader: OpenApiSpecPathOperationResponseHeader = {
+    description: "A cookie that should be stored by the client.",
+    schema: {
+      type: "string",
+    },
+    required: true,
+  };
 
   const security: Record<string, unknown[]>[] = [];
 
@@ -354,6 +361,19 @@ function createPathOperation(
         },
         description: "The version targeted by the request.",
       },
+      // Add idempotencykey if supported.
+      ...(operation.acceptIdempotencyKey
+        ? [{
+          name: "idempotency-key",
+          in: "header",
+          required: false,
+          schema: {
+            type: "string",
+          },
+          description:
+            "Specify a unique value to ensure the operation is only executed once.",
+        } as OpenApiSpecPathOperationParameter]
+        : []),
       // Bring in the request and middleware headers.
       ...(operation.requestHeaders || []).map((p) => ({
         name: p.name,
@@ -412,6 +432,7 @@ function createPathOperation(
         headers: {
           "build-gh-commit": buildGhCommitResponseHeader,
           "build-date-time": buildDateTimeResponseHeader,
+          "set-cookie": setCookieResponseHeader,
           // Bring in the operation response headers.
           ...(operation.responseHeaders || []).reduce((agg, cur) => {
             agg[cur.name] = {
@@ -466,6 +487,7 @@ function createPathOperation(
           headers: {
             "build-gh-commit": buildGhCommitResponseHeader,
             "build-date-time": buildDateTimeResponseHeader,
+            "set-cookie": setCookieResponseHeader,
             // Bring in the operation response headers.
             ...(operation.responseHeaders || []).filter((h) => !h.successOnly)
               .reduce((agg, cur) => {
