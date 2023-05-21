@@ -33,6 +33,18 @@ export function docsPageResponse(config: ServiceConfig): Response {
             ${config.authHtml || ""}
           </div>
         </rapi-doc>
+
+        <script>
+          window.addEventListener('DOMContentLoaded', (event) => {
+            const rapidocEl = document.getElementById('the-doc');
+            rapidocEl.addEventListener('before-try', (e) => {
+              console.log(e.detail.request.headers)
+              if (!e.detail.request.headers.get('api-version')) {
+                e.detail.request.headers.append('api-version', '2021-01-01');
+              }
+            });
+          });
+        </script>
       </body>
     </html>
   `;
