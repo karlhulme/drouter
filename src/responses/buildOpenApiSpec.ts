@@ -28,9 +28,6 @@ export function buildOpenApiSpec(config: ServiceConfig): OpenApiSpec {
     config.operations.find((op) => op.requiresCookieAuth),
   );
 
-  const ghCommit = Deno.env.get("BUILD_GH_COMMIT");
-  const dateTime = Deno.env.get("BUILD_DATE_TIME");
-
   // The version should actually be passed to this function so that
   // we can build an API version based on the request.
   const latestVersion = getLatestVersion(
@@ -60,8 +57,7 @@ export function buildOpenApiSpec(config: ServiceConfig): OpenApiSpec {
     info: {
       title: config.title,
       version: latestVersion,
-      description: config.description +
-        `\n\nBuild Github Commit: ${ghCommit}\n\nBuild Date/time: ${dateTime}`,
+      description: config.description,
     },
     components: {
       schemas: {},
