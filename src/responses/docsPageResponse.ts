@@ -1,9 +1,10 @@
 import { rapidoc, rapidocMap } from "../autogen.rapidoc.ts";
+import { ServiceConfig } from "../index.ts";
 
 /**
  * Returns a response containing a documentation page.
  */
-export function docsPageResponse(): Response {
+export function docsPageResponse(config: ServiceConfig): Response {
   // Important - must specify the !doctype directive and the meta charset tag.
   const html = `<!doctype html>
     <html>
@@ -24,12 +25,12 @@ export function docsPageResponse(): Response {
           schema-description-expanded="true"
           persist-auth="true"
         >
+          <div>
+            ${config.landingHtml || ""}
+          </div>
+
           <div slot="auth">
-            This service uses cookie based authentication.  To obtain an authorisation
-            cookie use the <strong>Users > registerUser</strong> endpoint followed by
-            the <strong>Users > newWebSession</strong> endpoint.  The server will return
-            a cookie that your browser will store.  You will then be able to make requests
-            to any of the other endpoints.
+            ${config.authHtml || ""}
           </div>
         </rapi-doc>
       </body>

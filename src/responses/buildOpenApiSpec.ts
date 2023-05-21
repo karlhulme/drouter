@@ -1,3 +1,4 @@
+import { OpenApiSpecComponentsSecuritySchemes } from "https://raw.githubusercontent.com/karlhulme/dopenapi/v1.6.3/mod.ts";
 import {
   OpenApiSpec,
   OpenApiSpecComponentsSchema,
@@ -23,6 +24,10 @@ export function buildOpenApiSpec(config: ServiceConfig): OpenApiSpec {
     config.operations.find((op) => op.requiresApiKey),
   );
 
+  const usingCookieAuth = Boolean(
+    config.operations.find((op) => op.requiresCookieAuth),
+  );
+
   const ghCommit = Deno.env.get("BUILD_GH_COMMIT");
   const dateTime = Deno.env.get("BUILD_DATE_TIME");
 
@@ -31,6 +36,24 @@ export function buildOpenApiSpec(config: ServiceConfig): OpenApiSpec {
   const latestVersion = getLatestVersion(
     config.operations.map((op) => op.apiVersion),
   );
+
+  const securitySchemes: OpenApiSpecComponentsSecuritySchemes = {};
+
+  if (usingApiKeys) {
+    securitySchemes.apiKeyAuth = {
+      type: "apiKey",
+      in: "header",
+      name: "x-api-key",
+    };
+  }
+
+  if (usingCookieAuth && config.cookieAuthName) {
+    securitySchemes.cookieAuth = {
+      type: "apiKey",
+      in: "cookie",
+      name: config.cookieAuthName,
+    };
+  }
 
   const spec: OpenApiSpec = {
     openapi: "3.0.3",
@@ -42,15 +65,7 @@ export function buildOpenApiSpec(config: ServiceConfig): OpenApiSpec {
     },
     components: {
       schemas: {},
-      securitySchemes: usingApiKeys
-        ? {
-          apiKeyAuth: {
-            type: "apiKey",
-            in: "header",
-            name: "x-api-key",
-          },
-        }
-        : {},
+      securitySchemes,
     },
     paths: {},
   };

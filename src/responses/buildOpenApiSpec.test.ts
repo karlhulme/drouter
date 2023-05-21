@@ -246,7 +246,7 @@ Deno.test("Build an OpenAPI spec using all parts of the specification.", async (
   assertEquals(typeof openApiSpec.components.schemas.rfc7807Problem, "object");
 });
 
-Deno.test("Build an OpenAPI spec that uses API keys.", async () => {
+Deno.test("Build an OpenAPI spec that uses an API key.", async () => {
   const sc = createServiceConfig();
   sc.apiKeyHandler = async () => true;
   sc.operations[0].requiresApiKey = true;
@@ -255,6 +255,20 @@ Deno.test("Build an OpenAPI spec that uses API keys.", async () => {
 
   assertEquals(
     typeof openApiSpec.components.securitySchemes.apiKeyAuth,
+    "object",
+  );
+});
+
+Deno.test("Build an OpenAPI spec that uses cookie authentication.", async () => {
+  const sc = createServiceConfig();
+  sc.apiKeyHandler = async () => true;
+  sc.cookieAuthName = "test-cookie";
+  sc.operations[0].requiresCookieAuth = true;
+
+  const openApiSpec = buildOpenApiSpec(sc);
+
+  assertEquals(
+    typeof openApiSpec.components.securitySchemes.cookieAuth,
     "object",
   );
 });

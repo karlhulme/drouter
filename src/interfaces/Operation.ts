@@ -139,8 +139,11 @@ export interface Operation<
 
   /**
    * True if the operation requires an x-api-key header to be supplied.
-   * This can be made optional specifying the -- property of the constructors
-   * ServiceConfig object, which is useful for development.
    */
   requiresApiKey?: boolean;
+
+  /**
+   * True if the operation requires a cookie to be supplied for authentication.
+   */
+  requiresCookieAuth?: boolean;
 }

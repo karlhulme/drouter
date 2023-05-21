@@ -12,9 +12,19 @@ export interface ServiceConfig {
   title: string;
 
   /**
-   * A description of the service.
+   * A short description of the service.
    */
   description: string;
+
+  /**
+   * The html that will appear on the landing page.
+   */
+  landingHtml?: string;
+
+  /**
+   * The html that will appear on the authentication page.
+   */
+  authHtml?: string;
 
   /**
    * An array of named types.
@@ -50,6 +60,11 @@ export interface ServiceConfig {
    * falsey value should be returned so that an HTTP 401 can be returned.
    */
   apiKeyHandler?: (op: Operation, apiKey: string) => Promise<unknown>;
+
+  /**
+   * The names of the cookies used for authentication.
+   */
+  cookieAuthName?: string;
 
   /**
    * An array of acceptable request origins for CORs requests.

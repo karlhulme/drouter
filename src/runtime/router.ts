@@ -188,7 +188,7 @@ async function processRequest(
   }
 
   if (underlyingRequest.method === "GET" && url.pathname === "/docs") {
-    return docsPageResponse();
+    return docsPageResponse(config);
   }
 
   if (
