@@ -39,7 +39,6 @@ export function docsPageResponse(config: ServiceConfig): Response {
           window.addEventListener('DOMContentLoaded', (event) => {
             const rapidocEl = document.getElementById('openapiDoc');
             rapidocEl.addEventListener('before-try', (e) => {
-              console.log(e.detail.request.headers)
               if (!e.detail.request.headers.get('api-version')) {
                 e.detail.request.headers.append('api-version', '2021-01-01');
               }
