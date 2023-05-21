@@ -25,8 +25,8 @@ export function docsPageResponse(config: ServiceConfig): Response {
           schema-description-expanded="true"
           persist-auth="true"
         >
-          <div>
-            ${config.landingHtml || ""}
+          <div slot="overview">
+            ${config.overviewHtml || ""}
           </div>
 
           <div slot="auth">

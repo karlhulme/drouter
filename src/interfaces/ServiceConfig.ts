@@ -17,9 +17,9 @@ export interface ServiceConfig {
   description: string;
 
   /**
-   * The html that will appear on the landing page.
+   * The html that will appear on the overview page.
    */
-  landingHtml?: string;
+  overviewHtml?: string;
 
   /**
    * The html that will appear on the authentication page.

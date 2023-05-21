@@ -309,16 +309,26 @@ function createPathOperation(
     required: true,
   };
 
+  const security: Record<string, unknown[]>[] = [];
+
+  if (operation.requiresApiKey) {
+    security.push({
+      apiKeyAuth: [],
+    });
+  }
+
+  if (operation.requiresCookieAuth) {
+    security.push({
+      cookieAuth: [],
+    });
+  }
+
   return {
     operationId: operation.operationId,
     tags: operation.tags,
     summary: operation.name,
     description: operation.markdown,
-    security: operation.requiresApiKey
-      ? [{
-        apiKeyAuth: [],
-      }]
-      : [],
+    security,
     deprecated: Boolean(operation.deprecated),
     requestBody: operation.requestBodyType
       ? {
