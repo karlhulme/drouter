@@ -15,6 +15,7 @@ export function docsPageResponse(config: ServiceConfig): Response {
       </head>
       <body>
         <rapi-doc
+          id="openapiDoc"
           spec-url="/openapi"
           theme="dark"
           sort-tags="true"
@@ -36,7 +37,7 @@ export function docsPageResponse(config: ServiceConfig): Response {
 
         <script>
           window.addEventListener('DOMContentLoaded', (event) => {
-            const rapidocEl = document.getElementById('the-doc');
+            const rapidocEl = document.getElementById('openapiDoc');
             rapidocEl.addEventListener('before-try', (e) => {
               console.log(e.detail.request.headers)
               if (!e.detail.request.headers.get('api-version')) {
