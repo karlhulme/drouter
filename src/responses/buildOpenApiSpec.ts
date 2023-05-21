@@ -432,7 +432,9 @@ function createPathOperation(
         headers: {
           "build-gh-commit": buildGhCommitResponseHeader,
           "build-date-time": buildDateTimeResponseHeader,
-          "set-cookie": setCookieResponseHeader,
+          ...(operation.usesSetCookie
+            ? { "set-cookie": setCookieResponseHeader }
+            : {}),
           // Bring in the operation response headers.
           ...(operation.responseHeaders || []).reduce((agg, cur) => {
             agg[cur.name] = {
@@ -487,7 +489,9 @@ function createPathOperation(
           headers: {
             "build-gh-commit": buildGhCommitResponseHeader,
             "build-date-time": buildDateTimeResponseHeader,
-            "set-cookie": setCookieResponseHeader,
+            ...(operation.usesSetCookie
+              ? { "set-cookie": setCookieResponseHeader }
+              : {}),
             // Bring in the operation response headers.
             ...(operation.responseHeaders || []).filter((h) => !h.successOnly)
               .reduce((agg, cur) => {
