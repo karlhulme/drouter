@@ -62,14 +62,14 @@ export interface OperationRequest<
   /**
    * Constructs an HttpError that can be thrown, based on one
    * of the recognised failure codes.
-   * @param localType The local type name of the failure.
+   * @param type The full type name of the failure.
    * @param detail A description of the error, personalised for this
    * specific instance.
    * @param properties A record of any additional properties that
    * might be useful to the client in handling the error.
    */
   error: (
-    localType: RequestFailureCodes,
+    type: RequestFailureCodes,
     detail?: string,
     properties?: Record<string, unknown>,
   ) => HttpError;

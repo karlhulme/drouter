@@ -224,16 +224,7 @@ function createPathOperation(
     ...payloadMiddlewareSpecs.map((pms) => pms.responseHeaders || []).flat(),
   ];
 
-  const failureDefinitions = (operation.responseFailureDefinitions || [])
-    .map((rfd) => ({
-      code: rfd.code,
-      summary: rfd.summary,
-      type: "/errors" +
-        operation.urlPattern.replaceAll(/:[^/]+/g, "-") +
-        "/" +
-        operation.method.toLowerCase() + "/" +
-        rfd.localType,
-    }));
+  const failureDefinitions = safeArray(operation.responseFailureDefinitions);
 
   failureDefinitions.push({
     code: 400,
@@ -265,21 +256,6 @@ function createPathOperation(
       code: 400,
       type: "/errors/common/requestParameterMissing",
       summary: "A required request parameter is missing.",
-    });
-  }
-
-  if (operation.requiresApiKey) {
-    failureDefinitions.push({
-      code: 401,
-      type: "/errors/common/apiKeyNotSupplied",
-      summary: "An x-api-key header was not included in the request.",
-    });
-
-    failureDefinitions.push({
-      code: 401,
-      type: "/errors/common/apiKeyNotValid",
-      summary:
-        "An x-api-key header was included in the request but that value was not valid.",
     });
   }
 

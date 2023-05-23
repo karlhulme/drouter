@@ -5,7 +5,7 @@ import { HttpError, Operation } from "../index.ts";
  * failure information declared for the given operation with
  * the given details about this specific instance of the error.
  * @param op An operation.
- * @param localType The local type name of an error.
+ * @param type The type name of an error.
  * @param detail A description of the problem that is relevant
  * to this specific instance of the error.
  * @param properties A record of additional information about
@@ -13,12 +13,12 @@ import { HttpError, Operation } from "../index.ts";
  */
 export function createHttpError(
   op: Operation,
-  localType: string,
+  type: string,
   detail?: string,
   properties?: Record<string, unknown>,
 ) {
   const failureDefs = op.responseFailureDefinitions || [];
-  const failure = failureDefs.find((rfd) => rfd.localType === localType);
+  const failure = failureDefs.find((rfd) => rfd.type === type);
 
   if (failure) {
     // If the failure is recognised then we can build an HttpError
@@ -28,7 +28,7 @@ export function createHttpError(
       op.urlPattern.replaceAll(/:[^/]+/g, "-") +
       "/" +
       op.method.toLowerCase() + "/" +
-      localType;
+      type;
 
     return new HttpError(
       failure.code,
@@ -45,7 +45,7 @@ export function createHttpError(
       500,
       "/errors/common/unexpectedError",
       "An undocumented error has been raised.",
-      `An error with local type name of ${localType} was raised.`,
+      `An error with local type name of ${type} was raised.`,
     );
   }
 }

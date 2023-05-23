@@ -228,7 +228,7 @@ function createServiceConfig(): ServiceConfig {
       deprecated: "Not in use anymore.",
       responseFailureDefinitions: [{
         code: 400,
-        localType: "badRequest",
+        type: "badRequest",
         summary: "Bad request.",
       }],
       responseSuccessCode: 200,

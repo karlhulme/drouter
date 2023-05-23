@@ -15,7 +15,7 @@ const op: Operation = {
   responseFailureDefinitions: [{
     code: 456,
     summary: "A specific type of problem.",
-    localType: "aKnownType",
+    type: "aKnownType",
   }],
 };
 

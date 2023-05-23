@@ -18,7 +18,7 @@ Deno.test("Return an error raised from a route.", async () => {
         op.urlPattern = "/path/here/:and/there";
         op.responseFailureDefinitions = [{
           code: 456,
-          localType: "bespokeError",
+          type: "bespokeError",
           summary: "Raised for testing of errors.",
         }];
       },

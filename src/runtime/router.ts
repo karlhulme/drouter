@@ -623,8 +623,8 @@ function createOperationRequest(
         ) as boolean,
     },
     underlyingRequest,
-    error: (localType, detail, properties) =>
-      createHttpError(op, localType, detail, properties),
+    error: (type, detail, properties) =>
+      createHttpError(op, type, detail, properties),
     start: new Date(),
   };
 }

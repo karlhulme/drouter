@@ -8,6 +8,8 @@ import {
 import { safeArray } from "../utils/index.ts";
 import { DslMiddleware } from "./DslMiddleware.ts";
 import { DslRoute, DslRouteMethod } from "./DslRoute.ts";
+import { buildCommonFailureDefinition } from "./buildCommonFailureDefinition.ts";
+import { buildRouteFailureDefinition } from "./buildRouteFailureDefinition.ts";
 import { stringArrayToTypescriptUnion } from "./stringArrayToTypescriptUnion.ts";
 
 export function createOperationConst(
@@ -30,7 +32,12 @@ export function createOperationConst(
     safeArray(m.responseFailureDefinitions)
   )
     .flat()
-    .concat(safeArray(method.responseFailureDefinitions));
+    .map(buildCommonFailureDefinition)
+    .concat(
+      safeArray(method.responseFailureDefinitions).map((rfd) =>
+        buildRouteFailureDefinition(route.urlPattern, method.method, rfd)
+      ),
+    );
 
   let requestBodyTypeParam = "void";
   let requestBodyTypeLine = "";
@@ -68,10 +75,10 @@ export function createOperationConst(
 
   if (methodFailureCodes.length > 0) {
     const rfcs = methodFailureCodes
-      .map((rfc: any) => `
+      .map((rfc) => `
         {
           code: ${rfc.code},
-          localType: "${rfc.localType}",
+          type: "${rfc.type}",
           summary: "${rfc.summary}"
         }`)
       .join(", ");
@@ -165,9 +172,7 @@ export function createOperationConst(
       ${stringArrayToTypescriptUnion(methodHeaders.map((h) => h.name))},
       ${stringArrayToTypescriptUnion(methodQueryParams.map((qp) => qp.name))},
       ${stringArrayToTypescriptUnion(methodOutHeaders.map((h) => h.name))},
-      ${
-      stringArrayToTypescriptUnion(methodFailureCodes.map((f) => f.localType))
-    }
+      ${stringArrayToTypescriptUnion(methodFailureCodes.map((f) => f.type))}
     >`,
     value: `{
       method: "${method.method}",

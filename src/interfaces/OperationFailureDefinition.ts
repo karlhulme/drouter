@@ -8,10 +8,10 @@ export interface OperationFailureDefinition {
   code: number;
 
   /**
-   * The local type name of the error which can be appended
-   * to a request path to produce a unique type.
+   * The type name of the error that can be raised from
+   * this operation.
    */
-  localType: string;
+  type: string;
 
   /**
    * A short description of when this error will be raised.
