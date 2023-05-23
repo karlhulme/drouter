@@ -27,38 +27,6 @@ export function generateCodeForApiRouter(resources: any[]) {
     throw new Error("A service resource was not found.");
   }
 
-  // Add the standard resources
-  const allResources = [
-    ...resources,
-    // Standard headers
-    {
-      "$schema":
-        "https://raw.githubusercontent.com/karlhulme/drouter/main/schemas/apiHeader.json",
-      name: "idempotency-key",
-      summary:
-        "Specify a unique value to ensure the operation is only executed once.",
-      type: "std/uuid",
-    },
-    {
-      "$schema":
-        "https://raw.githubusercontent.com/karlhulme/drouter/main/schemas/apiHeader.json",
-      name: "user-agent",
-      summary:
-        "A description of the client.  This will usually be provided automatically by the browser or fetching library.",
-      type: "std/maxString",
-    },
-
-    // Standard outbound headers
-    {
-      "$schema":
-        "https://raw.githubusercontent.com/karlhulme/drouter/main/schemas/apiOutboundHeader.json",
-      name: "set-cookie",
-      summary:
-        "A cookie setter that should be honoured by a browser that will store the cookies in the browser cookie jar.",
-      type: "std/maxString",
-    },
-  ];
-
   // Create the typescript tree for all the types and functions
   // that we're going to define.
   const tree = newTypescriptTree();
@@ -76,7 +44,7 @@ export function generateCodeForApiRouter(resources: any[]) {
   // Start a list of operations
   const operationNames: string[] = [];
 
-  for (const resource of allResources) {
+  for (const resource of resources) {
     if (
       resource["$schema"] ===
         "https://raw.githubusercontent.com/karlhulme/drouter/main/schemas/outboundRecord.json"
@@ -141,7 +109,7 @@ export function generateCodeForApiRouter(resources: any[]) {
         // Create a const declaration for the method that can be
         // override by code within the service.
         tree.constDeclarations.push(
-          createOperationConst(apiRoute, method, allResources),
+          createOperationConst(apiRoute, method),
         );
 
         // Update the list of operation names for export as a
@@ -201,8 +169,6 @@ export function generateCodeForApiRouter(resources: any[]) {
       }
     } else if (
       [
-        "https://raw.githubusercontent.com/karlhulme/drouter/main/schemas/apiHeader.json",
-        "https://raw.githubusercontent.com/karlhulme/drouter/main/schemas/apiOutboundHeader.json",
         "https://raw.githubusercontent.com/karlhulme/drouter/main/schemas/service.json",
       ].includes(resource["$schema"])
     ) {

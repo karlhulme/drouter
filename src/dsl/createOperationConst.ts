@@ -11,7 +11,6 @@ import { stringArrayToTypescriptUnion } from "./stringArrayToTypescriptUnion.ts"
 export function createOperationConst(
   route: DslRoute,
   method: DslRouteMethod,
-  allResources: any[],
 ): TypescriptTreeConstDeclaration {
   let requestBodyTypeParam = "void";
   let requestBodyTypeLine = "";
@@ -92,38 +91,40 @@ export function createOperationConst(
     deprecatedLine = `deprecated: true,`;
   }
 
+  if (!method.headers) {
+    method.headers = [];
+  }
+
   const urlParamNames = (route.urlParams || [])
     .map((urlp: any) => urlp.name);
 
-  const headerNames = method.headerNames || [];
-
   if (method.acceptIdempotencyKey) {
-    headerNames.push("idempotency-key");
+    method.headers.push({
+      name: "idempotency-key",
+      summary:
+        "Specify a unique value to ensure the operation is only executed once.",
+      type: "std/uuid",
+    });
   }
 
   if (method.usesUserAgent) {
-    headerNames.push("user-agent");
+    method.headers.push({
+      name: "user-agent",
+      summary:
+        "A description of the client that made the request.  Browsers and fetchers will generate this string automatically.",
+      type: "std/maxString",
+    });
   }
 
   // Build headers declaration.
-  const headers = "[" + headerNames.map((h: any) => {
-    const headerResource = allResources.find((r) =>
-      r["$schema"] ===
-        "https://raw.githubusercontent.com/karlhulme/drouter/main/schemas/apiHeader.json" &&
-      r.name === h
-    );
-    if (!headerResource) {
-      throw new Error(`Cannot find header ${h} on ${method.operationId}.`);
-    }
-    const hSystem = getSystemFromTypeString(headerResource.type);
-    const hType = getTypeFromTypeString(headerResource.type);
-    const reqLine = headerResource.isRequired ? "isRequired: true," : "";
-    const depLine = headerResource.deprecated
-      ? `deprecated: "${headerResource.deprecated}",`
-      : "";
+  const headers = "[" + method.headers.map((h: any) => {
+    const hSystem = getSystemFromTypeString(h.type);
+    const hType = getTypeFromTypeString(h.type);
+    const reqLine = h.isRequired ? "isRequired: true," : "";
+    const depLine = h.deprecated ? `deprecated: "${h.deprecated}",` : "";
     return `{
-      name: "${headerResource.name}",
-      summary: "${headerResource.summary}",
+      name: "${h.name}",
+      summary: "${h.summary}",
       ${reqLine}
       ${depLine}
       type: ${hSystem}${capitalizeFirstLetter(hType)}Type,
@@ -155,30 +156,26 @@ export function createOperationConst(
   }).join(", ") + "]";
 
   // Build outbound headers declaration.
-  const responseHeaderNames = method.responseHeaderNames || [];
-
-  if (method.usesSetCookie) {
-    responseHeaderNames.push("set-cookie");
+  if (!method.responseHeaders) {
+    method.responseHeaders = [];
   }
 
-  const outHeaders = "[" + responseHeaderNames.map((h: any) => {
-    const outHeaderResource = allResources.find((r) =>
-      r["$schema"] ===
-        "https://raw.githubusercontent.com/karlhulme/drouter/main/schemas/apiOutboundHeader.json" &&
-      r.name === h
-    );
-    if (!outHeaderResource) {
-      throw new Error(`Cannot find out header ${h} on ${method.operationId}.`);
-    }
-    const hSystem = getSystemFromTypeString(outHeaderResource.type);
-    const hType = getTypeFromTypeString(outHeaderResource.type);
-    const gtdLine = outHeaderResource.isGuaranteed ? "isGuaranteed: true," : "";
-    const depLine = outHeaderResource.deprecated
-      ? `deprecated: "${outHeaderResource.deprecated}",`
-      : "";
+  if (method.usesSetCookie) {
+    method.headers.push({
+      name: "set-cookie",
+      summary: "An instruction to the browser to record a value in a cookie.",
+      type: "std/maxString",
+    });
+  }
+
+  const outHeaders = "[" + method.responseHeaders.map((h: any) => {
+    const hSystem = getSystemFromTypeString(h.type);
+    const hType = getTypeFromTypeString(h.type);
+    const gtdLine = h.isGuaranteed ? "isGuaranteed: true," : "";
+    const depLine = h.deprecated ? `deprecated: "${h.deprecated}",` : "";
     return `{
-      name: "${outHeaderResource.name}",
-      summary: "${outHeaderResource.summary}",
+      name: "${h.name}",
+      summary: "${h.summary}",
       ${gtdLine}
       ${depLine}
       type: ${hSystem}${capitalizeFirstLetter(hType)}Type,
@@ -201,9 +198,11 @@ export function createOperationConst(
       ${requestBodyTypeParam},
       ${responseBodyTypeParam},
       ${stringArrayToTypescriptUnion(urlParamNames)},
-      ${stringArrayToTypescriptUnion(headerNames)},
+      ${stringArrayToTypescriptUnion(method.headers.map((h) => h.name))},
       ${stringArrayToTypescriptUnion(queryParamNames)},
-      ${stringArrayToTypescriptUnion(responseHeaderNames)},
+      ${
+      stringArrayToTypescriptUnion(method.responseHeaders.map((h) => h.name))
+    },
       ${stringArrayToTypescriptUnion(failureTypeNames)}
     >`,
     value: `{

@@ -19,7 +19,13 @@ export interface DslRouteMethod {
 
   markdown?: string;
   flags?: string[];
-  headerNames?: string[];
+  headers?: {
+    name: string;
+    summary: string;
+    type: string;
+    isRequired?: boolean;
+    deprecated?: string;
+  }[];
   queryParams?: {
     name: string;
     summary: string;
@@ -69,7 +75,13 @@ export interface DslRouteMethod {
   };
 
   responseSuccessCode?: number;
-  responseHeaderNames?: string[];
+  responseHeaders?: {
+    name: string;
+    summary: string;
+    type: string;
+    isGuaranteed?: boolean;
+    deprecated?: string;
+  }[];
   responseBodyType?: string;
   responseBodyTypeArray?: boolean;
   responseFailureDefinitions?: {

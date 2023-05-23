@@ -76,6 +76,31 @@
               "type": "string"
             }
           },
+          "headers": {
+            "type": "array",
+            "items": {
+              "description": "The type and description of an inbound header.",
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "summary": {
+                  "type": "string"
+                },
+                "type": {
+                  "$ref": "https://raw.githubusercontent.com/karlhulme/djsonotron/main/schemas/types.json"
+                },
+                "isRequired": {
+                  "type": "boolean"
+                },
+                "deprecated": {
+                  "type": "string"
+                }
+              },
+              "required": ["name", "summary", "type"]
+            }
+          },
           "queryParams": {
             "type": "array",
             "items": {
@@ -293,10 +318,29 @@
           "responseSuccessCode": {
             "type": "number"
           },
-          "responseHeaderNames": {
+          "responseHeaders": {
             "type": "array",
             "items": {
-              "type": "string"
+              "description": "The type and description of a response header.",
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "summary": {
+                  "type": "string"
+                },
+                "type": {
+                  "$ref": "https://raw.githubusercontent.com/karlhulme/djsonotron/main/schemas/types.json"
+                },
+                "isGuaranteed": {
+                  "type": "boolean"
+                },
+                "deprecated": {
+                  "type": "string"
+                }
+              },
+              "required": ["name", "summary", "type"]
             }
           },
           "responseBodyType": {

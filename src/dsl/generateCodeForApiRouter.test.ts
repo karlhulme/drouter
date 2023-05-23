@@ -2,7 +2,7 @@ import { assertThrows } from "https://deno.land/std@0.156.0/testing/asserts.ts";
 import { assertStringIncludes } from "../../deps.ts";
 import { generateCodeForApiRouter } from "./generateCodeForApiRouter.ts";
 
-Deno.test("Convert populated array into typescript union.", () => {
+Deno.test("Generate api router code for service, outbound records and routes.", () => {
   // To cover code generation we need resources that are:
   // * urlParams: defined or undefined
   // * summary: populated and unpopulated
@@ -18,38 +18,6 @@ Deno.test("Convert populated array into typescript union.", () => {
       $schema:
         "https://raw.githubusercontent.com/karlhulme/drouter/main/schemas/service.json",
       depsPath: "../deps.ts",
-    },
-    {
-      "$schema":
-        "https://raw.githubusercontent.com/karlhulme/drouter/main/schemas/apiHeader.json",
-      "name": "inbound-header",
-      "summary": "The inbound test header.",
-      "type": "std/uuid",
-      "deprecated": "Not in use.",
-    },
-    {
-      "$schema":
-        "https://raw.githubusercontent.com/karlhulme/drouter/main/schemas/apiHeader.json",
-      "name": "req-inbound-header",
-      "summary": "The inbound test header.",
-      "type": "std/uuid",
-      "isRequired": true,
-    },
-    {
-      "$schema":
-        "https://raw.githubusercontent.com/karlhulme/drouter/main/schemas/apiOutboundHeader.json",
-      "name": "outbound-header",
-      "summary": "The outbound test header.",
-      "type": "std/maxString",
-      "deprecated": "Not in use.",
-    },
-    {
-      "$schema":
-        "https://raw.githubusercontent.com/karlhulme/drouter/main/schemas/apiOutboundHeader.json",
-      "name": "gtd-outbound-header",
-      "summary": "The outbound test header.",
-      "type": "std/maxString",
-      "isGuaranteed": true,
     },
     {
       "$schema":
@@ -142,8 +110,28 @@ Deno.test("Convert populated array into typescript union.", () => {
         "method": "PATCH",
         "name": "Update club",
         "operationId": "updateClub",
-        "headerNames": ["inbound-header", "req-inbound-header"],
-        "responseHeaderNames": ["outbound-header", "gtd-outbound-header"],
+        "headers": [{
+          "name": "inbound-header",
+          "summary": "An inbound header",
+          "type": "std/maxString",
+        }, {
+          "name": "req-inbound-header",
+          "summary": "a required inbound header",
+          "type": "std/maxString",
+          "isRequired": true,
+          "deprecated": "This is no longer used.",
+        }],
+        "responseHeaders": [{
+          "name": "outbound-header",
+          "summary": "An outbound header",
+          "type": "std/maxString",
+        }, {
+          "name": "gtd-outbound-header",
+          "summary": "a required outbound header",
+          "type": "std/maxString",
+          "isGuaranteed": true,
+          "deprecated": "This is no longer used.",
+        }],
         "requestBodyProperties": [{
           "name": "someProp",
           "propertyType": "std/shortStringDisplayable",
@@ -195,54 +183,6 @@ Deno.test("Fail to generate api router code for an invalid resource.", () => {
       },
       {
         $schema: "invalid",
-      },
-    ])
-  );
-});
-
-Deno.test("Fail to generate api router code when an unknown header is referenced.", () => {
-  assertThrows(() =>
-    generateCodeForApiRouter([
-      {
-        $schema:
-          "https://raw.githubusercontent.com/karlhulme/drouter/main/schemas/service.json",
-        depsPath: "../deps.ts",
-      },
-      {
-        "$schema":
-          "https://raw.githubusercontent.com/karlhulme/drouter/main/schemas/route.json",
-        "system": "svc",
-        "urlPattern": "/tests",
-        "methods": [{
-          "method": "GET",
-          "name": "Get test",
-          "operationId": "getTest",
-          "headerNames": ["unknown-header"],
-        }],
-      },
-    ])
-  );
-});
-
-Deno.test("Fail to generate api router code when an unknown outbound header is referenced.", () => {
-  assertThrows(() =>
-    generateCodeForApiRouter([
-      {
-        $schema:
-          "https://raw.githubusercontent.com/karlhulme/drouter/main/schemas/service.json",
-        depsPath: "../deps.ts",
-      },
-      {
-        "$schema":
-          "https://raw.githubusercontent.com/karlhulme/drouter/main/schemas/route.json",
-        "system": "svc",
-        "urlPattern": "/tests",
-        "methods": [{
-          "method": "GET",
-          "name": "Get test",
-          "operationId": "getTest",
-          "responseHeaderNames": ["unknown-header"],
-        }],
       },
     ])
   );
