@@ -152,6 +152,7 @@ Deno.test("Generate api router code for service, outbound records and routes.", 
         "operationId": "updateClub",
         "middleware": [{
           "name": "mw",
+          "flags": ["flag1", "flag2"],
         }],
         "headers": [{
           "name": "inbound-header",

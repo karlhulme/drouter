@@ -1,4 +1,3 @@
-// deno-lint-ignore-file no-explicit-any
 import {
   capitalizeFirstLetter,
   getSystemFromTypeString,
@@ -38,6 +37,7 @@ export function createOperationConst(
         buildRouteFailureDefinition(route.urlPattern, method.method, rfd)
       ),
     );
+  const methodMiddleware = safeArray(method.middleware);
 
   let requestBodyTypeParam = "void";
   let requestBodyTypeLine = "";
@@ -103,7 +103,7 @@ export function createOperationConst(
   const deprecatedLine = method.deprecated ? "deprecated: true," : "";
 
   // Build headers declaration.
-  const headers = "[" + methodHeaders.map((h: any) => {
+  const headers = "[" + methodHeaders.map((h) => {
     const hSystem = getSystemFromTypeString(h.type);
     const hType = getTypeFromTypeString(h.type);
     const reqLine = h.isRequired ? "isRequired: true," : "";
@@ -119,7 +119,7 @@ export function createOperationConst(
 
   // Build url parameters declaration.
   const urlParams = "[" +
-    (safeArray(route.urlParams)).map((urlResource: any) => {
+    (safeArray(route.urlParams)).map((urlResource) => {
       const uSystem = getSystemFromTypeString(urlResource.type);
       const uType = getTypeFromTypeString(urlResource.type);
       return `{
@@ -130,7 +130,7 @@ export function createOperationConst(
     }).join(", ") + "]";
 
   // Build query parameters declaration.
-  const queryParams = "[" + (safeArray(methodQueryParams)).map((qp: any) => {
+  const queryParams = "[" + (safeArray(methodQueryParams)).map((qp) => {
     const qpSystem = getSystemFromTypeString(qp.type);
     const qpType = getTypeFromTypeString(qp.type);
     const depLine = qp.deprecated ? `deprecated: "${qp.deprecated}",` : "";
@@ -143,7 +143,7 @@ export function createOperationConst(
   }).join(", ") + "]";
 
   // Build outbound headers declaration.
-  const outHeaders = "[" + methodOutHeaders.map((h: any) => {
+  const outHeaders = "[" + methodOutHeaders.map((h) => {
     const hSystem = getSystemFromTypeString(h.type);
     const hType = getTypeFromTypeString(h.type);
     const gtdLine = h.isGuaranteed ? "isGuaranteed: true," : "";
@@ -154,6 +154,16 @@ export function createOperationConst(
       ${gtdLine}
       ${depLine}
       type: ${hSystem}${capitalizeFirstLetter(hType)}Type,
+    }`;
+  }).join(", ") + "]";
+
+  // Build a middleware declaration.
+  const middleware = "[" + methodMiddleware.map((m) => {
+    return `{
+      name: "${m.name}",
+      flags: [
+        ${safeArray(m.flags).map((f) => `"${f}"`).join(", ")}
+      ]
     }`;
   }).join(", ") + "]";
 
@@ -179,6 +189,7 @@ export function createOperationConst(
       name: "${method.name}",
       ${markdownLine}
       operationId: "${method.operationId}",
+      middleware: ${middleware},
       urlPattern: "${route.urlPattern}",
       requestUrlParams: ${urlParams},
       requestHeaders: ${headers},
