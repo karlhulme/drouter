@@ -148,7 +148,9 @@ Deno.test("Generate api router code for service, outbound records and routes.", 
         "method": "PATCH",
         "name": "Update club",
         "operationId": "updateClub",
-        "middleware": ["mw"],
+        "middleware": [{
+          "name": "mw",
+        }],
         "headers": [{
           "name": "inbound-header",
           "summary": "An inbound header",

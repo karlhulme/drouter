@@ -6,6 +6,7 @@ export interface DslMiddleware {
     summary: string;
     type: string;
     isRequired?: boolean;
+    isAuthApiKey?: boolean;
     deprecated?: string;
   }[];
   queryParams?: {
@@ -26,4 +27,5 @@ export interface DslMiddleware {
     localType: string;
     summary: string;
   }[];
+  usesAuthCookies?: string[];
 }
