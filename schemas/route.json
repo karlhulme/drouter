@@ -70,12 +70,6 @@
               }]
             }
           },
-          "headerNames": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
           "headers": {
             "type": "array",
             "items": {

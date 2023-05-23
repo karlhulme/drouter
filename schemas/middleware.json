@@ -1,0 +1,143 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema",
+  "$id": "https://raw.githubusercontent.com/karlhulme/drouter/main/schemas/middleware.json",
+  "title": "API middleware schema.",
+  "description": "The service.",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string",
+      "description": "The name of the middleware in camel case."
+    },
+    "includeRoutes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "verbs": {
+            "type": "array",
+            "items": {
+              "enum": ["DELETE", "GET", "PATCH", "POST", "PUT"]
+            }
+          },
+          "pattern": {
+            "type": "string"
+          }
+        },
+        "required": ["verbs", "pattern"]
+      }
+    },
+    "excludeRoutes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "verbs": {
+            "type": "array",
+            "items": {
+              "enum": ["DELETE", "GET", "PATCH", "POST", "PUT"]
+            }
+          },
+          "pattern": {
+            "type": "string"
+          }
+        },
+        "required": ["verbs", "pattern"]
+      }
+    },
+    "headers": {
+      "type": "array",
+      "items": {
+        "description": "The type and description of an inbound header.",
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "type": {
+            "$ref": "https://raw.githubusercontent.com/karlhulme/djsonotron/main/schemas/types.json"
+          },
+          "isRequired": {
+            "type": "boolean"
+          },
+          "deprecated": {
+            "type": "string"
+          }
+        },
+        "required": ["name", "summary", "type"]
+      }
+    },
+    "queryParams": {
+      "type": "array",
+      "items": {
+        "description": "The type and description of a query param.",
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "type": {
+            "$ref": "https://raw.githubusercontent.com/karlhulme/djsonotron/main/schemas/types.json"
+          },
+          "deprecated": {
+            "type": "string"
+          }
+        },
+        "required": ["name", "summary", "type"]
+      }
+    },
+    "responseHeaders": {
+      "type": "array",
+      "items": {
+        "description": "The type and description of a response header.",
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "type": {
+            "$ref": "https://raw.githubusercontent.com/karlhulme/djsonotron/main/schemas/types.json"
+          },
+          "isGuaranteed": {
+            "type": "boolean"
+          },
+          "deprecated": {
+            "type": "string"
+          }
+        },
+        "required": ["name", "summary", "type"]
+      }
+    },
+    "responseFailureDefinitions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "number"
+          },
+          "localType": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          }
+        },
+        "required": ["code", "localType", "summary"]
+      }
+    }
+  },
+  "required": ["name", "includeRoutes"]
+}
