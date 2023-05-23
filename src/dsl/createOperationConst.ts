@@ -19,12 +19,7 @@ export function createOperationConst(
   // from the route and the associated middlewares.
   const methodHeaders = mwares.map((m) => safeArray(m.headers))
     .flat()
-    .concat(safeArray(method.headers))
-    .concat({
-      name: "api-version",
-      summary: "The version targeted by the request.",
-      type: "std/date",
-    });
+    .concat(safeArray(method.headers));
   const methodQueryParams = mwares.map((m) => safeArray(m.queryParams))
     .flat()
     .concat(safeArray(method.queryParams));
@@ -35,12 +30,7 @@ export function createOperationConst(
     safeArray(m.responseFailureDefinitions)
   )
     .flat()
-    .concat(safeArray(method.responseFailureDefinitions))
-    .concat({
-      code: 500,
-      localType: "internalServerError",
-      summary: "Unexpected error raised while processing request.",
-    });
+    .concat(safeArray(method.responseFailureDefinitions));
 
   let requestBodyTypeParam = "void";
   let requestBodyTypeLine = "";
