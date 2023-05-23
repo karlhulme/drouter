@@ -62,7 +62,6 @@ export interface ServiceMiddleware {
     req: Request,
     ctx: OperationContext,
     op: Operation,
-    flags: string[],
     next: () => Promise<Response>,
   ) => Promise<Response>;
 }

@@ -203,9 +203,7 @@ function createPathOperation(
   config: ServiceConfig,
   operation: Operation,
 ): OpenApiSpecPathOperation {
-  const usedMiddlewareNames = safeArray(operation.middleware).map((m) =>
-    m.name
-  );
+  const usedMiddlewareNames = safeArray(operation.middleware);
   const middlewares = safeArray(config.middleware).filter((m) =>
     usedMiddlewareNames.includes(m.name)
   );

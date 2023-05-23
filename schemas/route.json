@@ -58,19 +58,7 @@
           "middleware": {
             "type": "array",
             "items": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string"
-                },
-                "flags": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                }
-              },
-              "required": ["name"]
+              "type": "string"
             }
           },
           "flags": {

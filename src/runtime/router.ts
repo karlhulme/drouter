@@ -337,16 +337,17 @@ async function executeMatchedOp(
       : null;
 
     // Determine if the operation needs this middleware.
-    const middlewareRef = op.middleware &&
-      op.middleware.find((m) => m.name === middlewareMod?.name);
+    const isMiddlewareApplied = Boolean(
+      op.middleware &&
+        op.middleware.find((m) => m === middlewareMod?.name),
+    );
 
     if (middlewareMod) {
-      if (middlewareRef && middlewareMod.process) {
+      if (isMiddlewareApplied && middlewareMod.process) {
         return await middlewareMod.process(
           underlyingRequest,
           ctx,
           op,
-          middlewareRef.flags || [],
           () => {
             return runner(index + 1);
           },

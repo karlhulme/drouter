@@ -19,22 +19,14 @@ Deno.test("Process an operation that uses middleware functions.", async () => {
         };
       },
       setup: (op) => {
-        op.middleware = [{
-          name: "mw1",
-        }, {
-          name: "mw2",
-          flags: [],
-        }, {
-          name: "mw4",
-          flags: [],
-        }];
+        op.middleware = ["mw1", "mw2", "mw4"];
       },
     }),
     (sc) => {
       sc.middleware = [
         {
           name: "mw1",
-          process: async (_req, ctx, _op, _flags, next) => {
+          process: async (_req, ctx, _op, next) => {
             ctx.set("foo", "bar");
             return await next();
           },
@@ -45,7 +37,7 @@ Deno.test("Process an operation that uses middleware functions.", async () => {
         },
         {
           name: "mw2",
-          process: async (_req, ctx, _op, _flags, next) => {
+          process: async (_req, ctx, _op, next) => {
             ctx.set("hello", "world");
             return await next();
           },
@@ -58,7 +50,7 @@ Deno.test("Process an operation that uses middleware functions.", async () => {
         sc.payloadMiddleware = [
           {
             name: "mw3",
-            process: async (_req, ctx, _op, _flags, next) => {
+            process: async (_req, ctx, _op, next) => {
               ctx.set("another", "one");
               return await next();
             },
@@ -69,8 +61,8 @@ Deno.test("Process an operation that uses middleware functions.", async () => {
           },
           {
             name: "mw4",
-            process: async (_req, ctx, _op, _flags, next) => {
-              ctx.set("appears", "hre");
+            process: async (_req, ctx, _op, next) => {
+              ctx.set("appears", "here");
               return await next();
             },
             headers: [],
@@ -97,16 +89,14 @@ Deno.test("Fail to process an operation where a middleware calls next twice.", a
         return {};
       },
       setup: (op) => {
-        op.middleware = [{
-          name: "mw1",
-        }];
+        op.middleware = ["mw1"];
       },
     }),
     (sc) => {
       sc.middleware = [
         {
           name: "mw1",
-          process: async (_req, ctx, _op, _flags, next) => {
+          process: async (_req, ctx, _op, next) => {
             ctx.set("foo", "bar");
             await next();
             return await next();

@@ -7,7 +7,6 @@ import { OperationHeaderOutbound } from "./OperationHeaderOutbound.ts";
 import { OperationUrlParam } from "./OperationUrlParam.ts";
 import { OperationNamedType } from "./OperationNamedType.ts";
 import { OperationContext } from "./OperationContext.ts";
-import { OperationMiddleware } from "./OperationMiddleware.ts";
 
 /**
  * A RESTful operation.  If type parameters are not supplied
@@ -122,10 +121,10 @@ export interface Operation<
   apiVersion: string;
 
   /**
-   * An array of references to the middleware that is used
-   * by this operation.
+   * An array of the names of the middleware modules that should
+   * be applied to this operation.
    */
-  middleware?: OperationMiddleware[];
+  middleware?: string[];
 
   /**
    * The implementation of the operation as an asynchronous function.

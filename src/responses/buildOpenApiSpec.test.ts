@@ -205,12 +205,7 @@ function createServiceConfig(): ServiceConfig {
       operationId: "patchThing",
       markdown: "Patch thing...",
       method: "PATCH",
-      middleware: [{
-        name: "mw1",
-      }, {
-        name: "mw2",
-        flags: [],
-      }],
+      middleware: ["mw1", "mw2"],
       tags: ["Things"],
       flags: [],
       apiVersion: "2000-01-01",

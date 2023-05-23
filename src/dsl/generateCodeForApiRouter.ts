@@ -115,8 +115,7 @@ export function generateCodeForApiRouter(resources: any[]) {
   for (const route of routes) {
     for (const method of route.methods) {
       // Get the middleware names that are applicable to this route.
-      const methodMiddlewareNames = safeArray(method.middleware)
-        .map((m) => m.name);
+      const methodMiddlewareNames = safeArray(method.middleware);
 
       // Get the middleware modules that are applicable to this route.
       const mwares = middlewares.filter((m) =>

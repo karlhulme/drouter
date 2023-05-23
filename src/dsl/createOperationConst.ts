@@ -158,14 +158,9 @@ export function createOperationConst(
   }).join(", ") + "]";
 
   // Build a middleware declaration.
-  const middleware = "[" + methodMiddleware.map((m) => {
-    return `{
-      name: "${m.name}",
-      flags: [
-        ${safeArray(m.flags).map((f) => `"${f}"`).join(", ")}
-      ]
-    }`;
-  }).join(", ") + "]";
+  const middleware = "[" +
+    methodMiddleware.map((m) => `"${m}"`).join(", ") +
+    "]";
 
   return {
     name: method.operationId,

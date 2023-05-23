@@ -18,10 +18,7 @@ export interface DslRouteMethod {
   apiVersion: string;
 
   markdown?: string;
-  middleware?: {
-    name: string;
-    flags?: string[];
-  }[];
+  middleware?: string[];
   flags?: string[];
   headers?: {
     name: string;
