@@ -1,0 +1,353 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema",
+  "$id": "https://raw.githubusercontent.com/karlhulme/drouter/main/schemas/apiRoute.json",
+  "title": "OpenAPI route schema.",
+  "description": "The url pattern and methods available of an OpenAPI route.",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "system": {
+      "type": "string"
+    },
+    "urlPattern": {
+      "type": "string"
+    },
+    "urlParams": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "type": {
+            "$ref": "https://raw.githubusercontent.com/karlhulme/djsonotron/main/schemas/types.json"
+          }
+        },
+        "required": ["name", "summary", "type"]
+      }
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "methods": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "markdown": {
+            "type": "string"
+          },
+          "operationId": {
+            "type": "string"
+          },
+          "method": {
+            "enum": ["DELETE", "GET", "PATCH", "POST", "PUT"]
+          },
+          "flags": {
+            "type": "array",
+            "items": {
+              "oneOf": [{
+                "enum": [
+                  "std/anonymous",
+                  "std/sensitive",
+                  "std/critical"
+                ]
+              }, {
+                "type": "string",
+                "pattern": "^(?!std\/).+"
+              }]
+            }
+          },
+          "headerNames": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "queryParams": {
+            "type": "array",
+            "items": {
+              "description": "The type and description of a query param.",
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "summary": {
+                  "type": "string"
+                },
+                "type": {
+                  "$ref": "https://raw.githubusercontent.com/karlhulme/djsonotron/main/schemas/types.json"
+                },
+                "deprecated": {
+                  "type": "string"
+                }
+              },
+              "required": ["name", "summary", "type"]
+            }
+          },
+          "requestBodyProperties": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "summary": {
+                  "type": "string"
+                },
+                "propertyType": {
+                  "$ref": "https://raw.githubusercontent.com/karlhulme/djsonotron/main/schemas/types.json"
+                },
+                "isRequired": {
+                  "type": "boolean"
+                },
+                "isArray": {
+                  "type": "boolean"
+                },
+                "isNullable": {
+                  "type": "boolean"
+                },
+                "deprecated": {
+                  "type": "string"
+                }
+              },
+              "required": ["name", "summary", "propertyType"]
+            }
+          },
+          "requestBodyTypes": {
+            "type": "object",
+            "properties": {
+              "enums": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "pattern": ".+_.+",
+                      "description": "Prefix this value with the operationId and an underscore."
+                    },
+                    "pluralName": {
+                      "type": "string",
+                      "pattern": ".+_.+",
+                      "description": "Prefix this value with the operationId and an underscore."
+                    },
+                    "summary": {
+                      "type": "string"
+                    },
+                    "deprecated": {
+                      "type": "string"
+                    },
+                    "tags": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "labels": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string",
+                            "value": "string"
+                          }
+                        },
+                        "additionalProperties": false
+                      }
+                    },
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "value": {
+                            "type": "string"
+                          },
+                          "deprecated": {
+                            "type": "string"
+                          },
+                          "summary": {
+                            "type": "string"
+                          }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                          "value"
+                        ]
+                      }
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "name",
+                    "pluralName",
+                    "summary",
+                    "items"
+                  ]
+                }
+              },
+              "records": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "pattern": ".+_.+",
+                      "description": "Prefix this value with the operationId and an underscore."
+                    },
+                    "pluralName": {
+                      "type": "string",
+                      "pattern": ".+_.+",
+                      "description": "Prefix this value with the operationId and an underscore."
+                    },
+                    "summary": {
+                      "type": "string"
+                    },
+                    "deprecated": {
+                      "type": "string"
+                    },
+                    "tags": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "labels": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string",
+                            "value": "string"
+                          }
+                        },
+                        "additionalProperties": false
+                      }
+                    },
+                    "properties": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "summary": {
+                            "type": "string"
+                          },
+                          "propertyType": {
+                            "$ref": "https://raw.githubusercontent.com/karlhulme/djsonotron/main/schemas/types.json"
+                          },
+                          "isRequired": {
+                            "type": "boolean"
+                          },
+                          "isArray": {
+                            "type": "boolean"
+                          },
+                          "isNullable": {
+                            "type": "boolean"
+                          },
+                          "deprecated": {
+                            "type": "string"
+                          }
+                        },
+                        "additionalProperties": false,
+                        "required": [
+                          "name",
+                          "summary",
+                          "propertyType"
+                        ]
+                      }
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "name",
+                    "pluralName",
+                    "summary",
+                    "properties"
+                  ]
+                }
+              }
+            },
+            "additionalProperties": false
+          },
+          "responseSuccessCode": {
+            "type": "number"
+          },
+          "responseHeaderNames": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "responseBodyType": {
+            "$ref": "https://raw.githubusercontent.com/karlhulme/djsonotron/main/schemas/types.json"
+          },
+          "responseBodyTypeArray": {
+            "type": "boolean"
+          },
+          "responseFailureDefinitions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "number"
+                },
+                "localType": {
+                  "type": "string"
+                },
+                "summary": {
+                  "type": "string"
+                }
+              },
+              "required": ["code", "localType", "summary"]
+            }
+          },
+          "requiresApiKey": {
+            "type": "boolean"
+          },
+          "requiresCookieAuth": {
+            "type": "boolean"
+          },
+          "usesUserAgent": {
+            "type": "boolean"
+          },
+          "usesSetCookie": {
+            "type": "boolean"
+          },
+          "acceptIdempotencyKey": {
+            "type": "boolean"
+          },
+          "apiVersion": {
+            "type": "string"
+          },
+          "deprecated": {
+            "type": "string"
+          }
+        },
+        "required": ["method", "name", "operationId", "apiVersion"]
+      }
+    }
+  },
+  "required": ["urlPattern", "methods"]
+}

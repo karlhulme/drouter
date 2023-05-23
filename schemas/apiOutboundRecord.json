@@ -1,0 +1,251 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema",
+  "$id": "https://raw.githubusercontent.com/karlhulme/drouter/main/schemas/apiOutboundRecord.json",
+  "title": "OpenAPI outbound record schema.",
+  "description": "The name and set of properties that make up a record that is returned from an OpenAPI route.",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "system": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "pluralName": {
+      "type": "string"
+    },
+    "summary": {
+      "type": "string"
+    },
+    "deprecated": {
+      "type": "string"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "labels": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "value": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "properties": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "propertyType": {
+            "$ref": "https://raw.githubusercontent.com/karlhulme/djsonotron/main/schemas/types.json"
+          },
+          "isRequired": {
+            "type": "boolean"
+          },
+          "isArray": {
+            "type": "boolean"
+          },
+          "isNullable": {
+            "type": "boolean"
+          },
+          "deprecated": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "summary",
+          "propertyType"
+        ]
+      }
+    },
+    "types": {
+      "type": "object",
+      "properties": {
+        "enums": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "pattern": ".+_.+",
+                "description": "Prefix this value with the outbound record name and an underscore."
+              },
+              "pluralName": {
+                "type": "string",
+                "pattern": ".+_.+",
+                "description": "Prefix this value with the outbound record name and an underscore."
+              },
+              "summary": {
+                "type": "string"
+              },
+              "deprecated": {
+                "type": "string"
+              },
+              "tags": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "labels": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "value": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "value": {
+                      "type": "string"
+                    },
+                    "deprecated": {
+                      "type": "string"
+                    },
+                    "summary": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "value"
+                  ]
+                }
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "pluralName",
+              "summary",
+              "items"
+            ]
+          }
+        },
+        "records": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "pattern": ".+_.+",
+                "description": "Prefix this value with the outbound record name and an underscore."
+              },
+              "pluralName": {
+                "type": "string",
+                "pattern": ".+_.+",
+                "description": "Prefix this value with the outbound record name and an underscore."
+              },
+              "summary": {
+                "type": "string"
+              },
+              "deprecated": {
+                "type": "string"
+              },
+              "tags": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "labels": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "value": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "properties": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "summary": {
+                      "type": "string"
+                    },
+                    "propertyType": {
+                      "$ref": "https://raw.githubusercontent.com/karlhulme/djsonotron/main/schemas/types.json"
+                    },
+                    "isRequired": {
+                      "type": "boolean"
+                    },
+                    "isArray": {
+                      "type": "boolean"
+                    },
+                    "isNullable": {
+                      "type": "boolean"
+                    },
+                    "deprecated": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "name",
+                    "summary",
+                    "propertyType"
+                  ]
+                }
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "pluralName",
+              "summary",
+              "properties"
+            ]
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "system",
+    "name",
+    "pluralName",
+    "summary",
+    "properties"
+  ]
+}

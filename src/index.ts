@@ -1,3 +1,4 @@
+export * from "./dsl/index.ts";
 export * from "./interfaces/index.ts";
 export { errorResponse, httpErrorResponse } from "./responses/index.ts";
 export {
