@@ -29,5 +29,7 @@ export interface DslMiddleware {
     localType: string;
     summary: string;
   }[];
-  usesAuthCookies?: string[];
+
+  usesAuthCookie?: boolean;
+  usesAuthApiKey?: boolean;
 }

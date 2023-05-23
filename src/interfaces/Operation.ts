@@ -7,6 +7,7 @@ import { OperationHeaderOutbound } from "./OperationHeaderOutbound.ts";
 import { OperationUrlParam } from "./OperationUrlParam.ts";
 import { OperationNamedType } from "./OperationNamedType.ts";
 import { OperationContext } from "./OperationContext.ts";
+import { OperationMiddleware } from "./OperationMiddleware.ts";
 
 /**
  * A RESTful operation.  If type parameters are not supplied
@@ -121,6 +122,12 @@ export interface Operation<
   apiVersion: string;
 
   /**
+   * An array of references to the middleware that is used
+   * by this operation.
+   */
+  middleware?: OperationMiddleware[];
+
+  /**
    * The implementation of the operation as an asynchronous function.
    */
   handler?: (
@@ -136,14 +143,4 @@ export interface Operation<
 
   // apiVersionRequestHandler?: (payload: unknown, reqApiVersion: string) => unknown
   // apiVersionResponseHandler?: (payload: unknown, resApiVersion: string) => unknown
-
-  /**
-   * True if the operation requires an x-api-key header to be supplied.
-   */
-  requiresApiKey?: boolean;
-
-  /**
-   * True if the operation requires a cookie to be supplied for authentication.
-   */
-  requiresCookieAuth?: boolean;
 }

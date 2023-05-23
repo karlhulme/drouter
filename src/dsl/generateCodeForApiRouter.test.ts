@@ -23,6 +23,8 @@ Deno.test("Generate api router code for service, outbound records and routes.", 
       "$schema":
         "https://raw.githubusercontent.com/karlhulme/drouter/main/schemas/middleware.json",
       "name": "mw",
+      "requiresPayload": false,
+      "order": 1,
       "headers": [{
         "name": "mw-header",
         "summary": "A middlware header.",

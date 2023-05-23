@@ -38,9 +38,6 @@
           "isRequired": {
             "type": "boolean"
           },
-          "isAuthApiKey": {
-            "type": "boolean"
-          },
           "deprecated": {
             "type": "string"
           }
@@ -113,11 +110,13 @@
         "required": ["code", "localType", "summary"]
       }
     },
-    "usesAuthCookies": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
+    "usesAuthCookie": {
+      "type": "boolean",
+      "description": "A value of true indicates that this middleware uses the authentication cookie."
+    },
+    "usesAuthApiKey": {
+      "type": "boolean",
+      "description": "A value of true indicates that this middleware uses the authentication api-key header."
     }
   },
   "required": ["name", "requiresPayload", "order"]

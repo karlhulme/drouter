@@ -1,7 +1,7 @@
-import { OpenApiSpecComponentsSecuritySchemes } from "https://raw.githubusercontent.com/karlhulme/dopenapi/v1.6.3/mod.ts";
 import {
   OpenApiSpec,
   OpenApiSpecComponentsSchema,
+  OpenApiSpecComponentsSecuritySchemes,
   OpenApiSpecPathOperation,
   OpenApiSpecPathOperationParameter,
   OpenApiSpecPathOperationResponse,
@@ -20,12 +20,16 @@ import { convertUrlPatternToOpenApiPath } from "./convertUrlPatternToOpenApiPath
  * @param config The configuration of the service.
  */
 export function buildOpenApiSpec(config: ServiceConfig): OpenApiSpec {
+  const middleware = safeArray(config.middleware);
+  const payloadMiddleware = safeArray(config.payloadMiddleware);
+  const allMiddleware = middleware.concat(...payloadMiddleware);
+
   const usingApiKeys = Boolean(
-    config.operations.find((op) => op.requiresApiKey),
+    allMiddleware.find((m) => m.usesAuthApiKey),
   );
 
   const usingCookieAuth = Boolean(
-    config.operations.find((op) => op.requiresCookieAuth),
+    allMiddleware.find((m) => m.usesAuthCookie),
   );
 
   // The version should actually be passed to this function so that
@@ -36,19 +40,19 @@ export function buildOpenApiSpec(config: ServiceConfig): OpenApiSpec {
 
   const securitySchemes: OpenApiSpecComponentsSecuritySchemes = {};
 
-  if (usingApiKeys) {
+  if (usingApiKeys && config.authApiKeyHeaderName) {
     securitySchemes.apiKeyAuth = {
       type: "apiKey",
       in: "header",
-      name: "x-api-key",
+      name: config.authApiKeyHeaderName,
     };
   }
 
-  if (usingCookieAuth && config.cookieAuthName) {
+  if (usingCookieAuth && config.authCookieName) {
     securitySchemes.cookieAuth = {
       type: "apiKey",
       in: "cookie",
-      name: config.cookieAuthName,
+      name: config.authCookieName,
     };
   }
 
@@ -147,15 +151,15 @@ function appendOperationToSpec(
   const path = spec.paths[pathPattern];
 
   if (operation.method === "DELETE") {
-    path.delete = createPathOperation(operation);
+    path.delete = createPathOperation(config, operation);
   } else if (operation.method === "GET") {
-    path.get = createPathOperation(operation);
+    path.get = createPathOperation(config, operation);
   } else if (operation.method === "PATCH") {
-    path.patch = createPathOperation(operation);
+    path.patch = createPathOperation(config, operation);
   } else if (operation.method === "POST") {
-    path.post = createPathOperation(operation);
+    path.post = createPathOperation(config, operation);
   } else if (operation.method === "PUT") {
-    path.put = createPathOperation(operation);
+    path.put = createPathOperation(config, operation);
   }
 
   if (operation.requestBodyType) {
@@ -196,8 +200,23 @@ function appendOperationToSpec(
  * @param operation An operation.
  */
 function createPathOperation(
+  config: ServiceConfig,
   operation: Operation,
 ): OpenApiSpecPathOperation {
+  const usedMiddlewareNames = safeArray(operation.middleware).map((m) =>
+    m.name
+  );
+  const middlewares = safeArray(config.middleware).filter((m) =>
+    usedMiddlewareNames.includes(m.name)
+  );
+  const payloadMiddlewares = safeArray(config.payloadMiddleware).filter((m) =>
+    usedMiddlewareNames.includes(m.name)
+  );
+  const allMiddlewares = middlewares.concat(...payloadMiddlewares);
+
+  const usesAuthApiKey = Boolean(allMiddlewares.find((m) => m.usesAuthApiKey));
+  const usesAuthCookie = Boolean(allMiddlewares.find((m) => m.usesAuthCookie));
+
   const successCode = operation.responseSuccessCode
     ? operation.responseSuccessCode.toString()
     : "200";
@@ -209,6 +228,12 @@ function createPathOperation(
     type: "/errors/common/apiVersionNotSupplied",
     summary:
       "The request did not contain an api-version header in the form YYYY-MM-DD.",
+  });
+
+  failureDefinitions.push({
+    code: 500,
+    type: "/errors/common/internalServerError",
+    summary: "An internal server error has occurred.",
   });
 
   if (operation.requestBodyType) {
@@ -262,13 +287,13 @@ function createPathOperation(
 
   const security: Record<string, unknown[]>[] = [];
 
-  if (operation.requiresApiKey) {
+  if (usesAuthApiKey) {
     security.push({
       apiKeyAuth: [],
     });
   }
 
-  if (operation.requiresCookieAuth) {
+  if (usesAuthCookie) {
     security.push({
       cookieAuth: [],
     });

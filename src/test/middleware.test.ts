@@ -18,59 +18,65 @@ Deno.test("Process an operation that uses middleware functions.", async () => {
           },
         };
       },
-      setup: () => {},
+      setup: (op) => {
+        op.middleware = [{
+          name: "mw1",
+        }, {
+          name: "mw2",
+          flags: [],
+        }, {
+          name: "mw4",
+          flags: [],
+        }];
+      },
     }),
     (sc) => {
       sc.middleware = [
         {
-          process: async (_req, ctx, _op, next) => {
+          name: "mw1",
+          process: async (_req, ctx, _op, _flags, next) => {
             ctx.set("foo", "bar");
             return await next();
           },
-          specify: () => ({
-            headers: [],
-            queryParams: [],
-            responseHeaders: [],
-            failureDefinitions: [],
-          }),
+          headers: [],
+          queryParams: [],
+          responseHeaders: [],
+          failureDefinitions: [],
         },
         {
-          process: async (_req, ctx, _op, next) => {
+          name: "mw2",
+          process: async (_req, ctx, _op, _flags, next) => {
             ctx.set("hello", "world");
             return await next();
           },
-          specify: () => ({
-            headers: [],
-            queryParams: [],
-            responseHeaders: [],
-            failureDefinitions: [],
-          }),
+          headers: [],
+          queryParams: [],
+          responseHeaders: [],
+          failureDefinitions: [],
         },
       ],
         sc.payloadMiddleware = [
           {
-            process: async (_req, ctx, _op, next) => {
+            name: "mw3",
+            process: async (_req, ctx, _op, _flags, next) => {
               ctx.set("another", "one");
               return await next();
             },
-            specify: () => ({
-              headers: [],
-              queryParams: [],
-              responseHeaders: [],
-              failureDefinitions: [],
-            }),
+            headers: [],
+            queryParams: [],
+            responseHeaders: [],
+            failureDefinitions: [],
           },
           {
-            process: async (_req, ctx, _op, next) => {
+            name: "mw4",
+            process: async (_req, ctx, _op, _flags, next) => {
               ctx.set("appears", "hre");
               return await next();
             },
-            specify: () => ({
-              headers: [],
-              queryParams: [],
-              responseHeaders: [],
-              failureDefinitions: [],
-            }),
+            headers: [],
+            queryParams: [],
+            responseHeaders: [],
+            failureDefinitions: [],
           },
         ];
     },
@@ -90,21 +96,24 @@ Deno.test("Fail to process an operation where a middleware calls next twice.", a
       handler: async () => {
         return {};
       },
-      setup: () => {},
+      setup: (op) => {
+        op.middleware = [{
+          name: "mw1",
+        }];
+      },
     }),
     (sc) => {
       sc.middleware = [
         {
-          process: async (_req, ctx, _op, next) => {
+          name: "mw1",
+          process: async (_req, ctx, _op, _flags, next) => {
             ctx.set("foo", "bar");
             await next();
             return await next();
           },
-          specify: () => ({
-            headers: [],
-            queryParams: [],
-            responseHeaders: [],
-          }),
+          headers: [],
+          queryParams: [],
+          responseHeaders: [],
         },
       ];
     },

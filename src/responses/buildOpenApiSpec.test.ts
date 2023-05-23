@@ -8,44 +8,36 @@ function createServiceConfig(): ServiceConfig {
     title: "Test service",
     description: "The test service.",
     middleware: [{
+      name: "mw1",
       process: async () => new Response(null),
-      specify: () => ({
-        headers: [{
-          name: "middlewareHeader",
-          summary: "A middleware header.",
-        }],
-        queryParams: [{
-          name: "middlewareQueryParam",
-          summary: "A middleware query param.",
-        }],
-        responseHeaders: [{
-          name: "middlewareOutboundHeader",
-          summary: "A middleware outbound header.",
-        }],
-      }),
-    }, {
-      process: async () => new Response(null),
-      specify: () => ({}),
+      headers: [{
+        name: "middlewareHeader",
+        summary: "A middleware header.",
+      }],
+      queryParams: [{
+        name: "middlewareQueryParam",
+        summary: "A middleware query param.",
+      }],
+      responseHeaders: [{
+        name: "middlewareOutboundHeader",
+        summary: "A middleware outbound header.",
+      }],
     }],
     payloadMiddleware: [{
+      name: "mw2",
       process: async () => new Response(null),
-      specify: () => ({
-        headers: [{
-          name: "middlewareHeader",
-          summary: "A middleware header.",
-        }],
-        queryParams: [{
-          name: "middlewareQueryParam",
-          summary: "A middleware query param.",
-        }],
-        responseHeaders: [{
-          name: "middlewareOutboundHeader",
-          summary: "A middleware outbound header.",
-        }],
-      }),
-    }, {
-      process: async () => new Response(null),
-      specify: () => ({}),
+      headers: [{
+        name: "middlewareHeader",
+        summary: "A middleware header.",
+      }],
+      queryParams: [{
+        name: "middlewareQueryParam",
+        summary: "A middleware query param.",
+      }],
+      responseHeaders: [{
+        name: "middlewareOutboundHeader",
+        summary: "A middleware outbound header.",
+      }],
     }],
     namedTypes: [{
       name: "someNumber",
@@ -213,6 +205,12 @@ function createServiceConfig(): ServiceConfig {
       operationId: "patchThing",
       markdown: "Patch thing...",
       method: "PATCH",
+      middleware: [{
+        name: "mw1",
+      }, {
+        name: "mw2",
+        flags: [],
+      }],
       tags: ["Things"],
       flags: [],
       apiVersion: "2000-01-01",
@@ -262,7 +260,8 @@ Deno.test("Build an OpenAPI spec that uses html (instead of a description).", as
 Deno.test("Build an OpenAPI spec that uses an API key.", async () => {
   const sc = createServiceConfig();
   sc.apiKeyHandler = async () => true;
-  sc.operations[0].requiresApiKey = true;
+  sc.authApiKeyHeaderName = "x-api-key";
+  sc.middleware![0].usesAuthApiKey = true;
 
   const openApiSpec = buildOpenApiSpec(sc);
 
@@ -274,9 +273,8 @@ Deno.test("Build an OpenAPI spec that uses an API key.", async () => {
 
 Deno.test("Build an OpenAPI spec that uses cookie authentication.", async () => {
   const sc = createServiceConfig();
-  sc.apiKeyHandler = async () => true;
-  sc.cookieAuthName = "test-cookie";
-  sc.operations[0].requiresCookieAuth = true;
+  sc.authCookieName = "test-cookie";
+  sc.middleware![0].usesAuthCookie = true;
 
   const openApiSpec = buildOpenApiSpec(sc);
 

@@ -1,7 +1,7 @@
 /**
  * A header that is processed by a middleware module.
  */
-export interface ServiceMiddlewareSpecificationHeader {
+export interface ServiceMiddlewareHeader {
   /**
    * The name of the header.
    */

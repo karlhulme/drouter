@@ -37,6 +37,7 @@ export {
 export type {
   OpenApiSpec,
   OpenApiSpecComponentsSchema,
+  OpenApiSpecComponentsSecuritySchemes,
   OpenApiSpecPathOperation,
   OpenApiSpecPathOperationParameter,
   OpenApiSpecPathOperationResponse,

@@ -1,7 +1,7 @@
 /**
  * A failure definition that may be returned by a middleware module.
  */
-export interface ServiceMiddlewareSpecificationFailureDefinition {
+export interface ServiceMiddlewareFailureDefinition {
   /**
    * The HTTP code of the error.
    */

@@ -62,9 +62,14 @@ export interface ServiceConfig {
   apiKeyHandler?: (op: Operation, apiKey: string) => Promise<unknown>;
 
   /**
-   * The names of the cookies used for authentication.
+   * The name of the cookie used for authentication.
    */
-  cookieAuthName?: string;
+  authCookieName?: string;
+
+  /**
+   * The name of the header that accepts an api-key for authentication.
+   */
+  authApiKeyHeaderName?: string;
 
   /**
    * An array of acceptable request origins for CORs requests.

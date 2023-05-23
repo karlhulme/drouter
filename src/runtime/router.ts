@@ -6,9 +6,6 @@ import {
   ServiceMiddleware,
 } from "../interfaces/index.ts";
 import {
-  apiKeyHandlerNotDefinedResponse,
-  apiKeyNotSuppliedResponse,
-  apiKeyNotValidResponse,
   apiVersionNotSuppliedResponse,
   docsPageRapidocCodeResponse,
   docsPageRapidocMapResponse,
@@ -225,28 +222,28 @@ async function processRequest(
 
   const ctx = new Map<string, unknown>();
 
-  if (matchedOp.operation.requiresApiKey) {
-    if (!config.apiKeyHandler) {
-      return apiKeyHandlerNotDefinedResponse();
-    }
+  // if (matchedOp.operation.requiresApiKey) {
+  //   if (!config.apiKeyHandler) {
+  //     return apiKeyHandlerNotDefinedResponse();
+  //   }
 
-    const suppliedApiKey = underlyingRequest.headers.get("x-api-key");
+  //   const suppliedApiKey = underlyingRequest.headers.get("x-api-key");
 
-    if (!suppliedApiKey) {
-      return apiKeyNotSuppliedResponse();
-    }
+  //   if (!suppliedApiKey) {
+  //     return apiKeyNotSuppliedResponse();
+  //   }
 
-    const apiKeyUser = await config.apiKeyHandler(
-      matchedOp.operation,
-      suppliedApiKey,
-    );
+  //   const apiKeyUser = await config.apiKeyHandler(
+  //     matchedOp.operation,
+  //     suppliedApiKey,
+  //   );
 
-    if (!apiKeyUser) {
-      return apiKeyNotValidResponse();
-    }
+  //   if (!apiKeyUser) {
+  //     return apiKeyNotValidResponse();
+  //   }
 
-    ctx.set(CONTEXT_OPERATION_API_KEY_USER, apiKeyUser);
-  }
+  //   ctx.set(CONTEXT_OPERATION_API_KEY_USER, apiKeyUser);
+  // }
 
   return await executeMatchedOp(
     url,
@@ -339,10 +336,26 @@ async function executeMatchedOp(
       ? middlewareModules[index]
       : null;
 
+    // Determine if the operation needs this middleware.
+    const middlewareRef = op.middleware &&
+      op.middleware.find((m) => m.name === middlewareMod?.name);
+
     if (middlewareMod) {
-      return await middlewareMod.process(underlyingRequest, ctx, op, () => {
+      if (middlewareRef && middlewareMod.process) {
+        return await middlewareMod.process(
+          underlyingRequest,
+          ctx,
+          op,
+          middlewareRef.flags || [],
+          () => {
+            return runner(index + 1);
+          },
+        );
+      } else {
+        // This middleware is not required or not implemented so
+        // we proceed to the next middleware module.
         return runner(index + 1);
-      });
+      }
     } else {
       // Create the request object which triggers validation of the
       // payload (body) and header/query/url parameters.
