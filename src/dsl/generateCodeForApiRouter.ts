@@ -9,32 +9,27 @@ import {
 } from "../../deps.ts";
 import { DslOutboundRecord } from "./DslOutboundRecord.ts";
 import { DslRoute } from "./DslRoute.ts";
+import { DslService } from "./DslService.ts";
 import { createOperationConst } from "./createOperationConst.ts";
-
-/**
- * The properties required to generate the code for an api router.
- */
-interface Props {
-  /**
-   * An array of JSON-based resources.
-   */
-  resources: any[];
-
-  /**
-   * The path to the deps.ts file.
-   */
-  depsPath: string;
-}
 
 /**
  * Returns the source code for drouter operation functions
  * which can be passed directly to the drouter constructor.
- * @param props A property bag.
+ * @param resources An array of resource files.
  */
-export function generateCodeForApiRouter(props: Props) {
+export function generateCodeForApiRouter(resources: any[]) {
+  const service: DslService = resources.find((r) =>
+    r.$schema ===
+      "https://raw.githubusercontent.com/karlhulme/drouter/main/schemas/service.json"
+  );
+
+  if (!service) {
+    throw new Error("A service resource was not found.");
+  }
+
   // Add the standard resources
   const allResources = [
-    ...props.resources,
+    ...resources,
     // Standard headers
     {
       "$schema":
@@ -72,7 +67,7 @@ export function generateCodeForApiRouter(props: Props) {
   tree.imports.push(
     ...[
       "Operation",
-    ].map((impt) => ({ name: impt, path: props.depsPath })),
+    ].map((impt) => ({ name: impt, path: service.depsPath })),
   );
 
   // Create a list of types and seed it with the standard types.
@@ -84,7 +79,7 @@ export function generateCodeForApiRouter(props: Props) {
   for (const resource of allResources) {
     if (
       resource["$schema"] ===
-        "https://raw.githubusercontent.com/karlhulme/drouter/main/schemas/apiOutboundRecord.json"
+        "https://raw.githubusercontent.com/karlhulme/drouter/main/schemas/outboundRecord.json"
     ) {
       const outboundRecord = resource as DslOutboundRecord;
 
@@ -138,7 +133,7 @@ export function generateCodeForApiRouter(props: Props) {
       }
     } else if (
       resource["$schema"] ===
-        "https://raw.githubusercontent.com/karlhulme/drouter/main/schemas/apiRoute.json"
+        "https://raw.githubusercontent.com/karlhulme/drouter/main/schemas/route.json"
     ) {
       const apiRoute = resource as DslRoute;
 
@@ -208,6 +203,7 @@ export function generateCodeForApiRouter(props: Props) {
       [
         "https://raw.githubusercontent.com/karlhulme/drouter/main/schemas/apiHeader.json",
         "https://raw.githubusercontent.com/karlhulme/drouter/main/schemas/apiOutboundHeader.json",
+        "https://raw.githubusercontent.com/karlhulme/drouter/main/schemas/service.json",
       ].includes(resource["$schema"])
     ) {
       // No types are defined in these resources.

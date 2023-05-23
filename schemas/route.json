@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft-07/schema",
-  "$id": "https://raw.githubusercontent.com/karlhulme/drouter/main/schemas/apiRoute.json",
+  "$id": "https://raw.githubusercontent.com/karlhulme/drouter/main/schemas/route.json",
   "title": "OpenAPI route schema.",
   "description": "The url pattern and methods available of an OpenAPI route.",
   "type": "object",

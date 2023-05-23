@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft-07/schema",
-  "$id": "https://raw.githubusercontent.com/karlhulme/drouter/main/schemas/apiOutboundRecord.json",
+  "$id": "https://raw.githubusercontent.com/karlhulme/drouter/main/schemas/outboundRecord.json",
   "title": "OpenAPI outbound record schema.",
   "description": "The name and set of properties that make up a record that is returned from an OpenAPI route.",
   "type": "object",

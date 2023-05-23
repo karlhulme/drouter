@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema",
+  "$id": "https://raw.githubusercontent.com/karlhulme/drouter/main/schemas/service.json",
+  "title": "API service schema.",
+  "description": "The service.",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "depsPath": {
+      "type": "string",
+      "description": "The path to the deps.ts file."
+    }
+  },
+  "required": ["depsPath"]
+}
