@@ -379,21 +379,6 @@
               "required": ["code", "localType", "summary"]
             }
           },
-          "requiresApiKey": {
-            "type": "boolean"
-          },
-          "requiresCookieAuth": {
-            "type": "boolean"
-          },
-          "usesUserAgent": {
-            "type": "boolean"
-          },
-          "usesSetCookie": {
-            "type": "boolean"
-          },
-          "acceptIdempotencyKey": {
-            "type": "boolean"
-          },
           "apiVersion": {
             "type": "string"
           },

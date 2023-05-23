@@ -94,7 +94,5 @@ export interface DslRouteMethod {
     summary: string;
   }[];
 
-  requiresApiKey?: boolean;
-  requiresCookieAuth?: boolean;
   deprecated?: string;
 }
