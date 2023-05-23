@@ -12,42 +12,6 @@
       "type": "string",
       "description": "The name of the middleware in camel case."
     },
-    "includeRoutes": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "verbs": {
-            "type": "array",
-            "items": {
-              "enum": ["DELETE", "GET", "PATCH", "POST", "PUT"]
-            }
-          },
-          "pattern": {
-            "type": "string"
-          }
-        },
-        "required": ["verbs", "pattern"]
-      }
-    },
-    "excludeRoutes": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "verbs": {
-            "type": "array",
-            "items": {
-              "enum": ["DELETE", "GET", "PATCH", "POST", "PUT"]
-            }
-          },
-          "pattern": {
-            "type": "string"
-          }
-        },
-        "required": ["verbs", "pattern"]
-      }
-    },
     "headers": {
       "type": "array",
       "items": {
@@ -139,5 +103,5 @@
       }
     }
   },
-  "required": ["name", "includeRoutes"]
+  "required": ["name"]
 }

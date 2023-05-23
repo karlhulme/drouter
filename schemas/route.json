@@ -55,6 +55,12 @@
           "method": {
             "enum": ["DELETE", "GET", "PATCH", "POST", "PUT"]
           },
+          "middleware": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
           "flags": {
             "type": "array",
             "items": {

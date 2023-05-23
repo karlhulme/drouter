@@ -5,13 +5,43 @@ import {
   getTypeFromTypeString,
   TypescriptTreeConstDeclaration,
 } from "../../deps.ts";
+import { safeArray } from "../utils/index.ts";
+import { DslMiddleware } from "./DslMiddleware.ts";
 import { DslRoute, DslRouteMethod } from "./DslRoute.ts";
 import { stringArrayToTypescriptUnion } from "./stringArrayToTypescriptUnion.ts";
 
 export function createOperationConst(
   route: DslRoute,
   method: DslRouteMethod,
+  mwares: DslMiddleware[],
 ): TypescriptTreeConstDeclaration {
+  // Combine the headers, query params and failure codes
+  // from the route and the associated middlewares.
+  const methodHeaders = mwares.map((m) => safeArray(m.headers))
+    .flat()
+    .concat(safeArray(method.headers))
+    .concat({
+      name: "api-version",
+      summary: "The version targeted by the request.",
+      type: "std/date",
+    });
+  const methodQueryParams = mwares.map((m) => safeArray(m.queryParams))
+    .flat()
+    .concat(safeArray(method.queryParams));
+  const methodOutHeaders = mwares.map((m) => safeArray(m.responseHeaders))
+    .flat()
+    .concat(safeArray(method.responseHeaders));
+  const methodFailureCodes = mwares.map((m) =>
+    safeArray(m.responseFailureDefinitions)
+  )
+    .flat()
+    .concat(safeArray(method.responseFailureDefinitions))
+    .concat({
+      code: 500,
+      localType: "internalServerError",
+      summary: "Unexpected error raised while processing request.",
+    });
+
   let requestBodyTypeParam = "void";
   let requestBodyTypeLine = "";
 
@@ -46,8 +76,8 @@ export function createOperationConst(
 
   let responseFailureDefsLine = "";
 
-  if (Array.isArray(method.responseFailureDefinitions)) {
-    const rfcs = method.responseFailureDefinitions
+  if (methodFailureCodes.length > 0) {
+    const rfcs = methodFailureCodes
       .map((rfc: any) => `
         {
           code: ${rfc.code},
@@ -73,51 +103,10 @@ export function createOperationConst(
     }",`;
   }
 
-  let apiKeyLine = "";
-
-  if (method.requiresApiKey) {
-    apiKeyLine = `requiresApiKey: true,`;
-  }
-
-  let cookieAuthLine = "";
-
-  if (method.requiresCookieAuth) {
-    cookieAuthLine = `requiresCookieAuth: true,`;
-  }
-
-  let deprecatedLine = "";
-
-  if (method.deprecated) {
-    deprecatedLine = `deprecated: true,`;
-  }
-
-  if (!method.headers) {
-    method.headers = [];
-  }
-
-  const urlParamNames = (route.urlParams || [])
-    .map((urlp: any) => urlp.name);
-
-  if (method.acceptIdempotencyKey) {
-    method.headers.push({
-      name: "idempotency-key",
-      summary:
-        "Specify a unique value to ensure the operation is only executed once.",
-      type: "std/uuid",
-    });
-  }
-
-  if (method.usesUserAgent) {
-    method.headers.push({
-      name: "user-agent",
-      summary:
-        "A description of the client that made the request.  Browsers and fetchers will generate this string automatically.",
-      type: "std/maxString",
-    });
-  }
+  const deprecatedLine = method.deprecated ? "deprecated: true," : "";
 
   // Build headers declaration.
-  const headers = "[" + method.headers.map((h: any) => {
+  const headers = "[" + methodHeaders.map((h: any) => {
     const hSystem = getSystemFromTypeString(h.type);
     const hType = getTypeFromTypeString(h.type);
     const reqLine = h.isRequired ? "isRequired: true," : "";
@@ -132,18 +121,19 @@ export function createOperationConst(
   }).join(", ") + "]";
 
   // Build url parameters declaration.
-  const urlParams = "[" + (route.urlParams || []).map((urlResource: any) => {
-    const uSystem = getSystemFromTypeString(urlResource.type);
-    const uType = getTypeFromTypeString(urlResource.type);
-    return `{
+  const urlParams = "[" +
+    (safeArray(route.urlParams)).map((urlResource: any) => {
+      const uSystem = getSystemFromTypeString(urlResource.type);
+      const uType = getTypeFromTypeString(urlResource.type);
+      return `{
       name: "${urlResource.name}",
       summary: "${urlResource.summary}",
       type: ${uSystem}${capitalizeFirstLetter(uType)}Type,
     }`;
-  }).join(", ") + "]";
+    }).join(", ") + "]";
 
   // Build query parameters declaration.
-  const queryParams = "[" + (method.queryParams || []).map((qp: any) => {
+  const queryParams = "[" + (safeArray(methodQueryParams)).map((qp: any) => {
     const qpSystem = getSystemFromTypeString(qp.type);
     const qpType = getTypeFromTypeString(qp.type);
     const depLine = qp.deprecated ? `deprecated: "${qp.deprecated}",` : "";
@@ -156,19 +146,7 @@ export function createOperationConst(
   }).join(", ") + "]";
 
   // Build outbound headers declaration.
-  if (!method.responseHeaders) {
-    method.responseHeaders = [];
-  }
-
-  if (method.usesSetCookie) {
-    method.headers.push({
-      name: "set-cookie",
-      summary: "An instruction to the browser to record a value in a cookie.",
-      type: "std/maxString",
-    });
-  }
-
-  const outHeaders = "[" + method.responseHeaders.map((h: any) => {
+  const outHeaders = "[" + methodOutHeaders.map((h: any) => {
     const hSystem = getSystemFromTypeString(h.type);
     const hType = getTypeFromTypeString(h.type);
     const gtdLine = h.isGuaranteed ? "isGuaranteed: true," : "";
@@ -182,14 +160,6 @@ export function createOperationConst(
     }`;
   }).join(", ") + "]";
 
-  // Get the names of the parameters.
-  const queryParamNames = (method.queryParams || []).map((qp: any) => qp.name);
-
-  // Get the local types of the failures.
-  const failureTypeNames = (method.responseFailureDefinitions || []).map((
-    rfd: any,
-  ) => rfd.localType);
-
   return {
     name: method.operationId,
     exported: true,
@@ -197,13 +167,17 @@ export function createOperationConst(
     typeName: `Operation<
       ${requestBodyTypeParam},
       ${responseBodyTypeParam},
-      ${stringArrayToTypescriptUnion(urlParamNames)},
-      ${stringArrayToTypescriptUnion(method.headers.map((h) => h.name))},
-      ${stringArrayToTypescriptUnion(queryParamNames)},
       ${
-      stringArrayToTypescriptUnion(method.responseHeaders.map((h) => h.name))
+      stringArrayToTypescriptUnion(
+        safeArray(route.urlParams).map((p) => p.name),
+      )
     },
-      ${stringArrayToTypescriptUnion(failureTypeNames)}
+      ${stringArrayToTypescriptUnion(methodHeaders.map((h) => h.name))},
+      ${stringArrayToTypescriptUnion(methodQueryParams.map((qp) => qp.name))},
+      ${stringArrayToTypescriptUnion(methodOutHeaders.map((h) => h.name))},
+      ${
+      stringArrayToTypescriptUnion(methodFailureCodes.map((f) => f.localType))
+    }
     >`,
     value: `{
       method: "${method.method}",
@@ -220,11 +194,9 @@ export function createOperationConst(
       ${responseSuccessCodeLine}
       ${responseFailureDefsLine}
       apiVersion: "${method.apiVersion}",
-      ${apiKeyLine}
-      ${cookieAuthLine}
       ${deprecatedLine}
-      tags: ${JSON.stringify(route.tags || [])},
-      flags: ${JSON.stringify(method.flags || [])}
+      tags: ${JSON.stringify(safeArray(route.tags))},
+      flags: ${JSON.stringify(safeArray(method.flags))}
     }`,
   };
 }

@@ -1,15 +1,6 @@
 export interface DslMiddleware {
   name: string;
 
-  includeRoutes: {
-    verbs: ("DELETE" | "GET" | "PATCH" | "POST" | "PUT")[];
-    pattern: string;
-  }[];
-  excludeRoutes?: {
-    verbs: ("DELETE" | "GET" | "PATCH" | "POST" | "PUT")[];
-    pattern: string;
-  }[];
-
   headers?: {
     name: string;
     summary: string;
