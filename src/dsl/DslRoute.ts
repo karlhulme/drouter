@@ -18,7 +18,10 @@ export interface DslRouteMethod {
   apiVersion: string;
 
   markdown?: string;
-  middleware?: string[];
+  middleware?: {
+    name: string;
+    flags?: string[];
+  }[];
   flags?: string[];
   headers?: {
     name: string;
@@ -93,8 +96,5 @@ export interface DslRouteMethod {
 
   requiresApiKey?: boolean;
   requiresCookieAuth?: boolean;
-  usesUserAgent?: boolean;
-  usesSetCookie?: boolean;
-  acceptIdempotencyKey?: boolean;
   deprecated?: string;
 }

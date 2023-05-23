@@ -11,6 +11,14 @@
     "depsPath": {
       "type": "string",
       "description": "The path to the deps.ts file."
+    },
+    "authApiKeyHeaderName": {
+      "type": "string",
+      "description": "The name of the header that accepts an api-key for authentication."
+    },
+    "authCookieName": {
+      "type": "string",
+      "description": "The name of the cookie that is used for the authentication."
     }
   },
   "required": ["depsPath"]

@@ -7,6 +7,7 @@ import {
   RecordTypeDef,
   stdSystemTypes,
 } from "../../deps.ts";
+import { safeArray } from "../utils/safeArray.ts";
 import { DslMiddleware } from "./DslMiddleware.ts";
 import { DslOutboundRecord } from "./DslOutboundRecord.ts";
 import { DslRoute } from "./DslRoute.ts";
@@ -115,8 +116,11 @@ export function generateCodeForApiRouter(resources: any[]) {
     for (const method of route.methods) {
       // Get the middleware definitions that are applicable
       // to this route.
+      const methodMiddlewareNames = safeArray(method.middleware).map((m) =>
+        m.name
+      );
       const mwares = middlewares.filter((m) =>
-        method.middleware?.includes(m.name)
+        methodMiddlewareNames.includes(m.name)
       );
 
       // Create a const declaration for the method that can be
