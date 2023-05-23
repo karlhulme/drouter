@@ -1,5 +1,7 @@
 export interface DslMiddleware {
   name: string;
+  requiresPayload: boolean;
+  order: number;
 
   headers?: {
     name: string;

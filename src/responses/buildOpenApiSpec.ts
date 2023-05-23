@@ -147,15 +147,15 @@ function appendOperationToSpec(
   const path = spec.paths[pathPattern];
 
   if (operation.method === "DELETE") {
-    path.delete = createPathOperation(config, operation);
+    path.delete = createPathOperation(operation);
   } else if (operation.method === "GET") {
-    path.get = createPathOperation(config, operation);
+    path.get = createPathOperation(operation);
   } else if (operation.method === "PATCH") {
-    path.patch = createPathOperation(config, operation);
+    path.patch = createPathOperation(operation);
   } else if (operation.method === "POST") {
-    path.post = createPathOperation(config, operation);
+    path.post = createPathOperation(operation);
   } else if (operation.method === "PUT") {
-    path.put = createPathOperation(config, operation);
+    path.put = createPathOperation(operation);
   }
 
   if (operation.requestBodyType) {
@@ -196,33 +196,11 @@ function appendOperationToSpec(
  * @param operation An operation.
  */
 function createPathOperation(
-  config: ServiceConfig,
   operation: Operation,
 ): OpenApiSpecPathOperation {
   const successCode = operation.responseSuccessCode
     ? operation.responseSuccessCode.toString()
     : "200";
-
-  const middlewareSpecs = safeArray(config.middleware)
-    .map((m) => m.specify(operation));
-
-  const payloadMiddlewareSpecs = safeArray(config.payloadMiddleware)
-    .map((m) => m.specify(operation));
-
-  const middlewareHeaders = [
-    ...middlewareSpecs.map((ms) => ms.headers || []).flat(),
-    ...payloadMiddlewareSpecs.map((pms) => pms.headers || []).flat(),
-  ];
-
-  const middlewareQueryParams = [
-    ...middlewareSpecs.map((ms) => ms.queryParams || []).flat(),
-    ...payloadMiddlewareSpecs.map((pms) => pms.queryParams || []).flat(),
-  ];
-
-  const middlewareResponseHeaders = [
-    ...middlewareSpecs.map((ms) => ms.responseHeaders || []).flat(),
-    ...payloadMiddlewareSpecs.map((pms) => pms.responseHeaders || []).flat(),
-  ];
 
   const failureDefinitions = safeArray(operation.responseFailureDefinitions);
 
@@ -258,11 +236,6 @@ function createPathOperation(
       summary: "A required request parameter is missing.",
     });
   }
-
-  failureDefinitions.push(...[
-    ...middlewareSpecs.map((ms) => ms.failureDefinitions || []).flat(),
-    ...payloadMiddlewareSpecs.map((ms) => ms.failureDefinitions || []).flat(),
-  ]);
 
   const uniqueFailureCodes = Array.from(
     failureDefinitions.reduce((agg, cur) => {
@@ -330,7 +303,7 @@ function createPathOperation(
         },
         description: "The version targeted by the request.",
       },
-      // Bring in the request and middleware headers.
+      // Bring in the headers.
       ...(operation.requestHeaders || []).map((p) => ({
         name: p.name,
         in: "header",
@@ -341,33 +314,13 @@ function createPathOperation(
         deprecated: Boolean(p.deprecated),
         description: p.summary,
       } as OpenApiSpecPathOperationParameter)),
-      ...middlewareHeaders.map((p) => ({
-        name: p.name,
-        in: "header",
-        required: p.isRequired,
-        schema: {
-          type: "string",
-        },
-        deprecated: Boolean(p.deprecated),
-        description: p.summary,
-      } as OpenApiSpecPathOperationParameter)),
-      // Bring in the request and middleware query params.
+      // Bring in the query params.
       ...(operation.requestQueryParams || []).map((p) => ({
         name: p.name,
         in: "query",
         required: Boolean(p.isRequired),
         schema: {
           $ref: `#/components/schemas/${p.type.name}`,
-        },
-        deprecated: Boolean(p.deprecated),
-        description: p.summary,
-      } as OpenApiSpecPathOperationParameter)),
-      ...middlewareQueryParams.map((p) => ({
-        name: p.name,
-        in: "query",
-        required: p.isRequired,
-        schema: {
-          type: "string",
         },
         deprecated: Boolean(p.deprecated),
         description: p.summary,
@@ -395,18 +348,6 @@ function createPathOperation(
               deprecated: Boolean(cur.deprecated),
               schema: {
                 $ref: `#/components/schemas/${cur.type.name}`,
-              },
-            };
-
-            return agg;
-          }, {} as Record<string, OpenApiSpecPathOperationResponseHeader>),
-          // Bring in the middleware response headers.
-          ...middlewareResponseHeaders.reduce((agg, cur) => {
-            agg[cur.name] = {
-              description: cur.summary,
-              deprecated: Boolean(cur.deprecated),
-              schema: {
-                type: "string",
               },
             };
 
@@ -455,21 +396,6 @@ function createPathOperation(
 
                 return agg;
               }, {} as Record<string, OpenApiSpecPathOperationResponseHeader>),
-            // Bring in the middleware response headers.
-            ...middlewareResponseHeaders.filter((h) => !h.successOnly).reduce(
-              (agg, cur) => {
-                agg[cur.name] = {
-                  description: cur.summary,
-                  deprecated: Boolean(cur.deprecated),
-                  schema: {
-                    type: "string",
-                  },
-                };
-
-                return agg;
-              },
-              {} as Record<string, OpenApiSpecPathOperationResponseHeader>,
-            ),
           },
         };
 

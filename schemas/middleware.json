@@ -12,6 +12,14 @@
       "type": "string",
       "description": "The name of the middleware in camel case."
     },
+    "requiresPayload": {
+      "type": "boolean",
+      "description": "A value that indicates if the middleware requires access to the request payload."
+    },
+    "order": {
+      "type": "number",
+      "description": "A value which indicates when the middleware will be executed."
+    },
     "headers": {
       "type": "array",
       "items": {
@@ -112,5 +120,5 @@
       }
     }
   },
-  "required": ["name"]
+  "required": ["name", "requiresPayload", "order"]
 }
