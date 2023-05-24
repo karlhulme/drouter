@@ -27,10 +27,8 @@ export function createServiceRouterConst(service: DslService) {
     exported: true,
     outputGeneration: 4,
     value: `() => router({
-      depsPath: "${service.depsPath}",
       title: "${service.title}",
       description: "${service.description}",
-      overviewHtml: "${service.title}",
       ${overviewHtmlLine}
       ${authHtmlLine}
       ${apiKeyLine}
