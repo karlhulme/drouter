@@ -21,3 +21,6 @@ export * from "./ServiceMiddlewareFailureDefinition.ts";
 export * from "./ServiceMiddlewareHeader.ts";
 export * from "./ServiceMiddlewareOutboundHeader.ts";
 export * from "./ServiceMiddlewareQueryParam.ts";
+export * from "./ServiceMiddlewareRequest.ts";
+export * from "./ServiceMiddlewareResponse.ts";
+export * from "./ServiceMiddlewareResponseHeader.ts";
