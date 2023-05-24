@@ -1,15 +1,20 @@
 import {
+  HttpCookie,
   HttpError,
   Operation,
   OperationRequest,
+  OperationRequestValue,
   ServiceConfig,
   ServiceMiddleware,
+  ServiceMiddlewareRequest,
+  ServiceMiddlewareResponse,
 } from "../interfaces/index.ts";
 import {
   apiVersionNotSuppliedResponse,
   docsPageRapidocCodeResponse,
   docsPageRapidocMapResponse,
   docsPageResponse,
+  errorResponse,
   faviconResponse,
   healthResponse,
   openApiResponse,
@@ -25,30 +30,6 @@ import { appendBuildVersionHeaders } from "./appendBuildVersionHeaders.ts";
 import { appendCorsHeaders } from "./appendCorsHeaders.ts";
 import { validateOperationPayload } from "./validateOperationPayload.ts";
 import { createHttpError } from "./createHttpError.ts";
-import { ServiceMiddlewareRequest } from "../interfaces/ServiceMiddlewareRequest.ts";
-import { HttpCookie, OperationRequestValue } from "../index.ts";
-import { ServiceMiddlewareResponse } from "../interfaces/ServiceMiddlewareResponse.ts";
-import { errorResponse } from "../responses/errorResponse.ts";
-
-/**
- * The name of the context value that will hold the operation payload
- * once it has been read.  It will be available to payloadMiddleware
- * functions.  Operations should use req.body instead which will be a
- * typed and validated value.
- */
-export const CONTEXT_OPERATION_PAYLOAD = "operationPayload";
-
-/**
- * The name of the context value that will hold the user associated
- * with the given API key.
- */
-export const CONTEXT_OPERATION_API_KEY_USER = "operationApiKeyUser";
-
-/**
- * The name of the context value that will hold the operation response body.
- * It will be available once the operation has run.
- */
-export const CONTEXT_OPERATION_RESPONSE_BODY = "operationResponseBody";
 
 /**
  * An internal representation of an operation that includes
@@ -343,8 +324,6 @@ async function executeMatchedOp(
   );
   const cookies = getHttpCookieValues(underlyingRequest.headers.get("cookie"));
 
-  // ctx.set(CONTEXT_OPERATION_RESPONSE_BODY, null);
-
   let prevIndex = -1;
   let payload: unknown = null;
 
@@ -364,7 +343,6 @@ async function executeMatchedOp(
     if (index === loadPayloadIndex && op.requestBodyType) {
       payload = await readJsonBody(underlyingRequest);
       validateOperationPayload(op, payload);
-      // ctx.set(CONTEXT_OPERATION_PAYLOAD, payload);
     }
 
     // Draw down the next middleware function.
@@ -449,10 +427,6 @@ async function executeMatchedOp(
   const responseBody = typeof grandResult.body === "undefined"
     ? null
     : JSON.stringify(grandResult.body);
-
-  // if (typeof grandResult.body !== "undefined") {
-  //   ctx.set(CONTEXT_OPERATION_RESPONSE_BODY, grandResult.body);
-  // }
 
   return new Response(responseBody, {
     headers: responseHeaders,
