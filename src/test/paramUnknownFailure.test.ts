@@ -32,7 +32,7 @@ Deno.test("Fail to process an operation with where an undeclared parameter is re
     assertEquals(internalErrorResponse.status, 500);
     assertStringIncludes(
       await internalErrorResponse.text(),
-      "/errors/common/internalServerError",
+      "/err/internalServerError",
     );
     assertStringIncludes(
       errors.join().toString(),

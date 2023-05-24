@@ -47,7 +47,7 @@ Deno.test("Fail to process an operation with a parameter that fails validation."
   const responseText = await invalidNumResponse.text();
   assertStringIncludes(
     responseText,
-    "/errors/common/requestParameterDidNotValidate",
+    "/err/requestParameterDidNotValidate",
   );
   assertStringIncludes(
     responseText,

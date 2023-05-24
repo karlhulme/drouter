@@ -15,41 +15,41 @@ const op: Operation = {
   responseFailureDefinitions: [{
     code: 456,
     summary: "A specific type of problem.",
-    type: "aKnownType",
+    type: "/err/aKnownType",
   }],
 };
 
-Deno.test("Produce http error for known error local type.", () => {
+Deno.test("Produce http error for known error type.", () => {
   const err = createHttpError(
     op,
-    "aKnownType",
+    "/err/aKnownType",
     "Specific issue with this call.",
     { foo: 123, bar: true },
   );
 
   assertEquals(err.code, 456);
   assertEquals(err.title, "A specific type of problem.");
-  assertEquals(err.type, "/errors/base/-/leaf/-/post/aKnownType");
+  assertEquals(err.type, "/err/aKnownType");
   assertEquals(err.detail, "Specific issue with this call.");
   assertEquals(err.properties?.foo, 123);
   assertEquals(err.properties?.bar, true);
 });
 
-Deno.test("Produce http error for unknown error local type.", () => {
+Deno.test("Produce http error for unknown error type.", () => {
   const { responseFailureDefinitions: _, ...opWithoutFailureDefs } = op;
 
   const err = createHttpError(
     opWithoutFailureDefs,
-    "unknownType",
+    "/err/unknownType",
     "Specific issue with this call.",
     { foo: 123, bar: true },
   );
 
   assertEquals(err.code, 500);
   assertEquals(err.title, "An undocumented error has been raised.");
-  assertEquals(err.type, "/errors/common/unexpectedError");
+  assertEquals(err.type, "/err/unexpectedError");
   assertEquals(
     err.detail,
-    "An error with local type name of unknownType was raised.",
+    "An error with type name of /err/unknownType was raised.",
   );
 });

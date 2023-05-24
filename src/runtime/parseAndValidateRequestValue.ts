@@ -26,7 +26,7 @@ export function parseAndValidateRequestValue(
     if (Array.isArray(validationResult) && validationResult.length > 0) {
       throw new HttpError(
         400,
-        "/errors/common/requestParameterDidNotValidate",
+        "/err/requestParameterDidNotValidate",
         "A request parameter did not validate.",
         `${displayName} failed validation.`,
         {
@@ -39,7 +39,7 @@ export function parseAndValidateRequestValue(
   } else if (markedRequired) {
     throw new HttpError(
       400,
-      "/errors/common/requestParameterMissing",
+      "/err/requestParameterMissing",
       "A required request parameter is missing.",
       `${displayName} is required and must be supplied in the request.`,
     );
@@ -69,7 +69,7 @@ function parseRequestValue(
     if (isNaN(value)) {
       throw new HttpError(
         400,
-        "/errors/common/requestParameterDidNotValidate",
+        "/err/requestParameterDidNotValidate",
         "A request parameter did not validate.",
         `${displayName} with value '${rawValue}' cannot be converted to a number.`,
       );
@@ -86,7 +86,7 @@ function parseRequestValue(
     } catch {
       throw new HttpError(
         400,
-        "/errors/common/requestParameterDidNotValidate",
+        "/err/requestParameterDidNotValidate",
         "A request parameter did not validate.",
         `${displayName} cannot be parsed into JSON.`,
       );

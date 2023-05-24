@@ -6,7 +6,7 @@ import { errorResponse } from "./errorResponse.ts";
 export function resourceNotFoundResponse() {
   return errorResponse(
     404,
-    "/errors/common/operationNotFound",
+    "/err/operationNotFound",
     "The requested operation was not found.",
   );
 }

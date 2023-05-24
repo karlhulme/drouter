@@ -24,15 +24,9 @@ export function createHttpError(
     // If the failure is recognised then we can build an HttpError
     // with a combination of the documented error information and the
     // details of this specific instance.
-    const qualifiedType = "/errors" +
-      op.urlPattern.replaceAll(/:[^/]+/g, "-") +
-      "/" +
-      op.method.toLowerCase() + "/" +
-      type;
-
     return new HttpError(
       failure.code,
-      qualifiedType,
+      failure.type,
       failure.summary,
       detail,
       properties,
@@ -43,9 +37,9 @@ export function createHttpError(
     // be added to the documentation.
     return new HttpError(
       500,
-      "/errors/common/unexpectedError",
+      "/err/unexpectedError",
       "An undocumented error has been raised.",
-      `An error with local type name of ${type} was raised.`,
+      `An error with type name of ${type} was raised.`,
     );
   }
 }

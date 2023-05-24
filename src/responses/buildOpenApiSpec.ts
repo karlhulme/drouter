@@ -223,21 +223,21 @@ function createPathOperation(
 
   failureDefinitions.push({
     code: 400,
-    type: "/errors/common/apiVersionNotSupplied",
+    type: "/err/apiVersionNotSupplied",
     summary:
       "The request did not contain an api-version header in the form YYYY-MM-DD.",
   });
 
   failureDefinitions.push({
     code: 500,
-    type: "/errors/common/internalServerError",
+    type: "/err/internalServerError",
     summary: "An internal server error has occurred.",
   });
 
   if (operation.requestBodyType) {
     failureDefinitions.push({
       code: 400,
-      type: "/errors/common/requestBodyJsonDidNotValidate",
+      type: "/err/requestBodyJsonDidNotValidate",
       summary: "The request body JSON failed validation.",
     });
   }
@@ -249,13 +249,13 @@ function createPathOperation(
   ) {
     failureDefinitions.push({
       code: 400,
-      type: "/errors/common/requestParameterDidNotValidate",
+      type: "/err/requestParameterDidNotValidate",
       summary: "A request parameter did not validate.",
     });
 
     failureDefinitions.push({
       code: 400,
-      type: "/errors/common/requestParameterMissing",
+      type: "/err/requestParameterMissing",
       summary: "A required request parameter is missing.",
     });
   }

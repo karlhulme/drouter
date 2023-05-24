@@ -12,13 +12,16 @@ Deno.test("Return an error raised from a route.", async () => {
   const routerHandler = createRouterHandler(
     createOperation({
       handler: async (req) => {
-        throw req.error("bespokeError", "This is the detail of the error.");
+        throw req.error(
+          "/err/bespokeError",
+          "This is the detail of the error.",
+        );
       },
       setup: (op) => {
         op.urlPattern = "/path/here/:and/there";
         op.responseFailureDefinitions = [{
           code: 456,
-          type: "bespokeError",
+          type: "/err/bespokeError",
           summary: "Raised for testing of errors.",
         }];
       },
@@ -32,6 +35,6 @@ Deno.test("Return an error raised from a route.", async () => {
   assertEquals(response.status, 456);
   assertStringIncludes(
     await response.text(),
-    "/errors/path/here/-/there/get/bespokeError",
+    "/err/bespokeError",
   );
 });

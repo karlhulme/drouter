@@ -6,7 +6,7 @@ import { errorResponse } from "./errorResponse.ts";
 export function operationNotImplementedResponse() {
   return errorResponse(
     501,
-    "/errors/common/operationNotImplemented",
+    "/err/operationNotImplemented",
     "The requested operation has not been implemented yet.",
   );
 }

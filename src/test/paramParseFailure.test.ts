@@ -59,7 +59,7 @@ Deno.test("Fail to process an operation with unparseable number or object parame
   const responseText = await invalidNumResponse.text();
   assertStringIncludes(
     responseText,
-    "/errors/common/requestParameterDidNotValidate",
+    "/err/requestParameterDidNotValidate",
   );
   assertStringIncludes(
     responseText,
@@ -79,7 +79,7 @@ Deno.test("Fail to process an operation with unparseable number or object parame
   const responseText2 = await invalidObjResponse.text();
   assertStringIncludes(
     responseText2,
-    "/errors/common/requestParameterDidNotValidate",
+    "/err/requestParameterDidNotValidate",
   );
   assertStringIncludes(
     responseText2,

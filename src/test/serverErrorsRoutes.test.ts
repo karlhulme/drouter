@@ -25,7 +25,7 @@ Deno.test("Return 500 if an unknown error is raised.", async () => {
   assertEquals(response.status, 500);
   assertStringIncludes(
     await response.text(),
-    "/errors/common/internalServerError",
+    "/err/internalServerError",
   );
 });
 
@@ -44,7 +44,7 @@ Deno.test("Return 501 if no handler defined.", async () => {
   assertEquals(response.status, 501);
   assertStringIncludes(
     await response.text(),
-    "/errors/common/operationNotImplemented",
+    "/err/operationNotImplemented",
   );
 });
 

@@ -9,7 +9,7 @@ export interface ServiceMiddlewareFailureDefinition {
 
   /**
    * The type name of the error.  This will typically be prefixed
-   * by the /errors/common path.
+   * by the /err path.
    */
   type: string;
 
