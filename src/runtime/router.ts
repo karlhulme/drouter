@@ -26,7 +26,7 @@ import { appendCorsHeaders } from "./appendCorsHeaders.ts";
 import { validateOperationPayload } from "./validateOperationPayload.ts";
 import { createHttpError } from "./createHttpError.ts";
 import { ServiceMiddlewareRequest } from "../interfaces/ServiceMiddlewareRequest.ts";
-import { OperationRequestValue } from "../index.ts";
+import { HttpCookie, OperationRequestValue } from "../index.ts";
 import { ServiceMiddlewareResponse } from "../interfaces/ServiceMiddlewareResponse.ts";
 import { errorResponse } from "../responses/errorResponse.ts";
 
@@ -341,6 +341,7 @@ async function executeMatchedOp(
     urlMatch.pathname.groups,
     op,
   );
+  const cookies = getHttpCookieValues(underlyingRequest.headers.get("cookie"));
 
   // ctx.set(CONTEXT_OPERATION_RESPONSE_BODY, null);
 
@@ -386,6 +387,7 @@ async function executeMatchedOp(
           payload,
           headerValues,
           queryParamValues,
+          cookies,
         );
 
         return await middlewareMod.handler(
@@ -412,6 +414,7 @@ async function executeMatchedOp(
         headerValues,
         queryParamValues,
         urlParamValues,
+        cookies,
       );
 
       const res = await op.handler!(req, ctx);
@@ -491,12 +494,13 @@ function createMiddlewareRequest(
   payload: unknown,
   headerValues: OperationRequestValue[],
   queryParamValues: OperationRequestValue[],
+  cookies: HttpCookie[],
 ): ServiceMiddlewareRequest {
   return {
     path: url.pathname,
     urlPattern: op.urlPattern,
     method: op.method,
-    cookies: getHttpCookieValues(underlyingRequest.headers.get("cookie")),
+    cookies,
     body: payload,
     headers: {
       getAllValues: () => headerValues,
@@ -671,12 +675,13 @@ function createOperationRequest(
   headerValues: OperationRequestValue[],
   queryParamValues: OperationRequestValue[],
   urlParamValues: OperationRequestValue[],
+  cookies: HttpCookie[],
 ): OperationRequest {
   return {
     path: url.pathname,
     urlPattern: op.urlPattern,
     method: op.method,
-    cookies: getHttpCookieValues(underlyingRequest.headers.get("cookie")),
+    cookies,
     body: payload,
     headers: {
       getAllValues: () => headerValues,
