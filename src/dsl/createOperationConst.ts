@@ -16,26 +16,62 @@ export function createOperationConst(
   method: DslRouteMethod,
   mwares: DslMiddleware[],
 ): TypescriptTreeConstDeclaration {
-  // Combine the headers, query params and failure codes
-  // from the route and the associated middlewares.
-  const methodHeaders = mwares.map((m) => safeArray(m.headers))
+  // Combine the headers from the route and the associated middlewares.
+  const methodHeaders = mwares.map((m) =>
+    safeArray(m.headers).map((h) => ({
+      ...h,
+      fromMiddleware: m.name as string | null,
+    }))
+  )
     .flat()
-    .concat(safeArray(method.headers));
-  const methodQueryParams = mwares.map((m) => safeArray(m.queryParams))
+    .concat(
+      safeArray(method.headers).map((h) => ({ ...h, fromMiddleware: null })),
+    );
+
+  // Combine the query params from the route and the associated middlewares.
+  const methodQueryParams = mwares.map((m) =>
+    safeArray(m.queryParams).map((qp) => ({
+      ...qp,
+      fromMiddleware: m.name as string | null,
+    }))
+  )
     .flat()
-    .concat(safeArray(method.queryParams));
-  const methodOutHeaders = mwares.map((m) => safeArray(m.responseHeaders))
+    .concat(
+      safeArray(method.queryParams).map((qp) => ({
+        ...qp,
+        fromMiddleware: null,
+      })),
+    );
+
+  // Combine the response headers from the route and the associated middlewares
+  const methodOutHeaders = mwares.map((m) =>
+    safeArray(m.responseHeaders).map((h) => ({
+      ...h,
+      fromMiddleware: m.name as string | null,
+    }))
+  )
     .flat()
-    .concat(safeArray(method.responseHeaders));
+    .concat(
+      safeArray(method.responseHeaders).map((h) => ({
+        ...h,
+        fromMiddleware: null,
+      })),
+    );
+
+  // Combine the failure codes from the route and the associated middlewares
   const methodFailureCodes = mwares.map((m) =>
-    safeArray(m.responseFailureDefinitions)
+    safeArray(m.responseFailureDefinitions).map((fd) => ({
+      ...fd,
+      fromMiddleware: m.name as string | null,
+    }))
   )
     .flat()
     .map(buildCommonFailureDefinition)
     .concat(
-      safeArray(method.responseFailureDefinitions).map((rfd) =>
-        buildRouteFailureDefinition(route.urlPattern, method.method, rfd)
-      ),
+      safeArray(method.responseFailureDefinitions).map((fd) => ({
+        ...fd,
+        fromMiddleware: null,
+      })).map((fd) => buildRouteFailureDefinition(method.operationId, fd)),
     );
   const methodMiddleware = safeArray(method.middleware);
 
@@ -71,21 +107,6 @@ export function createOperationConst(
     ? `responseSuccessCode: ${method.responseSuccessCode},`
     : "";
 
-  let responseFailureDefsLine = "";
-
-  if (methodFailureCodes.length > 0) {
-    const rfcs = methodFailureCodes
-      .map((rfc) => `
-        {
-          code: ${rfc.code},
-          type: "${rfc.type}",
-          summary: "${rfc.summary}"
-        }`)
-      .join(", ");
-
-    responseFailureDefsLine = `responseFailureDefinitions: [${rfcs}],`;
-  }
-
   let markdownLine = "";
 
   // If using YAML, define the property as markdown: |-
@@ -108,11 +129,15 @@ export function createOperationConst(
     const hType = getTypeFromTypeString(h.type);
     const reqLine = h.isRequired ? "isRequired: true," : "";
     const depLine = h.deprecated ? `deprecated: "${h.deprecated}",` : "";
+    const mwLine = h.fromMiddleware
+      ? `fromMiddleware: "${h.fromMiddleware}",`
+      : "";
     return `{
       name: "${h.name}",
       summary: "${h.summary}",
       ${reqLine}
       ${depLine}
+      ${mwLine}
       type: ${hSystem}${capitalizeFirstLetter(hType)}Type,
     }`;
   }).join(", ") + "]";
@@ -134,10 +159,14 @@ export function createOperationConst(
     const qpSystem = getSystemFromTypeString(qp.type);
     const qpType = getTypeFromTypeString(qp.type);
     const depLine = qp.deprecated ? `deprecated: "${qp.deprecated}",` : "";
+    const mwLine = qp.fromMiddleware
+      ? `fromMiddleware: "${qp.fromMiddleware}",`
+      : "";
     return `{
       name: "${qp.name}",
       summary: "${qp.summary}",
       ${depLine}
+      ${mwLine}
       type: ${qpSystem}${capitalizeFirstLetter(qpType)}Type,
     }`;
   }).join(", ") + "]";
@@ -148,14 +177,36 @@ export function createOperationConst(
     const hType = getTypeFromTypeString(h.type);
     const gtdLine = h.isGuaranteed ? "isGuaranteed: true," : "";
     const depLine = h.deprecated ? `deprecated: "${h.deprecated}",` : "";
+    const mwLine = h.fromMiddleware
+      ? `fromMiddleware: "${h.fromMiddleware}",`
+      : "";
     return `{
       name: "${h.name}",
       summary: "${h.summary}",
       ${gtdLine}
       ${depLine}
+      ${mwLine}
       type: ${hSystem}${capitalizeFirstLetter(hType)}Type,
     }`;
   }).join(", ") + "]";
+
+  // Build failure definitions declaration.
+  let responseFailureDefsLine = "";
+  if (methodFailureCodes.length > 0) {
+    const rfcs = methodFailureCodes.map((rfc) => {
+      const mwLine = rfc.fromMiddleware
+        ? `fromMiddleware: "${rfc.fromMiddleware}",`
+        : "";
+      return `{
+        code: ${rfc.code},
+        type: "${rfc.type}",
+        summary: "${rfc.summary}",
+        ${mwLine}
+      }`;
+    }).join(", ");
+
+    responseFailureDefsLine = `responseFailureDefinitions: [${rfcs}],`;
+  }
 
   // Build a middleware declaration.
   const middleware = "[" +

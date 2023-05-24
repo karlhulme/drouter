@@ -2,27 +2,25 @@ interface FailureDefinition {
   code: number;
   localType: string;
   summary: string;
+  fromMiddleware: string | null;
 }
 
 /**
  * Builds a route failure definition based on route information and
  * an existing failure definition with a local type.
- * @param urlPattern The url pattern used to match the route with inbound requests.
- * @param method The verb used on the request.
+ * @param operationId The id of the operation.
  * @param failureDefinition A failure definition.
  */
 export function buildRouteFailureDefinition(
-  urlPattern: string,
-  method: string,
+  operationId: string,
   failureDefinition: FailureDefinition,
 ) {
   return {
     code: failureDefinition.code,
     summary: failureDefinition.summary,
-    type: "/errors/" +
-      method.toLowerCase() +
-      urlPattern.replaceAll(/:[^/]+/g, "-") +
-      "/" +
+    type: "/err/" +
+      operationId + "/" +
       failureDefinition.localType,
+    fromMiddleware: failureDefinition.fromMiddleware,
   };
 }

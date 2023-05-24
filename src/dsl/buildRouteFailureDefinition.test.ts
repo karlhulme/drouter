@@ -3,15 +3,17 @@ import { assertEquals } from "../../deps.ts";
 
 Deno.test("Build a route failure definition.", () => {
   assertEquals(
-    buildRouteFailureDefinition("/path/:id/other", "GET", {
+    buildRouteFailureDefinition("getSomeValue", {
       code: 123,
       summary: "a summary",
-      localType: "some-error",
+      localType: "someError",
+      fromMiddleware: "abc",
     }),
     {
       code: 123,
       summary: "a summary",
-      type: "/errors/get/path/-/other/some-error",
+      type: "/err/getSomeValue/someError",
+      fromMiddleware: "abc",
     },
   );
 });

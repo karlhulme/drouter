@@ -8,7 +8,6 @@ export interface DslMiddleware {
     summary: string;
     type: string;
     isRequired?: boolean;
-    isAuthApiKey?: boolean;
     deprecated?: string;
   }[];
   queryParams?: {

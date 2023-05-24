@@ -17,4 +17,9 @@ export interface OperationFailureDefinition {
    * A short description of when this error will be raised.
    */
   summary: string;
+
+  /**
+   * The name of the middleware module that declared this header.
+   */
+  fromMiddleware?: string;
 }

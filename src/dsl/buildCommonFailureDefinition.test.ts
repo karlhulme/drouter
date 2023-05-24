@@ -7,11 +7,13 @@ Deno.test("Build a common failure definition.", () => {
       code: 123,
       summary: "a summary",
       localType: "some-error",
+      fromMiddleware: "xyz",
     }),
     {
       code: 123,
       summary: "a summary",
-      type: "/errors/common/some-error",
+      type: "/err/some-error",
+      fromMiddleware: "xyz",
     },
   );
 });

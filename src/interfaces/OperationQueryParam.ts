@@ -28,4 +28,9 @@ export interface OperationQueryParam<RequestQueryParamNames extends string> {
    * A description of the approach to take given that this query param is deprecated.
    */
   deprecated?: string;
+
+  /**
+   * The name of the middleware module that declared this header.
+   */
+  fromMiddleware?: string;
 }

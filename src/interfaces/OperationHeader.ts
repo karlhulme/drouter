@@ -28,4 +28,9 @@ export interface OperationHeader<RequestHeaderNames extends string> {
    * A description of the approach to take given that this header is deprecated.
    */
   deprecated?: string;
+
+  /**
+   * The name of the middleware module that declared this header.
+   */
+  fromMiddleware?: string;
 }

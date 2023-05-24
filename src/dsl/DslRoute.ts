@@ -20,19 +20,8 @@ export interface DslRouteMethod {
   markdown?: string;
   middleware?: string[];
   flags?: string[];
-  headers?: {
-    name: string;
-    summary: string;
-    type: string;
-    isRequired?: boolean;
-    deprecated?: string;
-  }[];
-  queryParams?: {
-    name: string;
-    summary: string;
-    type: string;
-    deprecated?: string;
-  }[];
+  headers?: DslRouteMethodHeader[];
+  queryParams?: DslRouteMethodQueryParam[];
   requestBodyProperties?: {
     name: string;
     summary: string;
@@ -76,20 +65,39 @@ export interface DslRouteMethod {
   };
 
   responseSuccessCode?: number;
-  responseHeaders?: {
-    name: string;
-    summary: string;
-    type: string;
-    isGuaranteed?: boolean;
-    deprecated?: string;
-  }[];
+  responseHeaders?: DslRouteMethodResponseHeader[];
   responseBodyType?: string;
   responseBodyTypeArray?: boolean;
-  responseFailureDefinitions?: {
-    code: number;
-    localType: string;
-    summary: string;
-  }[];
+  responseFailureDefinitions?: DslRouteMethodFailureDefinition[];
 
   deprecated?: string;
+}
+
+export interface DslRouteMethodHeader {
+  name: string;
+  summary: string;
+  type: string;
+  isRequired?: boolean;
+  deprecated?: string;
+}
+
+export interface DslRouteMethodQueryParam {
+  name: string;
+  summary: string;
+  type: string;
+  deprecated?: string;
+}
+
+export interface DslRouteMethodResponseHeader {
+  name: string;
+  summary: string;
+  type: string;
+  isGuaranteed?: boolean;
+  deprecated?: string;
+}
+
+export interface DslRouteMethodFailureDefinition {
+  code: number;
+  localType: string;
+  summary: string;
 }

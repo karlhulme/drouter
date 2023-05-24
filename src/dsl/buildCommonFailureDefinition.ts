@@ -2,6 +2,7 @@ interface FailureDefinition {
   code: number;
   localType: string;
   summary: string;
+  fromMiddleware: string | null;
 }
 
 /**
@@ -15,7 +16,8 @@ export function buildCommonFailureDefinition(
   return {
     code: failureDefinition.code,
     summary: failureDefinition.summary,
-    type: "/errors/common/" +
+    type: "/err/" +
       failureDefinition.localType,
+    fromMiddleware: failureDefinition.fromMiddleware,
   };
 }
