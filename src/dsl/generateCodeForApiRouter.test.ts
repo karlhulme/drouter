@@ -2,22 +2,14 @@ import { assertThrows } from "https://deno.land/std@0.156.0/testing/asserts.ts";
 import { assertStringIncludes } from "../../deps.ts";
 import { generateCodeForApiRouter } from "./generateCodeForApiRouter.ts";
 
-Deno.test("Generate api router code for service, outbound records and routes.", () => {
-  // To cover code generation we need resources that are:
-  // * urlParams: defined or undefined
-  // * summary: populated and unpopulated
-  // * headers: defined or undefined
-  // * responseHeaders: defined or undefined
-  // * queryParams: defined or undefined
-  // * requiresApiKey: true or undefined
-  // * requiresCookieAuth: true or undefined
-  // * deprecated: true or undefined
-
-  const sourceCode = generateCodeForApiRouter([
+function createResources() {
+  return [
     {
       $schema:
         "https://raw.githubusercontent.com/karlhulme/drouter/main/schemas/service.json",
       depsPath: "../deps.ts",
+      title: "Test service",
+      description: "A test service",
     },
     {
       "$schema":
@@ -245,7 +237,41 @@ Deno.test("Generate api router code for service, outbound records and routes.", 
         },
       }],
     },
-  ]);
+  ];
+}
+
+Deno.test("Generate api router code for service, outbound records and routes.", () => {
+  // To cover code generation we need resources that are:
+  // * urlParams: defined or undefined
+  // * summary: populated and unpopulated
+  // * headers: defined or undefined
+  // * responseHeaders: defined or undefined
+  // * queryParams: defined or undefined
+  // * requiresApiKey: true or undefined
+  // * requiresCookieAuth: true or undefined
+  // * deprecated: true or undefined
+
+  const resources = createResources();
+  const sourceCode = generateCodeForApiRouter(resources);
+
+  assertStringIncludes(sourceCode, "allOperations");
+  assertStringIncludes(sourceCode, "getTest");
+});
+
+Deno.test("Generate api router code for a service with all the flags set.", () => {
+  // deno-lint-ignore no-explicit-any
+  const resources = createResources() as any[];
+
+  resources[0].overviewHtml = "An overview";
+  resources[0].authHtml = "Auth info";
+  resources[0].authApiKeyHeaderName = "x-api-key";
+  resources[0].authCookieName = "active-user";
+  resources[0].permittedCorsOrigins = [
+    "http://localhost:1000",
+    "http://localhost:2000",
+  ];
+
+  const sourceCode = generateCodeForApiRouter(resources);
 
   assertStringIncludes(sourceCode, "allOperations");
   assertStringIncludes(sourceCode, "getTest");

@@ -12,6 +12,22 @@
       "type": "string",
       "description": "The path to the deps.ts file."
     },
+    "title": {
+      "type": "string",
+      "description": "The title of the service."
+    },
+    "description": {
+      "type": "string",
+      "description": "A short description of the service which appears on the home page."
+    },
+    "overviewHtml": {
+      "type": "string",
+      "description": "An overview of the service expressed in HTML that will appear on the docs page."
+    },
+    "authHtml": {
+      "type": "string",
+      "description": "A description of the authentication used on the service expressed in HTML that will appear in the authentication section of the docs page."
+    },
     "authApiKeyHeaderName": {
       "type": "string",
       "description": "The name of the header that accepts an api-key for authentication."
@@ -19,7 +35,14 @@
     "authCookieName": {
       "type": "string",
       "description": "The name of the cookie that is used for the authentication."
+    },
+    "permittedCorsOrigins": {
+      "type": "array",
+      "description": "A list of the permitted cors origins",
+      "items": {
+        "type": "string"
+      }
     }
   },
-  "required": ["depsPath"]
+  "required": ["depsPath", "title", "description"]
 }

@@ -14,6 +14,7 @@ import { DslRoute } from "./DslRoute.ts";
 import { DslService } from "./DslService.ts";
 import { createMiddlewareConst } from "./createMiddlewareConst.ts";
 import { createOperationConst } from "./createOperationConst.ts";
+import { createServiceRouterConst } from "./createServiceRouterConst.ts";
 
 /**
  * Returns the source code for drouter operation functions
@@ -54,6 +55,7 @@ export function generateCodeForApiRouter(resources: any[]) {
     ...[
       "Operation",
       "ServiceMiddleware",
+      "router",
     ].map((impt) => ({ name: impt, path: service.depsPath })),
   );
 
@@ -231,6 +233,10 @@ export function generateCodeForApiRouter(resources: any[]) {
     exported: true,
     outputGeneration: 3,
   });
+
+  tree.constDeclarations.push(
+    createServiceRouterConst(service),
+  );
 
   return generateTypescript(tree);
 }
