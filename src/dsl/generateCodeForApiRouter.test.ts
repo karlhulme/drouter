@@ -24,6 +24,48 @@ Deno.test("Generate api router code for service, outbound records and routes.", 
         "https://raw.githubusercontent.com/karlhulme/drouter/main/schemas/middleware.json",
       "name": "mw",
       "requiresPayload": false,
+      "usesAuthApiKey": true,
+      "order": 1,
+      "headers": [{
+        "name": "mw-header",
+        "summary": "A middlware header.",
+        "type": "std/maxString",
+      }, {
+        "name": "req-mw-header",
+        "summary": "A required middleware header.",
+        "type": "std/maxString",
+        "isRequired": true,
+        "deprecated": "No longer used.",
+      }],
+      "queryParams": [{
+        "name": "qp",
+        "summary": "A query param",
+        "type": "std/maxString",
+        "deprecated": "No longer used.",
+      }],
+      "responseFailureDefinitions": [{
+        "code": 123,
+        "localType": "problemHere",
+        "summary": "The problem that occurred.",
+      }],
+      "responseHeaders": [{
+        "name": "mw-header-out",
+        "summary": "A middlware response header.",
+        "type": "std/maxString",
+      }, {
+        "name": "req-mw-header-out",
+        "summary": "A required middleware response header.",
+        "type": "std/maxString",
+        "isGuaranteed": true,
+        "deprecated": "No longer used.",
+      }],
+    },
+    {
+      "$schema":
+        "https://raw.githubusercontent.com/karlhulme/drouter/main/schemas/middleware.json",
+      "name": "mw2",
+      "requiresPayload": true,
+      "usesAuthCookie": true,
       "order": 1,
       "headers": [{
         "name": "mw-header",

@@ -12,6 +12,7 @@ import { DslMiddleware } from "./DslMiddleware.ts";
 import { DslOutboundRecord } from "./DslOutboundRecord.ts";
 import { DslRoute } from "./DslRoute.ts";
 import { DslService } from "./DslService.ts";
+import { createMiddlewareConst } from "./createMiddlewareConst.ts";
 import { createOperationConst } from "./createOperationConst.ts";
 
 /**
@@ -52,6 +53,7 @@ export function generateCodeForApiRouter(resources: any[]) {
   tree.imports.push(
     ...[
       "Operation",
+      "ServiceMiddleware",
     ].map((impt) => ({ name: impt, path: service.depsPath })),
   );
 
@@ -184,6 +186,12 @@ export function generateCodeForApiRouter(resources: any[]) {
     }
   }
 
+  for (const middleware of middlewares) {
+    tree.constDeclarations.push(
+      createMiddlewareConst(middleware),
+    );
+  }
+
   // Append all the type definitions to the tree.
   appendJsonotronTypesToTree(tree, types, "#/components/schemas/");
 
@@ -191,6 +199,35 @@ export function generateCodeForApiRouter(resources: any[]) {
   tree.constDeclarations.push({
     name: "allOperations",
     value: "[" + operationNames.join(", ") + "]",
+    exported: true,
+    outputGeneration: 3,
+  });
+
+  // split middleware into 2 arrays.  The first array is for middleware
+  // that works without a payload, the second array is for middleware that
+  // does need a payload to operate.  The middleware is ordered according
+  // to the order property.
+  tree.constDeclarations.push({
+    name: "allMiddleware",
+    value: "[" +
+      middlewares
+        .filter((m) => !m.requiresPayload)
+        .sort((a, b) => a.order - b.order)
+        .map((m) => `"${m.name}Middleware"`)
+        .join(", ") +
+      "]",
+    exported: true,
+    outputGeneration: 3,
+  });
+  tree.constDeclarations.push({
+    name: "allPayloadMiddleware",
+    value: "[" +
+      middlewares
+        .filter((m) => m.requiresPayload)
+        .sort((a, b) => a.order - b.order)
+        .map((m) => `"${m.name}Middleware"`)
+        .join(", ") +
+      "]",
     exported: true,
     outputGeneration: 3,
   });
