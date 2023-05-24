@@ -77,6 +77,7 @@ export interface ServiceMiddleware<
     req: ServiceMiddlewareRequest<
       RequestHeaderNames,
       RequestQueryParamNames,
+      ResponseHeaderNames,
       RequestFailureTypes
     >,
     ctx: OperationContext,

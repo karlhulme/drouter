@@ -9,6 +9,7 @@ import { OperationRequestQueryParamsBlock } from "./OperationRequestQueryParamsB
 export interface ServiceMiddlewareRequest<
   RequestHeaderNames extends string = string,
   RequestQueryParamNames extends string = string,
+  ResponseHeaderNames extends string = string,
   RequestFailureTypes extends string = string,
 > {
   /**
@@ -67,7 +68,7 @@ export interface ServiceMiddlewareRequest<
     type: RequestFailureTypes,
     detail?: string,
     properties?: Record<string, unknown>,
-    additionalHeaders?: Record<RequestHeaderNames, string>,
+    additionalHeaders?: Record<ResponseHeaderNames, string>,
   ) => HttpError;
 
   /**
