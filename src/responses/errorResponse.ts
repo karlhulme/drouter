@@ -22,7 +22,7 @@ export function errorResponse(
   title: string,
   detail?: string,
   properties?: Record<string, unknown>,
-  additionalHeaders?: HeadersInit,
+  additionalHeaders?: Record<string, string>,
 ) {
   const problem = {
     status: code,

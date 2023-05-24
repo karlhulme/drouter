@@ -12,11 +12,7 @@ import {
   docsPageResponse,
   faviconResponse,
   healthResponse,
-  httpErrorResponse,
-  internalServerErrorResponse,
   openApiResponse,
-  operationNotImplementedResponse,
-  resourceNotFoundResponse,
   rootResponse,
 } from "../responses/index.ts";
 import { getHttpCookieValues, safeArray } from "../utils/index.ts";
@@ -32,6 +28,7 @@ import { createHttpError } from "./createHttpError.ts";
 import { ServiceMiddlewareRequest } from "../interfaces/ServiceMiddlewareRequest.ts";
 import { OperationRequestValue } from "../index.ts";
 import { ServiceMiddlewareResponse } from "../interfaces/ServiceMiddlewareResponse.ts";
+import { errorResponse } from "../responses/errorResponse.ts";
 
 /**
  * The name of the context value that will hold the operation payload
@@ -125,11 +122,26 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
         err instanceof HttpError && (err.code >= 400 && err.code < 500) ||
         (err.code === 501)
       ) {
-        response = httpErrorResponse(err);
+        response = errorResponse(
+          err.code,
+          err.type,
+          err.title,
+          err.detail,
+          err.properties,
+        );
       } else {
         // Log the unexpected error to the console.
         console.log(err);
-        response = internalServerErrorResponse(underlyingRequest);
+        response = errorResponse(
+          500,
+          "/err/internalServerError",
+          "Unexpected error raised processing request.",
+          undefined,
+          {
+            method: underlyingRequest.method,
+            url: underlyingRequest.url,
+          },
+        );
       }
     } finally {
       // this prevents Deno.serve from crashing.
@@ -216,11 +228,19 @@ async function processRequest(
   const matchedOp = findMatchingOp(internalOps, underlyingRequest);
 
   if (!matchedOp) {
-    return resourceNotFoundResponse();
+    return errorResponse(
+      404,
+      "/err/operationNotFound",
+      "The requested operation was not found.",
+    );
   }
 
   if (!matchedOp.operation.handler) {
-    return operationNotImplementedResponse();
+    return errorResponse(
+      501,
+      "/err/operationNotImplemented",
+      "The requested operation has not been implemented yet.",
+    );
   }
 
   const ctx = new Map<string, unknown>();

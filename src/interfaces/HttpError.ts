@@ -11,6 +11,7 @@ export class HttpError extends Error {
    * occurence of the problem.
    * @param properties Additional properties for the error defined as a record
    * of JSON serialisable types.
+   * @param additionalHeaders Additional values to be added as header values.
    */
   constructor(
     readonly code: number,
@@ -18,6 +19,7 @@ export class HttpError extends Error {
     readonly title: string,
     readonly detail?: string,
     readonly properties?: Record<string, unknown>,
+    readonly additionalHeaders?: Record<string, string>,
   ) {
     super(
       `Code: ${code}\nType: ${type}\nTitle: ${title}\nDetails: ${

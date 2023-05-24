@@ -16,6 +16,7 @@ export function createHttpError(
   type: string,
   detail?: string,
   properties?: Record<string, unknown>,
+  additionalHeaders?: Record<string, string>,
 ) {
   const failureDefs = op.responseFailureDefinitions || [];
   const failure = failureDefs.find((rfd) => rfd.type === type);
@@ -30,6 +31,7 @@ export function createHttpError(
       failure.summary,
       detail,
       properties,
+      additionalHeaders,
     );
   } else {
     // If the failure isn't recognised then we return a server error

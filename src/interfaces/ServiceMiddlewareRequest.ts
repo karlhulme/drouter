@@ -60,11 +60,14 @@ export interface ServiceMiddlewareRequest<
    * specific instance.
    * @param properties A record of any additional properties that
    * might be useful to the client in handling the error.
+   * @param additionalHeaders A record of any additional headers
+   * to be added to the error response.
    */
   error: (
     type: RequestFailureTypes,
     detail?: string,
     properties?: Record<string, unknown>,
+    additionalHeaders?: Record<RequestHeaderNames, string>,
   ) => HttpError;
 
   /**

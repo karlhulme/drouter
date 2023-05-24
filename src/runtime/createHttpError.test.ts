@@ -25,6 +25,7 @@ Deno.test("Produce http error for known error type.", () => {
     "/err/aKnownType",
     "Specific issue with this call.",
     { foo: 123, bar: true },
+    { "extraHeader": "h" },
   );
 
   assertEquals(err.code, 456);
@@ -33,6 +34,7 @@ Deno.test("Produce http error for known error type.", () => {
   assertEquals(err.detail, "Specific issue with this call.");
   assertEquals(err.properties?.foo, 123);
   assertEquals(err.properties?.bar, true);
+  assertEquals(err.additionalHeaders?.extraHeader, "h");
 });
 
 Deno.test("Produce http error for unknown error type.", () => {
