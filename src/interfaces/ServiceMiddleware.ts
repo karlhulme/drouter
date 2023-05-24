@@ -12,8 +12,6 @@ import { ServiceMiddlewareResponse } from "./ServiceMiddlewareResponse.ts";
  * that is shared by multiple operations.
  */
 export interface ServiceMiddleware<
-  // deno-lint-ignore no-explicit-any
-  RequestBody = any,
   RequestHeaderNames extends string = string,
   RequestQueryParamNames extends string = string,
   ResponseHeaderNames extends string = string,
@@ -77,7 +75,6 @@ export interface ServiceMiddleware<
    */
   handler?: (
     req: ServiceMiddlewareRequest<
-      RequestBody,
       RequestHeaderNames,
       RequestQueryParamNames,
       RequestFailureTypes

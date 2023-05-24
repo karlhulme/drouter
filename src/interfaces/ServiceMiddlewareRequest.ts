@@ -7,7 +7,6 @@ import { OperationRequestQueryParamsBlock } from "./OperationRequestQueryParamsB
  * The data for a middleware request.
  */
 export interface ServiceMiddlewareRequest<
-  RequestBodyType = unknown,
   RequestHeaderNames extends string = string,
   RequestQueryParamNames extends string = string,
   RequestFailureTypes extends string = string,
@@ -28,11 +27,10 @@ export interface ServiceMiddlewareRequest<
   method: string;
 
   /**
-   * The validated body of the request.  This will be either unknown or never
-   * depending on whether the middleware executes before or after the payload
-   * is read.
+   * The validated body of the request.  This value will be null if
+   * the middleware is executed before the payload is read from the request.
    */
-  body: RequestBodyType;
+  body: unknown;
 
   /**
    * An array of HTTP cookies passed with the request.
