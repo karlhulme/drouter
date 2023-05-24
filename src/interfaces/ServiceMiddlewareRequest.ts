@@ -2,14 +2,12 @@ import { HttpCookie } from "./HttpCookie.ts";
 import { HttpError } from "./HttpError.ts";
 import { OperationRequestHeadersBlock } from "./OperationRequestHeadersBlock.ts";
 import { OperationRequestQueryParamsBlock } from "./OperationRequestQueryParamsBlock.ts";
-import { OperationRequestUrlParamsBlock } from "./OperationRequestUrlParamsBlock.ts";
 
 /**
- * The data for an operation request.
+ * The data for a middleware request.
  */
-export interface OperationRequest<
+export interface ServiceMiddlewareRequest<
   RequestBodyType = unknown,
-  RequestUrlParamNames extends string = string,
   RequestHeaderNames extends string = string,
   RequestQueryParamNames extends string = string,
   RequestFailureTypes extends string = string,
@@ -30,7 +28,9 @@ export interface OperationRequest<
   method: string;
 
   /**
-   * The validated body of the request.
+   * The validated body of the request.  This will be either unknown or never
+   * depending on whether the middleware executes before or after the payload
+   * is read.
    */
   body: RequestBodyType;
 
@@ -53,11 +53,6 @@ export interface OperationRequest<
    * The underlying request object handled by Deno.
    */
   underlyingRequest: Request;
-
-  /**
-   * The validated url parameter values passed with the request.
-   */
-  urlParams: OperationRequestUrlParamsBlock<RequestUrlParamNames>;
 
   /**
    * Constructs an HttpError that can be thrown, based on one

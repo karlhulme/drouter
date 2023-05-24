@@ -1,11 +1,11 @@
 /**
  * A header that is processed by a middleware module.
  */
-export interface ServiceMiddlewareHeader {
+export interface ServiceMiddlewareHeader<RequestHeaderNames extends string> {
   /**
    * The name of the header.
    */
-  name: string;
+  name: RequestHeaderNames;
 
   /**
    * The reason for the deprecation and/or the header to use instead.

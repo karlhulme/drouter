@@ -1,17 +1,19 @@
 /**
  * A definition of a failure.
  */
-export interface OperationFailureDefinition {
-  /**
-   * The HTTP code of the error.
-   */
-  code: number;
-
+export interface OperationFailureDefinition<
+  RequestFailureTypes extends string,
+> {
   /**
    * The type name of the error that can be raised from
    * this operation.
    */
-  type: string;
+  type: RequestFailureTypes;
+
+  /**
+   * The HTTP code of the error.
+   */
+  code: number;
 
   /**
    * A short description of when this error will be raised.

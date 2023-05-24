@@ -1,11 +1,13 @@
 /**
  * A query parameter that is processed by a middleware module.
  */
-export interface ServiceMiddlewareQueryParam {
+export interface ServiceMiddlewareQueryParam<
+  RequestQueryParamNames extends string,
+> {
   /**
    * The name of a query parameter.
    */
-  name: string;
+  name: RequestQueryParamNames;
 
   /**
    * The reason for the deprecation and/or the query parameter to use instead.

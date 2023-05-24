@@ -29,6 +29,9 @@ import { appendBuildVersionHeaders } from "./appendBuildVersionHeaders.ts";
 import { appendCorsHeaders } from "./appendCorsHeaders.ts";
 import { validateOperationPayload } from "./validateOperationPayload.ts";
 import { createHttpError } from "./createHttpError.ts";
+import { ServiceMiddlewareRequest } from "../interfaces/ServiceMiddlewareRequest.ts";
+import { OperationRequestValue } from "../index.ts";
+import { ServiceMiddlewareResponse } from "../interfaces/ServiceMiddlewareResponse.ts";
 
 /**
  * The name of the context value that will hold the operation payload
@@ -309,14 +312,24 @@ async function executeMatchedOp(
   middlewareModules: ServiceMiddleware[],
   loadPayloadIndex: number,
 ) {
-  ctx.set(CONTEXT_OPERATION_RESPONSE_BODY, null);
+  // Parse and validate the header, query params and url param values.
+  // If these aren't acceptable then no middleware handlers or operation
+  // handler will be called.
+  const headerValues = getHeaderValues(underlyingRequest.headers, op);
+  const queryParamValues = getQueryParamValues(url.searchParams, op);
+  const urlParamValues = getUrlParamValues(
+    urlMatch.pathname.groups,
+    op,
+  );
+
+  // ctx.set(CONTEXT_OPERATION_RESPONSE_BODY, null);
 
   let prevIndex = -1;
   let payload: unknown = null;
 
   const runner = async (
     index: number,
-  ): Promise<Response> => {
+  ): Promise<ServiceMiddlewareResponse> => {
     if (index === prevIndex) {
       throw new Error(
         "Middleware function called next() multiple times.",
@@ -325,10 +338,12 @@ async function executeMatchedOp(
 
     prevIndex = index;
 
-    // Pull in the context before running any payload middleware functions.
+    // If we're ready to run the middleware functions that accept the payload
+    // then we need to read it from the request and validate it.
     if (index === loadPayloadIndex && op.requestBodyType) {
       payload = await readJsonBody(underlyingRequest);
-      ctx.set(CONTEXT_OPERATION_PAYLOAD, payload);
+      validateOperationPayload(op, payload);
+      // ctx.set(CONTEXT_OPERATION_PAYLOAD, payload);
     }
 
     // Draw down the next middleware function.
@@ -343,9 +358,18 @@ async function executeMatchedOp(
     );
 
     if (middlewareMod) {
-      if (isMiddlewareApplied && middlewareMod.process) {
-        return await middlewareMod.process(
+      if (isMiddlewareApplied && middlewareMod.handler) {
+        const mwreq = createMiddlewareRequest(
+          url,
           underlyingRequest,
+          op,
+          payload,
+          headerValues,
+          queryParamValues,
+        );
+
+        return await middlewareMod.handler(
+          mwreq,
           ctx,
           op,
           () => {
@@ -362,48 +386,55 @@ async function executeMatchedOp(
       // payload (body) and header/query/url parameters.
       const req = createOperationRequest(
         url,
-        urlMatch,
         underlyingRequest,
         op,
         payload,
+        headerValues,
+        queryParamValues,
+        urlParamValues,
       );
 
       const res = await op.handler!(req, ctx);
 
-      const responseStatus = op.responseSuccessCode || 200;
-
-      const responseHeaders = new Headers();
-
-      for (const h of res.headers || []) {
-        responseHeaders.append(
-          h.name,
-          convertToResponseHeaderValue(h.value),
-        );
-      }
-
-      if (typeof res.body !== "undefined") {
-        responseHeaders.append(
-          "content-type",
-          "application/json",
-        );
-      }
-
-      const responseBody = typeof res.body === "undefined"
-        ? null
-        : JSON.stringify(res.body);
-
-      if (typeof res.body !== "undefined") {
-        ctx.set(CONTEXT_OPERATION_RESPONSE_BODY, res.body);
-      }
-
-      return new Response(responseBody, {
-        headers: responseHeaders,
-        status: responseStatus,
-      });
+      return {
+        body: res.body,
+        headers: res.headers,
+      };
     }
   };
 
-  return await runner(0);
+  const grandResult = await runner(0);
+
+  const responseStatus = op.responseSuccessCode || 200;
+
+  const responseHeaders = new Headers();
+
+  for (const h of grandResult.headers || []) {
+    responseHeaders.append(
+      h.name,
+      convertToResponseHeaderValue(h.value),
+    );
+  }
+
+  if (typeof grandResult.body !== "undefined") {
+    responseHeaders.append(
+      "content-type",
+      "application/json",
+    );
+  }
+
+  const responseBody = typeof grandResult.body === "undefined"
+    ? null
+    : JSON.stringify(grandResult.body);
+
+  // if (typeof grandResult.body !== "undefined") {
+  //   ctx.set(CONTEXT_OPERATION_RESPONSE_BODY, grandResult.body);
+  // }
+
+  return new Response(responseBody, {
+    headers: responseHeaders,
+    status: responseStatus,
+  });
 }
 
 /**
@@ -426,30 +457,201 @@ export async function readJsonBody(
 }
 
 /**
+ * Creates a MiddlewareRequest object that can be passed to
+ * a middleware handler.  This process validates the inputs
+ * against the data expected by the given operation.
+ * @param url The full url that was requested.
+ * @param underlyingRequest The underlying request.
+ * @param op The operation that will handle the request.
+ */
+function createMiddlewareRequest(
+  url: URL,
+  underlyingRequest: Request,
+  op: Operation,
+  payload: unknown,
+  headerValues: OperationRequestValue[],
+  queryParamValues: OperationRequestValue[],
+): ServiceMiddlewareRequest {
+  return {
+    path: url.pathname,
+    urlPattern: op.urlPattern,
+    method: op.method,
+    cookies: getHttpCookieValues(underlyingRequest.headers.get("cookie")),
+    body: payload,
+    headers: {
+      getAllValues: () => headerValues,
+      getOptionalString: (headerName: string) =>
+        getRequestValue(
+          op,
+          `Header '${headerName}'`,
+          headerName.toLowerCase(),
+          headerValues,
+          "string",
+          false,
+        ) as string | null,
+      getRequiredString: (headerName: string) =>
+        getRequestValue(
+          op,
+          `Header '${headerName}'`,
+          headerName.toLowerCase(),
+          headerValues,
+          "string",
+          true,
+        ) as string,
+      getOptionalNumber: (headerName: string) =>
+        getRequestValue(
+          op,
+          `Header '${headerName}'`,
+          headerName.toLowerCase(),
+          headerValues,
+          "number",
+          false,
+        ) as number | null,
+      getRequiredNumber: (headerName: string) =>
+        getRequestValue(
+          op,
+          `Header '${headerName}'`,
+          headerName.toLowerCase(),
+          headerValues,
+          "number",
+          true,
+        ) as number,
+      getOptionalBoolean: (headerName: string) =>
+        getRequestValue(
+          op,
+          `Header '${headerName}'`,
+          headerName.toLowerCase(),
+          headerValues,
+          "boolean",
+          false,
+        ) as boolean | null,
+      getRequiredBoolean: (headerName: string) =>
+        getRequestValue(
+          op,
+          `Header '${headerName}'`,
+          headerName.toLowerCase(),
+          headerValues,
+          "boolean",
+          true,
+        ) as boolean,
+      getOptionalObject: <T>(headerName: string) =>
+        getRequestValue(
+          op,
+          `Header '${headerName}'`,
+          headerName.toLowerCase(),
+          headerValues,
+          "object",
+          false,
+        ) as T | null,
+      getRequiredObject: <T>(headerName: string) =>
+        getRequestValue(
+          op,
+          `Header '${headerName}'`,
+          headerName.toLowerCase(),
+          headerValues,
+          "object",
+          true,
+        ) as T,
+    },
+    queryParams: {
+      getAllValues: () => queryParamValues,
+      getOptionalString: (queryParamName: string) =>
+        getRequestValue(
+          op,
+          `Query param '${queryParamName}'`,
+          queryParamName,
+          queryParamValues,
+          "string",
+          false,
+        ) as string | null,
+      getRequiredString: (queryParamName: string) =>
+        getRequestValue(
+          op,
+          `Query param '${queryParamName}'`,
+          queryParamName,
+          queryParamValues,
+          "string",
+          true,
+        ) as string,
+      getOptionalNumber: (queryParamName: string) =>
+        getRequestValue(
+          op,
+          `Query param '${queryParamName}'`,
+          queryParamName,
+          queryParamValues,
+          "number",
+          false,
+        ) as number | null,
+      getRequiredNumber: (queryParamName: string) =>
+        getRequestValue(
+          op,
+          `Query param '${queryParamName}'`,
+          queryParamName,
+          queryParamValues,
+          "number",
+          true,
+        ) as number,
+      getOptionalBoolean: (queryParamName: string) =>
+        getRequestValue(
+          op,
+          `Query param '${queryParamName}'`,
+          queryParamName,
+          queryParamValues,
+          "boolean",
+          false,
+        ) as boolean | null,
+      getRequiredBoolean: (queryParamName: string) =>
+        getRequestValue(
+          op,
+          `Query param '${queryParamName}'`,
+          queryParamName,
+          queryParamValues,
+          "boolean",
+          true,
+        ) as boolean,
+      getOptionalObject: <T>(queryParamName: string) =>
+        getRequestValue(
+          op,
+          `Query param '${queryParamName}'`,
+          queryParamName,
+          queryParamValues,
+          "object",
+          false,
+        ) as T | null,
+      getRequiredObject: <T>(queryParamName: string) =>
+        getRequestValue(
+          op,
+          `Query param '${queryParamName}'`,
+          queryParamName,
+          queryParamValues,
+          "object",
+          true,
+        ) as T,
+    },
+    underlyingRequest,
+    error: (type, detail, properties) =>
+      createHttpError(op, type, detail, properties),
+    start: new Date(),
+  };
+}
+
+/**
  * Creates an OperationRequest object that can be passed to
  * an operation handler.  This process validates the inputs
  * against the data expected by the given operation.
  * @param url The full url that was requested.
- * @param urlMatch The url values.
  * @param underlyingRequest The underlying request.
  * @param op The operation that will handle the request.
  */
 function createOperationRequest(
   url: URL,
-  urlMatch: URLPatternResult,
   underlyingRequest: Request,
   op: Operation,
   payload: unknown,
+  headerValues: OperationRequestValue[],
+  queryParamValues: OperationRequestValue[],
+  urlParamValues: OperationRequestValue[],
 ): OperationRequest {
-  validateOperationPayload(op, payload);
-
-  const headerValues = getHeaderValues(underlyingRequest.headers, op);
-  const queryParamValues = getQueryParamValues(url.searchParams, op);
-  const urlParamValues = getUrlParamValues(
-    urlMatch.pathname.groups,
-    op,
-  );
-
   return {
     path: url.pathname,
     urlPattern: op.urlPattern,

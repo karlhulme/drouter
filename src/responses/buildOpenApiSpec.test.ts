@@ -9,7 +9,7 @@ function createServiceConfig(): ServiceConfig {
     description: "The test service.",
     middleware: [{
       name: "mw1",
-      process: async () => new Response(null),
+      handler: async () => ({}),
       headers: [{
         name: "middlewareHeader",
         summary: "A middleware header.",
@@ -25,7 +25,7 @@ function createServiceConfig(): ServiceConfig {
     }],
     payloadMiddleware: [{
       name: "mw2",
-      process: async () => new Response(null),
+      handler: async () => ({}),
       headers: [{
         name: "middlewareHeader",
         summary: "A middleware header.",

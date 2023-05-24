@@ -29,7 +29,7 @@ export interface Operation<
   RequestHeaderNames extends string = string,
   RequestQueryParamNames extends string = string,
   ResponseHeaderNames extends string = string,
-  RequestFailureCodes extends string = string,
+  RequestFailureTypes extends string = string,
 > {
   /**
    * The url to match including any url parameters, e.g /users/:id
@@ -112,7 +112,9 @@ export interface Operation<
   /**
    * An array of failure definitions.
    */
-  responseFailureDefinitions?: OperationFailureDefinition[];
+  responseFailureDefinitions?: OperationFailureDefinition<
+    RequestFailureTypes
+  >[];
 
   /**
    * The first api version where this operation is available.
@@ -135,7 +137,7 @@ export interface Operation<
       RequestUrlParamNames,
       RequestHeaderNames,
       RequestQueryParamNames,
-      RequestFailureCodes
+      RequestFailureTypes
     >,
     ctx: OperationContext,
   ) => Promise<OperationResponse<ResponseBodyType, ResponseHeaderNames>>;

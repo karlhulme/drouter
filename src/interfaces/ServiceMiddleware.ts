@@ -4,12 +4,20 @@ import { ServiceMiddlewareFailureDefinition } from "./ServiceMiddlewareFailureDe
 import { ServiceMiddlewareHeader } from "./ServiceMiddlewareHeader.ts";
 import { ServiceMiddlewareOutboundHeader } from "./ServiceMiddlewareOutboundHeader.ts";
 import { ServiceMiddlewareQueryParam } from "./ServiceMiddlewareQueryParam.ts";
+import { ServiceMiddlewareRequest } from "./ServiceMiddlewareRequest.ts";
+import { ServiceMiddlewareResponse } from "./ServiceMiddlewareResponse.ts";
 
 /**
  * A middleware module that can defines processing and handling
  * that is shared by multiple operations.
  */
-export interface ServiceMiddleware {
+export interface ServiceMiddleware<
+  RequestBody = unknown,
+  RequestHeaderNames extends string = string,
+  RequestQueryParamNames extends string = string,
+  ResponseHeaderNames extends string = string,
+  RequestFailureTypes extends string = string,
+> {
   /**
    * The name of a middleware module.
    */
@@ -17,24 +25,34 @@ export interface ServiceMiddleware {
 
   /**
    * An array of the header names that the middleware will process.
+   * This definition is not used at run-time, because the headers are
+   * defined on the operation.
    */
-  headers?: ServiceMiddlewareHeader[];
+  headers?: ServiceMiddlewareHeader<RequestHeaderNames>[];
 
   /**
    * An array of query parameter names that the middleware will process.
+   * This definition is not used at run-time, because the query params are
+   * defined on the operation.
    */
-  queryParams?: ServiceMiddlewareQueryParam[];
+  queryParams?: ServiceMiddlewareQueryParam<RequestQueryParamNames>[];
 
   /**
    * An array of the header names that the middleware will supply.
+   * This definition is not used at run-time, because the response headers are
+   * defined on the operation.
    */
-  responseHeaders?: ServiceMiddlewareOutboundHeader[];
+  responseHeaders?: ServiceMiddlewareOutboundHeader<ResponseHeaderNames>[];
 
   /**
    * An array of the failure definitions that the middleware might
    * generate instead of completing the processing of a request.
+   * This definition is not used at run-time, because the failure
+   * definitions are defined on the operation.
    */
-  failureDefinitions?: ServiceMiddlewareFailureDefinition[];
+  failureDefinitions?: ServiceMiddlewareFailureDefinition<
+    RequestFailureTypes
+  >[];
 
   /**
    * A value of true indicates the middleware uses the authentication cookie.
@@ -49,19 +67,22 @@ export interface ServiceMiddleware {
   /**
    * An asynchronous request processing function that can be
    * used to augment context and wrap/edit the response before and after it is
-   * handled by an operation.  This function uses the raw untyped and unvalidated
-   * request and response that is provided by the HTTP server.  This function
-   * should generate Response objects and not rely on throwing Error objects that the
-   * root router function will catch - as all details of the error location will be
-   * obscured as a consequence.
-   * @param req The underlying HTTP request.
+   * handled by an operation.
+   * @param req The request.
    * @param ctx The context object for the request.
    * @param op The operation that will process the request.
+   * @param next A function that invokes the next item of middleware.  This should
+   * be called exactly once in the execution unless an error is raised.
    */
-  process?: (
-    req: Request,
+  handler?: (
+    req: ServiceMiddlewareRequest<
+      RequestBody,
+      RequestHeaderNames,
+      RequestQueryParamNames,
+      RequestFailureTypes
+    >,
     ctx: OperationContext,
     op: Operation,
-    next: () => Promise<Response>,
-  ) => Promise<Response>;
+    next: () => Promise<ServiceMiddlewareResponse>,
+  ) => Promise<ServiceMiddlewareResponse>;
 }
