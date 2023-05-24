@@ -2,7 +2,7 @@
  * A header returned from a middleware module.
  */
 export interface ServiceMiddlewareResponseHeader<
-  RequestHeaderNames extends string,
+  RequestHeaderNames extends string = string,
 > {
   /**
    * The name of a response header.

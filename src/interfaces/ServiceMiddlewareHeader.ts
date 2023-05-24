@@ -1,7 +1,9 @@
 /**
  * A header that is processed by a middleware module.
  */
-export interface ServiceMiddlewareHeader<RequestHeaderNames extends string> {
+export interface ServiceMiddlewareHeader<
+  RequestHeaderNames extends string = string,
+> {
   /**
    * The name of the header.
    */
