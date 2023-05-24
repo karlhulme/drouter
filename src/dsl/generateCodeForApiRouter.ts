@@ -213,7 +213,7 @@ export function generateCodeForApiRouter(resources: any[]) {
       middlewares
         .filter((m) => !m.requiresPayload)
         .sort((a, b) => a.order - b.order)
-        .map((m) => `"${m.name}Middleware"`)
+        .map((m) => `${m.name}Middleware`)
         .join(", ") +
       "]",
     exported: true,
@@ -225,7 +225,7 @@ export function generateCodeForApiRouter(resources: any[]) {
       middlewares
         .filter((m) => m.requiresPayload)
         .sort((a, b) => a.order - b.order)
-        .map((m) => `"${m.name}Middleware"`)
+        .map((m) => `${m.name}Middleware`)
         .join(", ") +
       "]",
     exported: true,
