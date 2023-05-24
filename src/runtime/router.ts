@@ -226,29 +226,6 @@ async function processRequest(
 
   const ctx = new Map<string, unknown>();
 
-  // if (matchedOp.operation.requiresApiKey) {
-  //   if (!config.apiKeyHandler) {
-  //     return apiKeyHandlerNotDefinedResponse();
-  //   }
-
-  //   const suppliedApiKey = underlyingRequest.headers.get("x-api-key");
-
-  //   if (!suppliedApiKey) {
-  //     return apiKeyNotSuppliedResponse();
-  //   }
-
-  //   const apiKeyUser = await config.apiKeyHandler(
-  //     matchedOp.operation,
-  //     suppliedApiKey,
-  //   );
-
-  //   if (!apiKeyUser) {
-  //     return apiKeyNotValidResponse();
-  //   }
-
-  //   ctx.set(CONTEXT_OPERATION_API_KEY_USER, apiKeyUser);
-  // }
-
   return await executeMatchedOp(
     url,
     matchedOp.urlMatch,

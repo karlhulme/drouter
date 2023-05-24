@@ -54,14 +54,6 @@ export interface ServiceConfig {
   operations: Operation[];
 
   /**
-   * A function that is invoked to parse an Api Key and return an object
-   * that represents the authenticated user which is written into the
-   * context as 'operationApiKeyUser'.  If the api key is invalid then a
-   * falsey value should be returned so that an HTTP 401 can be returned.
-   */
-  apiKeyHandler?: (op: Operation, apiKey: string) => Promise<unknown>;
-
-  /**
    * The name of the cookie used for authentication.
    */
   authCookieName?: string;

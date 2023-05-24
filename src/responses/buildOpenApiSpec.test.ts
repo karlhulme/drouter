@@ -137,6 +137,19 @@ function createServiceConfig(): ServiceConfig {
           underlyingType: "boolean",
           validator: () => [],
         },
+      }, {
+        name: "x-api-key",
+        summary:
+          "The api key that will be filtered out if an api-key header is declared on the service config.",
+        type: {
+          name: "string",
+          schema: {
+            type: "string",
+          },
+          referencedSchemaTypes: [],
+          underlyingType: "string",
+          validator: () => [],
+        },
       }],
       responseSuccessCode: 204,
       handler: async () => ({
@@ -254,7 +267,6 @@ Deno.test("Build an OpenAPI spec that uses html (instead of a description).", as
 
 Deno.test("Build an OpenAPI spec that uses an API key.", async () => {
   const sc = createServiceConfig();
-  sc.apiKeyHandler = async () => true;
   sc.authApiKeyHeaderName = "x-api-key";
   sc.middleware![0].usesAuthApiKey = true;
 

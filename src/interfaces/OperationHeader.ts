@@ -33,4 +33,9 @@ export interface OperationHeader<RequestHeaderNames extends string> {
    * The name of the middleware module that declared this header.
    */
   fromMiddleware?: string;
+
+  /**
+   * A value of true if this header should not appear in the documentation.
+   */
+  hideFromDocs?: boolean;
 }

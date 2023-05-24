@@ -7,6 +7,7 @@ import {
   OpenApiSpecPathOperationResponse,
   OpenApiSpecPathOperationResponseHeader,
 } from "../../deps.ts";
+import { OperationHeader } from "../index.ts";
 import {
   Operation,
   OperationNamedType,
@@ -327,26 +328,28 @@ function createPathOperation(
         description: "The version targeted by the request.",
       },
       // Bring in the headers.
-      ...(operation.requestHeaders || []).map((p) => ({
-        name: p.name,
+      ...(operation.requestHeaders || []).filter((h) =>
+        includeHeaderInDocs(h, config)
+      ).map((h) => ({
+        name: h.name,
         in: "header",
-        required: Boolean(p.isRequired),
+        required: Boolean(h.isRequired),
         schema: {
-          $ref: `#/components/schemas/${p.type.name}`,
+          $ref: `#/components/schemas/${h.type.name}`,
         },
-        deprecated: Boolean(p.deprecated),
-        description: p.summary,
+        deprecated: Boolean(h.deprecated),
+        description: h.summary,
       } as OpenApiSpecPathOperationParameter)),
       // Bring in the query params.
-      ...(operation.requestQueryParams || []).map((p) => ({
-        name: p.name,
+      ...(operation.requestQueryParams || []).map((qp) => ({
+        name: qp.name,
         in: "query",
-        required: Boolean(p.isRequired),
+        required: Boolean(qp.isRequired),
         schema: {
-          $ref: `#/components/schemas/${p.type.name}`,
+          $ref: `#/components/schemas/${qp.type.name}`,
         },
-        deprecated: Boolean(p.deprecated),
-        description: p.summary,
+        deprecated: Boolean(qp.deprecated),
+        description: qp.summary,
       } as OpenApiSpecPathOperationParameter)),
     ],
     responses: {
@@ -455,4 +458,20 @@ function appendTypeToSpec(
       appendTypeToSpec(spec, refSchemaType, namedTypes);
     }
   }
+}
+
+/**
+ * Returns true if the given header should be included in the documentation.
+ * @param header An operation header.
+ * @param config The service configuration.
+ */
+function includeHeaderInDocs(
+  header: OperationHeader<string>,
+  config: ServiceConfig,
+) {
+  if (header.name === config.authApiKeyHeaderName) {
+    return false;
+  }
+
+  return true;
 }
