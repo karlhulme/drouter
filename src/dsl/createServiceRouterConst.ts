@@ -35,7 +35,11 @@ export function createServiceRouterConst(service: DslService) {
       ${authHtmlLine}
       ${apiKeyLine}
       ${cookieLine}
-      permittedCorsOrigins: [${permittedCorsOrigins}]
+      permittedCorsOrigins: [${permittedCorsOrigins}],
+      namedTypes: allRuntimeTypes,
+      middleware: allMiddleware,
+      payloadMiddleware: allPayloadMiddleware,
+      operations: allOperations,
     })`,
   };
 }
