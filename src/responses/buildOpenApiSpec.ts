@@ -143,6 +143,7 @@ function appendOperationToSpec(
           required: true,
           schema: {
             $ref: `#/components/schemas/${p.type.name}`,
+            example: p.name === "clubId" ? "club_638fa1f3cc7b532b" : undefined,
           },
           description: p.summary,
         } as OpenApiSpecPathOperationParameter)),
