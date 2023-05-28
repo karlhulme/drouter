@@ -24,3 +24,4 @@ export * from "./ServiceMiddlewareQueryParam.ts";
 export * from "./ServiceMiddlewareRequest.ts";
 export * from "./ServiceMiddlewareResponse.ts";
 export * from "./ServiceMiddlewareResponseHeader.ts";
+export * from "./SpecConfig.ts";

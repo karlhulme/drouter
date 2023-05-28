@@ -1,4 +1,3 @@
-import { OpenApiSpecPathOperationSchema } from "https://raw.githubusercontent.com/karlhulme/dopenapi/v1.6.3/mod.ts";
 import {
   OpenApiSpec,
   OpenApiSpecComponentsSchema,
@@ -8,20 +7,23 @@ import {
   OpenApiSpecPathOperationResponse,
   OpenApiSpecPathOperationResponseHeader,
 } from "../../deps.ts";
-import { OperationHeader } from "../index.ts";
+import { OperationHeader, SpecConfig } from "../index.ts";
 import {
   Operation,
   OperationNamedType,
   ServiceConfig,
 } from "../interfaces/index.ts";
-import { getLatestVersion, safeArray } from "../utils/index.ts";
+import { safeArray } from "../utils/index.ts";
 import { convertUrlPatternToOpenApiPath } from "./convertUrlPatternToOpenApiPath.ts";
 
 /**
  * Returns an OpenAPI specification.
  * @param config The configuration of the service.
  */
-export function buildOpenApiSpec(config: ServiceConfig): OpenApiSpec {
+export function buildOpenApiSpec(
+  config: ServiceConfig,
+  specConfig: SpecConfig,
+): OpenApiSpec {
   const middleware = safeArray(config.middleware);
   const payloadMiddleware = safeArray(config.payloadMiddleware);
   const allMiddleware = middleware.concat(...payloadMiddleware);
@@ -32,12 +34,6 @@ export function buildOpenApiSpec(config: ServiceConfig): OpenApiSpec {
 
   const usingCookieAuth = Boolean(
     allMiddleware.find((m) => m.usesAuthCookie),
-  );
-
-  // The version should actually be passed to this function so that
-  // we can build an API version based on the request.
-  const latestVersion = getLatestVersion(
-    config.operations.map((op) => op.apiVersion),
   );
 
   const securitySchemes: OpenApiSpecComponentsSecuritySchemes = {};
@@ -62,7 +58,7 @@ export function buildOpenApiSpec(config: ServiceConfig): OpenApiSpec {
     openapi: "3.0.3",
     info: {
       title: config.title,
-      version: latestVersion,
+      version: specConfig.apiVersion,
       description: config.overviewHtml ? undefined : config.description,
       // Do not supply description if we have overviewHtml because
       // it appears underneath which looks weird.
@@ -114,7 +110,7 @@ export function buildOpenApiSpec(config: ServiceConfig): OpenApiSpec {
     .sort((a, b) => a.name.localeCompare(b.name));
 
   for (const operation of sortedOperations) {
-    appendOperationToSpec(config, spec, operation);
+    appendOperationToSpec(config, specConfig, spec, operation);
   }
 
   return spec;
@@ -129,6 +125,7 @@ export function buildOpenApiSpec(config: ServiceConfig): OpenApiSpec {
  */
 function appendOperationToSpec(
   config: ServiceConfig,
+  specConfig: SpecConfig,
   spec: OpenApiSpec,
   operation: Operation,
 ) {
@@ -143,7 +140,6 @@ function appendOperationToSpec(
           required: true,
           schema: {
             $ref: `#/components/schemas/${p.type.name}`,
-            example: p.name === "clubId" ? "club_638fa1f3cc7b532b" : undefined,
           },
           description: p.summary,
         } as OpenApiSpecPathOperationParameter)),
@@ -154,15 +150,15 @@ function appendOperationToSpec(
   const path = spec.paths[pathPattern];
 
   if (operation.method === "DELETE") {
-    path.delete = createPathOperation(config, operation);
+    path.delete = createPathOperation(config, specConfig, operation);
   } else if (operation.method === "GET") {
-    path.get = createPathOperation(config, operation);
+    path.get = createPathOperation(config, specConfig, operation);
   } else if (operation.method === "PATCH") {
-    path.patch = createPathOperation(config, operation);
+    path.patch = createPathOperation(config, specConfig, operation);
   } else if (operation.method === "POST") {
-    path.post = createPathOperation(config, operation);
+    path.post = createPathOperation(config, specConfig, operation);
   } else if (operation.method === "PUT") {
-    path.put = createPathOperation(config, operation);
+    path.put = createPathOperation(config, specConfig, operation);
   }
 
   if (operation.requestBodyType) {
@@ -204,6 +200,7 @@ function appendOperationToSpec(
  */
 function createPathOperation(
   config: ServiceConfig,
+  specConfig: SpecConfig,
   operation: Operation,
 ): OpenApiSpecPathOperation {
   const usedMiddlewareNames = safeArray(operation.middleware);
@@ -319,15 +316,17 @@ function createPathOperation(
       }
       : undefined,
     parameters: [
-      // Add api-version header as standard.
+      // Add api-version header as standard, and use the requested
+      // api-version as the only example value so it is pre-populated
+      // in any tools.  This makes it quicker to use 'try-me'.
       {
         name: "api-version",
         in: "header",
         required: true,
         schema: {
           type: "string",
-          example: "2021-01-01",
-        } as unknown as OpenApiSpecPathOperationSchema,
+          example: specConfig.apiVersion,
+        },
         description: "The version targeted by the request.",
       },
       // Bring in the headers.

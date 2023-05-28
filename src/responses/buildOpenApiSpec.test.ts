@@ -1,6 +1,6 @@
 // deno-lint-ignore-file require-await
 import { assertEquals } from "../../deps.ts";
-import { ServiceConfig } from "../interfaces/index.ts";
+import { ServiceConfig, SpecConfig } from "../interfaces/index.ts";
 import { buildOpenApiSpec } from "./buildOpenApiSpec.ts";
 
 function createServiceConfig(): ServiceConfig {
@@ -245,19 +245,29 @@ function createServiceConfig(): ServiceConfig {
   };
 }
 
+function createSpecConfig(): SpecConfig {
+  return {
+    apiVersion: "2021-01-01",
+  };
+}
+
 Deno.test("Build an OpenAPI spec using all parts of the specification.", async () => {
-  const openApiSpec = buildOpenApiSpec(createServiceConfig());
+  const openApiSpec = buildOpenApiSpec(
+    createServiceConfig(),
+    createSpecConfig(),
+  );
 
   assertEquals(openApiSpec.info.title, "Test service");
   assertEquals(typeof openApiSpec.components.schemas.rfc7807Problem, "object");
 });
 
 Deno.test("Build an OpenAPI spec that uses html (instead of a description).", async () => {
-  const sc = createServiceConfig();
-  sc.overviewHtml = "This is an overview.";
-  sc.authHtml = "This is auth information";
+  const svcConfig = createServiceConfig();
+  svcConfig.overviewHtml = "This is an overview.";
+  svcConfig.authHtml = "This is auth information";
+  const specConfig = createSpecConfig();
 
-  const openApiSpec = buildOpenApiSpec(sc);
+  const openApiSpec = buildOpenApiSpec(svcConfig, specConfig);
 
   assertEquals(
     typeof openApiSpec,
@@ -266,11 +276,12 @@ Deno.test("Build an OpenAPI spec that uses html (instead of a description).", as
 });
 
 Deno.test("Build an OpenAPI spec that uses an API key.", async () => {
-  const sc = createServiceConfig();
-  sc.authApiKeyHeaderName = "x-api-key";
-  sc.middleware![0].usesAuthApiKey = true;
+  const svcConfig = createServiceConfig();
+  svcConfig.authApiKeyHeaderName = "x-api-key";
+  svcConfig.middleware![0].usesAuthApiKey = true;
+  const specConfig = createSpecConfig();
 
-  const openApiSpec = buildOpenApiSpec(sc);
+  const openApiSpec = buildOpenApiSpec(svcConfig, specConfig);
 
   assertEquals(
     typeof openApiSpec.components.securitySchemes.apiKeyAuth,
@@ -279,11 +290,12 @@ Deno.test("Build an OpenAPI spec that uses an API key.", async () => {
 });
 
 Deno.test("Build an OpenAPI spec that uses cookie authentication.", async () => {
-  const sc = createServiceConfig();
-  sc.authCookieName = "test-cookie";
-  sc.middleware![0].usesAuthCookie = true;
+  const svcConfig = createServiceConfig();
+  svcConfig.authCookieName = "test-cookie";
+  svcConfig.middleware![0].usesAuthCookie = true;
+  const specConfig = createSpecConfig();
 
-  const openApiSpec = buildOpenApiSpec(sc);
+  const openApiSpec = buildOpenApiSpec(svcConfig, specConfig);
 
   assertEquals(
     typeof openApiSpec.components.securitySchemes.cookieAuth,

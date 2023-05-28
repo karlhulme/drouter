@@ -181,7 +181,7 @@ async function processRequest(
   }
 
   if (underlyingRequest.method === "GET" && url.pathname === "/docs") {
-    return docsPageResponse(config);
+    return docsPageResponse(config, url);
   }
 
   if (
@@ -197,8 +197,13 @@ async function processRequest(
   }
 
   if (underlyingRequest.method === "GET" && url.pathname === "/openapi") {
-    return openApiResponse(config);
+    return openApiResponse(config, url);
   }
+
+  // From this point onwards we're expecting the request to invoke
+  // one of the operations.  This means we must have an api-version
+  // header and an operation implementation that matches the request
+  // must be found.
 
   const apiVersion = underlyingRequest.headers.get("api-version");
 

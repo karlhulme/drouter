@@ -81,13 +81,24 @@ Deno.test("A /health request elicits a health response.", async () => {
   assertStringIncludes(await response.text(), "Health");
 });
 
-Deno.test("An /openapi request elicits a openapi response.", async () => {
+Deno.test("An /openapi request elicits an openapi response.", async () => {
   const routerHandler = router(emptyServiceConfig);
   const response = await routerHandler(
     new Request("http://localhost/openapi", stdReqInit),
     stdReqInfo,
   );
   assertStringIncludes(await response.text(), '"openapi": "3.');
+});
+
+Deno.test("An /openapi request for a specific version elicits an openapi response.", async () => {
+  const routerHandler = router(emptyServiceConfig);
+  const response = await routerHandler(
+    new Request("http://localhost/openapi?api-version=2021-01-01", stdReqInit),
+    stdReqInfo,
+  );
+  const text = await response.text();
+  assertStringIncludes(text, '"openapi": "3.');
+  assertStringIncludes(text, '"version": "2021-01-01"');
 });
 
 Deno.test("A /docs request elicits a docs response.", async () => {
@@ -99,6 +110,24 @@ Deno.test("A /docs request elicits a docs response.", async () => {
   assertStringIncludes(
     await response.text(),
     '<meta name="description" content="Service documentation.">',
+  );
+});
+
+Deno.test("A /docs request for a specific version elicits a docs response.", async () => {
+  const routerHandler = router(emptyServiceConfig);
+  const response = await routerHandler(
+    new Request("http://localhost/docs?api-version=2021-01-01", stdReqInit),
+    stdReqInfo,
+  );
+
+  const text = await response.text();
+  assertStringIncludes(
+    text,
+    '<meta name="description" content="Service documentation.">',
+  );
+  assertStringIncludes(
+    text,
+    'spec-url="/openapi?api-version=2021-01-01"',
   );
 });
 
