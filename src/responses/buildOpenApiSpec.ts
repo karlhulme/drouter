@@ -1,3 +1,4 @@
+import { OpenApiSpecPathOperationSchema } from "https://raw.githubusercontent.com/karlhulme/dopenapi/v1.6.3/mod.ts";
 import {
   OpenApiSpec,
   OpenApiSpecComponentsSchema,
@@ -324,7 +325,8 @@ function createPathOperation(
         required: true,
         schema: {
           type: "string",
-        },
+          example: "2021-01-01",
+        } as unknown as OpenApiSpecPathOperationSchema,
         description: "The version targeted by the request.",
       },
       // Bring in the headers.
