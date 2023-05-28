@@ -40,16 +40,33 @@ export function docsPageResponse(config: ServiceConfig): Response {
             const rapidocEl = document.getElementById('openapiDoc');
 
             rapidocEl.addEventListener('before-render', (e) => {
-
+              console.log('before-render..')
               const clubIdInput = document.getElementById('openapiDoc')?.shadowRoot.querySelector('api-request')?.shadowRoot.querySelector('input[data-pname="clubId"]')
               if (clubIdInput) {
                 clubIdInput.value = 'club_638fa1f3cc7b532b';
               }
+              console.log(clubIdInput)
 
               const apiVersionInput = document.getElementById('openapiDoc')?.shadowRoot.querySelector('api-request')?.shadowRoot.querySelector('input[data-pname="api-version"]')
               if (apiVersionInput) {
                 apiVersionInput.value = '2021-01-01';
               }
+              console.log(apiVersionInput)
+            });
+
+            rapidocEl.addEventListener('after-render', (e) => {
+              console.log('after-render..')
+              const clubIdInput = document.getElementById('openapiDoc')?.shadowRoot.querySelector('api-request')?.shadowRoot.querySelector('input[data-pname="clubId"]')
+              if (clubIdInput) {
+                clubIdInput.value = 'club_638fa1f3cc7b532b';
+              }
+              console.log(clubIdInput)
+
+              const apiVersionInput = document.getElementById('openapiDoc')?.shadowRoot.querySelector('api-request')?.shadowRoot.querySelector('input[data-pname="api-version"]')
+              if (apiVersionInput) {
+                apiVersionInput.value = '2021-01-01';
+              }
+              console.log(apiVersionInput)
             });
           });
         </script>
