@@ -1,15 +1,10 @@
 import { ServiceConfig } from "../interfaces/index.ts";
-import { getLatestVersion } from "../utils/getLatestVersion.ts";
 
 /**
  * Returns a root response.
  * @param config The configuration for the service.
  */
 export function rootResponse(config: ServiceConfig) {
-  const latestVersion = getLatestVersion(
-    config.operations.map((op) => op.apiVersion),
-  );
-
   const html = `<!doctype html>
     <html>
       <head>
@@ -36,7 +31,7 @@ export function rootResponse(config: ServiceConfig) {
       </style>
       <body>
         <h1>
-          ${config.title} v${latestVersion}
+          ${config.title}
         </h1>
         <p>
           ${config.description}

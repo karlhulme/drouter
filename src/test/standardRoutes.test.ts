@@ -26,10 +26,6 @@ Deno.test("A root request elicits a root response.", async () => {
     resText,
     '<meta name="description" content="Root.">',
   );
-  assertStringIncludes(
-    resText,
-    "vN/A",
-  );
 });
 
 Deno.test("A root request with defined operations elicits a root response.", async () => {
@@ -55,10 +51,6 @@ Deno.test("A root request with defined operations elicits a root response.", asy
   assertStringIncludes(
     resText,
     '<meta name="description" content="Root.">',
-  );
-  assertStringIncludes(
-    resText,
-    "v2000-01-01",
   );
 });
 
