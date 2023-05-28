@@ -41,14 +41,12 @@ export function docsPageResponse(config: ServiceConfig): Response {
 
             rapidocEl.addEventListener('before-render', (e) => {
 
-              // Insert the default club id into any input boxes named clubId.
-              const clubIdInput = document.querySelector('[data-pname="clubId"');
+              const clubIdInput = document.getElementById('openapiDoc')?.shadowRoot.querySelector('api-request')?.shadowRoot.querySelector('input[data-pname="clubId"]')
               if (clubIdInput) {
                 clubIdInput.value = 'club_638fa1f3cc7b532b';
               }
 
-              // Insert the default api version into any input boxes named clubId.
-              const apiVersionInput = document.querySelector('[data-pname="api-version"');
+              const apiVersionInput = document.getElementById('openapiDoc')?.shadowRoot.querySelector('api-request')?.shadowRoot.querySelector('input[data-pname="api-version"]')
               if (apiVersionInput) {
                 apiVersionInput.value = '2021-01-01';
               }
