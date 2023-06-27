@@ -108,6 +108,7 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
           err.properties,
           err.additionalHeaders,
         );
+        console.log(err);
       } else {
         // Log the unexpected error to the console.
         console.log(err);
