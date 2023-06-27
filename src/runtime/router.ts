@@ -466,7 +466,6 @@ export async function readJsonBody(
 export async function readTextBody(
   underlyingRequest: Request,
 ): Promise<unknown> {
-  console.log("IS THIS EVEN BEING CALLED");
   return {
     rawText: await underlyingRequest.text(),
   };
