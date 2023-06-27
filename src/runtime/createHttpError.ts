@@ -1,11 +1,9 @@
-import { HttpError, Operation, ServiceMiddleware } from "../index.ts";
-import { safeArray } from "../utils/safeArray.ts";
+import { HttpError, Operation } from "../index.ts";
 
 /**
  * Returns an HttpError constructed by combining the relevant
  * failure information declared for the given operation with
  * the given details about this specific instance of the error.
- * @param middlewareModules An array of middleware modules.
  * @param op An operation.
  * @param type The type name of an error.
  * @param detail A description of the problem that is relevant
@@ -14,24 +12,14 @@ import { safeArray } from "../utils/safeArray.ts";
  * the error.
  */
 export function createHttpError(
-  middlewareModules: ServiceMiddleware[],
   op: Operation,
   type: string,
   detail?: string,
   properties?: Record<string, unknown>,
   additionalHeaders?: Record<string, string>,
 ) {
-  let failure = (safeArray(op.responseFailureDefinitions)).find(
-    (rfd) => rfd.type === type,
-  );
-
-  for (const mwareMod of middlewareModules) {
-    if (!failure) {
-      failure = (safeArray(mwareMod.failureDefinitions)).find((fd) =>
-        fd.type === type
-      );
-    }
-  }
+  const failureDefs = op.responseFailureDefinitions || [];
+  const failure = failureDefs.find((rfd) => rfd.type === type);
 
   if (failure) {
     // If the failure is recognised then we can build an HttpError

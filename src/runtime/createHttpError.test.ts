@@ -19,9 +19,8 @@ const op: Operation = {
   }],
 };
 
-Deno.test("Produce http error for known operation error type.", () => {
+Deno.test("Produce http error for known error type.", () => {
   const err = createHttpError(
-    [],
     op,
     "/err/aKnownType",
     "Specific issue with this call.",
@@ -38,37 +37,10 @@ Deno.test("Produce http error for known operation error type.", () => {
   assertEquals(err.additionalHeaders?.extraHeader, "h");
 });
 
-Deno.test("Produce http error for known middleware error type.", () => {
-  const err = createHttpError(
-    [{
-      name: "testMiddlware",
-      failureDefinitions: [{
-        code: 411,
-        type: "/err/mware",
-        summary: "A type of failure that the middleware can report.",
-      }],
-    }],
-    op,
-    "/err/mware",
-    "Specific issue with this call.",
-    { foo: 123, bar: true },
-    { "extraHeader": "h" },
-  );
-
-  assertEquals(err.code, 411);
-  assertEquals(err.title, "A type of failure that the middleware can report.");
-  assertEquals(err.type, "/err/mware");
-  assertEquals(err.detail, "Specific issue with this call.");
-  assertEquals(err.properties?.foo, 123);
-  assertEquals(err.properties?.bar, true);
-  assertEquals(err.additionalHeaders?.extraHeader, "h");
-});
-
 Deno.test("Produce http error for unknown error type.", () => {
   const { responseFailureDefinitions: _, ...opWithoutFailureDefs } = op;
 
   const err = createHttpError(
-    [],
     opWithoutFailureDefs,
     "/err/unknownType",
     "Specific issue with this call.",
