@@ -99,6 +99,9 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
         loadPayloadIndex,
       );
     } catch (err) {
+      // Log the error to the console.
+      console.log(err);
+
       if (err instanceof HttpError) {
         response = errorResponse(
           err.code,
@@ -109,8 +112,6 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
           err.additionalHeaders,
         );
       } else {
-        // Log the unexpected error to the console.
-        console.log(err);
         response = errorResponse(
           500,
           "/err/internalServerError",
@@ -135,7 +136,7 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
     // In all cases we append the version information to the response.
     appendBuildVersionHeaders(response.headers);
 
-    // Log out the performance
+    // Log out the performance.
     const duration = performance.now() - start;
     console.log(
       `${underlyingRequest.method} ${url.pathname}${url.search} (${
