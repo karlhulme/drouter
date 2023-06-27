@@ -244,6 +244,7 @@ export function createOperationConst(
       requestUrlParams: ${urlParams},
       requestHeaders: ${headers},
       requestQueryParams: ${queryParams},
+      requestBodyIsRawText: ${method.requestBodyIsRawText ? "true" : "false"},
       ${requestBodyTypeLine}
       ${responseBodyTypeLine}
       responseHeaders: ${outHeaders},
