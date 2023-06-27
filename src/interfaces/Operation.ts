@@ -98,7 +98,7 @@ export interface Operation<
    * If true, the request body will be read out as text,
    * rather than parsed as JSON.
    */
-  requestBodyRawText?: boolean;
+  requestBodyIsRawText?: boolean;
 
   /**
    * The type of the response.
@@ -127,6 +127,15 @@ export interface Operation<
    * This should be in the format YYYY-MM-DD.
    */
   apiVersion: string;
+
+  /**
+   * If true, the presence of an api version will not be enforced.
+   * If a request is supplied without an api version that then
+   * the latest implementation will be assumed.  This is useful for
+   * webhooks from third party systems that cannot supply the
+   * api version header.
+   */
+  apiVersionIsOptional?: boolean;
 
   /**
    * An array of the names of the middleware modules that should

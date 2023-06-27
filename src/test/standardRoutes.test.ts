@@ -167,9 +167,22 @@ Deno.test("An unknown route request elicits a 404 response.", async () => {
 });
 
 Deno.test("A request without an API version elicits a 400 response.", async () => {
-  const routerHandler = router(emptyServiceConfig);
+  const routerHandler = router({
+    ...emptyServiceConfig,
+    operations: [{
+      urlPattern: "/test",
+      name: "test",
+      method: "GET",
+      operationId: "getValue",
+      tags: [],
+      apiVersion: "2000-01-01",
+      flags: [],
+      // deno-lint-ignore require-await
+      handler: async () => ({}),
+    }],
+  });
   const response = await routerHandler(
-    new Request("http://localhost/unknown"),
+    new Request("http://localhost/test"),
     stdReqInfo,
   );
   assertStrictEquals(response.status, 400);

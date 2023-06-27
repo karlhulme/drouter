@@ -52,7 +52,7 @@ Deno.test("Process an operation that uses raw text.", async () => {
       }),
       setup: (op) => {
         op.method = "POST";
-        op.requestBodyRawText = true;
+        op.requestBodyIsRawText = true;
       },
     }),
   );

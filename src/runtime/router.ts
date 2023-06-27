@@ -98,7 +98,6 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
         middlewareModules,
         loadPayloadIndex,
       );
-      console.log("BASICALLY WORKED", response.status);
     } catch (err) {
       if (err instanceof HttpError) {
         response = errorResponse(
@@ -108,13 +107,6 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
           err.detail,
           err.properties,
           err.additionalHeaders,
-        );
-        console.log(
-          "BASICALLY ERRORED",
-          err.code,
-          err.type,
-          err.title,
-          err.detail,
         );
       } else {
         // Log the unexpected error to the console.
@@ -206,17 +198,6 @@ async function processRequest(
     return openApiResponse(config, url);
   }
 
-  // From this point onwards we're expecting the request to invoke
-  // one of the operations.  This means we must have an api-version
-  // header and an operation implementation that matches the request
-  // must be found.
-
-  const apiVersion = underlyingRequest.headers.get("api-version");
-
-  if (!apiVersion) {
-    return apiVersionNotSuppliedResponse();
-  }
-
   const matchedOp = findMatchingOp(internalOps, underlyingRequest);
 
   if (!matchedOp) {
@@ -233,6 +214,12 @@ async function processRequest(
       "/err/operationNotImplemented",
       "The requested operation has not been implemented yet.",
     );
+  }
+
+  const apiVersion = underlyingRequest.headers.get("api-version");
+
+  if (!apiVersion && !matchedOp.operation.apiVersionIsOptional) {
+    return apiVersionNotSuppliedResponse();
   }
 
   const ctx = new Map<string, unknown>();
@@ -331,7 +318,7 @@ async function executeMatchedOp(
     if (index === loadPayloadIndex && op.requestBodyType) {
       payload = await readJsonBody(op.requestBodyType, underlyingRequest);
     }
-    if (op.requestBodyRawText) {
+    if (op.requestBodyIsRawText) {
       payload = await readTextBody(underlyingRequest);
     }
 

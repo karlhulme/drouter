@@ -240,7 +240,8 @@ function createResources() {
         "name": "Post test",
         "markdown": "Post a test record in raw format.",
         "operationId": "postTest",
-        "requestBodyRawText": true,
+        "requestBodyIsRawText": true,
+        "apiVersionIsOptional": true,
       }],
     },
   ];

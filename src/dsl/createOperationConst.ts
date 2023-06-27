@@ -88,7 +88,7 @@ export function createOperationConst(
     }RequestBodyType,`;
   }
 
-  if (method.requestBodyRawText) {
+  if (method.requestBodyIsRawText) {
     requestBodyTypeParam = "{ rawText: string }";
   }
 
@@ -250,6 +250,7 @@ export function createOperationConst(
       ${responseSuccessCodeLine}
       ${responseFailureDefsLine}
       apiVersion: "${method.apiVersion}",
+      apiVersionIsOptional: ${method.apiVersionIsOptional ? "true" : "false"}
       ${deprecatedLine}
       tags: ${JSON.stringify(safeArray(route.tags))},
       flags: ${JSON.stringify(safeArray(method.flags))}

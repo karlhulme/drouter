@@ -16,6 +16,7 @@ export interface DslRouteMethod {
   operationId: string;
   method: "DELETE" | "GET" | "PATCH" | "POST" | "PUT";
   apiVersion: string;
+  apiVersionIsOptional?: boolean;
 
   markdown?: string;
   middleware?: string[];
@@ -31,7 +32,7 @@ export interface DslRouteMethod {
     isNullable?: boolean;
     deprecated?: string;
   }[];
-  requestBodyRawText?: boolean;
+  requestBodyIsRawText?: boolean;
   requestBodyTypes?: {
     enums?: {
       name: string;
