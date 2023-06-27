@@ -140,7 +140,7 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
     console.log(
       `${underlyingRequest.method} ${url.pathname}${url.search} (${
         duration.toFixed(0)
-      }ms)`,
+      }ms) [${response.status}]`,
     );
 
     return response;

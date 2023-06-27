@@ -373,6 +373,9 @@
           "apiVersion": {
             "type": "string"
           },
+          "apiVersionIsOptional": {
+            "type": "boolean"
+          },
           "deprecated": {
             "type": "string"
           }
