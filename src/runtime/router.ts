@@ -314,13 +314,18 @@ async function executeMatchedOp(
 
     prevIndex = index;
 
-    // If we're ready to run the middleware functions that accept the payload
-    // then we need to read it from the request and validate it.
-    if (index === loadPayloadIndex && op.requestBodyType) {
-      payload = await readJsonBody(op.requestBodyType, underlyingRequest);
-    }
-    if (op.requestBodyIsRawText) {
-      payload = await readTextBody(underlyingRequest);
+    // Determine if we're ready to run the middleware functions that
+    // require the payload to have been loaded.
+    if (index === loadPayloadIndex) {
+      // If a request body type is specified then read, parse and
+      // validate the JSON.
+      // Otherwise, if the request body should be read as raw text
+      // then do that now.
+      if (op.requestBodyType) {
+        payload = await readJsonBody(op.requestBodyType, underlyingRequest);
+      } else if (op.requestBodyIsRawText) {
+        payload = await readTextBody(underlyingRequest);
+      }
     }
 
     // Draw down the next middleware function.
