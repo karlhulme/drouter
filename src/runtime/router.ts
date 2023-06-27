@@ -343,6 +343,7 @@ async function executeMatchedOp(
         const mwreq = createMiddlewareRequest(
           url,
           underlyingRequest,
+          middlewareModules,
           op,
           payload,
           headerValues,
@@ -369,6 +370,7 @@ async function executeMatchedOp(
       const req = createOperationRequest(
         url,
         underlyingRequest,
+        middlewareModules,
         op,
         payload,
         headerValues,
@@ -446,6 +448,7 @@ export async function readJsonBody(
 function createMiddlewareRequest(
   url: URL,
   underlyingRequest: Request,
+  middlewareModules: ServiceMiddleware[],
   op: Operation,
   payload: unknown,
   headerValues: OperationRequestValue[],
@@ -610,7 +613,7 @@ function createMiddlewareRequest(
     },
     underlyingRequest,
     error: (type, detail, properties) =>
-      createHttpError(op, type, detail, properties),
+      createHttpError(middlewareModules, op, type, detail, properties),
     start: new Date(),
   };
 }
@@ -626,6 +629,7 @@ function createMiddlewareRequest(
 function createOperationRequest(
   url: URL,
   underlyingRequest: Request,
+  middlewareModules: ServiceMiddleware[],
   op: Operation,
   payload: unknown,
   headerValues: OperationRequestValue[],
@@ -821,7 +825,7 @@ function createOperationRequest(
     },
     underlyingRequest,
     error: (type, detail, properties) =>
-      createHttpError(op, type, detail, properties),
+      createHttpError(middlewareModules, op, type, detail, properties),
     start: new Date(),
   };
 }
