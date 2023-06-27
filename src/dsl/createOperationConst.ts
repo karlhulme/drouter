@@ -88,6 +88,10 @@ export function createOperationConst(
     }RequestBodyType,`;
   }
 
+  if (method.requestBodyRawText) {
+    requestBodyTypeParam = "{ rawText: string }";
+  }
+
   let responseBodyTypeParam = "void";
   let responseBodyTypeLine = "";
 

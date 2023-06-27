@@ -44,6 +44,35 @@ Deno.test("Process an operation with a custom success code.", async () => {
   assertEquals(result, { foo: "bar" });
 });
 
+Deno.test("Process an operation that uses raw text.", async () => {
+  const routerHandler = createRouterHandler(
+    createOperation({
+      handler: async (req) => ({
+        body: { seen: JSON.stringify(req.body) },
+      }),
+      setup: (op) => {
+        op.method = "POST";
+        op.requestBodyRawText = true;
+      },
+    }),
+  );
+
+  const response = await routerHandler(
+    new Request("http://localhost/test", {
+      method: "POST",
+      body: "A raw string, rather than JSON",
+      headers: {
+        "api-version": "2000-01-01",
+      },
+    }),
+    stdReqInfo,
+  );
+  const result = await response.json();
+  assertEquals(result, {
+    seen: `{"rawText":"A raw string, rather than JSON"}`,
+  });
+});
+
 Deno.test("Process an operation where the implementation uses an optional parameter that was not supplied.", async () => {
   const routerHandler = createRouterHandler(
     createOperation({

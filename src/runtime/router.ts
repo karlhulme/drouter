@@ -28,8 +28,8 @@ import { getUrlParamValues } from "./getUrlParamValues.ts";
 import { convertToResponseHeaderValue } from "./convertToResponseHeaderValue.ts";
 import { appendBuildVersionHeaders } from "./appendBuildVersionHeaders.ts";
 import { appendCorsHeaders } from "./appendCorsHeaders.ts";
-import { validateOperationPayload } from "./validateOperationPayload.ts";
 import { createHttpError } from "./createHttpError.ts";
+import { OperationNamedType } from "../index.ts";
 
 /**
  * An internal representation of an operation that includes
@@ -321,8 +321,10 @@ async function executeMatchedOp(
     // If we're ready to run the middleware functions that accept the payload
     // then we need to read it from the request and validate it.
     if (index === loadPayloadIndex && op.requestBodyType) {
-      payload = await readJsonBody(underlyingRequest);
-      validateOperationPayload(op, payload);
+      payload = await readJsonBody(op.requestBodyType, underlyingRequest);
+    }
+    if (op.requestBodyRawText) {
+      payload = await readTextBody(underlyingRequest);
     }
 
     // Draw down the next middleware function.
@@ -415,22 +417,57 @@ async function executeMatchedOp(
 }
 
 /**
- * Reads the JSON body from the request. If the body cannot be read
- * then a boolean value of false is returned, which will fail any
- * further validation.
+ * Reads the JSON body from the request and validates it.
  * @param underlyingRequest An HTTP request.
  */
 export async function readJsonBody(
+  requestBodyType: OperationNamedType,
   underlyingRequest: Request,
 ): Promise<unknown> {
+  let payload;
+  let validationResult;
+
   try {
-    return await underlyingRequest.json();
-  } catch {
-    // We use false here because it will fail validation
-    // when the operation runs, allowing the request to
-    // be tracked.
-    return false;
+    payload = await underlyingRequest.json();
+
+    validationResult = requestBodyType.validator(
+      payload,
+      "requestBody",
+    );
+  } catch (err) {
+    throw new HttpError(
+      400,
+      "/err/requestBodyJsonDidNotValidate",
+      "The request body JSON failed validation.",
+      err.message,
+    );
   }
+
+  if (Array.isArray(validationResult) && validationResult.length > 0) {
+    throw new HttpError(
+      400,
+      "/err/requestBodyJsonDidNotValidate",
+      "The request body JSON failed validation.",
+      undefined,
+      {
+        validationResult,
+      },
+    );
+  }
+
+  return payload;
+}
+
+/**
+ * Reads the body from the request.
+ * @param underlyingRequest An HTTP request.
+ */
+export async function readTextBody(
+  underlyingRequest: Request,
+): Promise<unknown> {
+  return {
+    rawText: await underlyingRequest.text(),
+  };
 }
 
 /**

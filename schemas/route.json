@@ -153,6 +153,9 @@
               "required": ["name", "summary", "propertyType"]
             }
           },
+          "requestBodyRawText": {
+            "type": "boolean"
+          },
           "requestBodyTypes": {
             "type": "object",
             "properties": {

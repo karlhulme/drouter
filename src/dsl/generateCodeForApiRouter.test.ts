@@ -235,6 +235,12 @@ function createResources() {
             }],
           }],
         },
+      }, {
+        "method": "POST",
+        "name": "Post test",
+        "markdown": "Post a test record in raw format.",
+        "operationId": "postTest",
+        "requestBodyRawText": true,
       }],
     },
   ];

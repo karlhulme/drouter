@@ -95,6 +95,12 @@ export interface Operation<
   requestBodyType?: OperationNamedType;
 
   /**
+   * If true, the request body will be read out as text,
+   * rather than parsed as JSON.
+   */
+  requestBodyRawText?: boolean;
+
+  /**
    * The type of the response.
    */
   responseBodyType?: OperationNamedType;

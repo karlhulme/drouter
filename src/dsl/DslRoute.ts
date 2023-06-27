@@ -31,6 +31,7 @@ export interface DslRouteMethod {
     isNullable?: boolean;
     deprecated?: string;
   }[];
+  requestBodyRawText?: boolean;
   requestBodyTypes?: {
     enums?: {
       name: string;
