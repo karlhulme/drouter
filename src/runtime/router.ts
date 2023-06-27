@@ -99,16 +99,14 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
         loadPayloadIndex,
       );
     } catch (err) {
-      if (
-        err instanceof HttpError && (err.code >= 400 && err.code < 500) ||
-        (err.code === 501)
-      ) {
+      if (err instanceof HttpError) {
         response = errorResponse(
           err.code,
           err.type,
           err.title,
           err.detail,
           err.properties,
+          err.additionalHeaders,
         );
       } else {
         // Log the unexpected error to the console.
