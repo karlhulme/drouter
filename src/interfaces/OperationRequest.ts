@@ -12,6 +12,7 @@ export interface OperationRequest<
   RequestUrlParamNames extends string = string,
   RequestHeaderNames extends string = string,
   RequestQueryParamNames extends string = string,
+  ResponseHeaderNames extends string = string,
   RequestFailureTypes extends string = string,
 > {
   /**
@@ -72,6 +73,7 @@ export interface OperationRequest<
     type: RequestFailureTypes,
     detail?: string,
     properties?: Record<string, unknown>,
+    additionalHeaders?: Record<ResponseHeaderNames, string>,
   ) => HttpError;
 
   /**

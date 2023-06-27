@@ -607,8 +607,8 @@ function createMiddlewareRequest(
         ) as T,
     },
     underlyingRequest,
-    error: (type, detail, properties) =>
-      createHttpError(op, type, detail, properties),
+    error: (type, detail, properties, additionalHeaders) =>
+      createHttpError(op, type, detail, properties, additionalHeaders),
     start: new Date(),
   };
 }
@@ -818,8 +818,8 @@ function createOperationRequest(
         ) as boolean,
     },
     underlyingRequest,
-    error: (type, detail, properties) =>
-      createHttpError(op, type, detail, properties),
+    error: (type, detail, properties, additionalHeaders) =>
+      createHttpError(op, type, detail, properties, additionalHeaders),
     start: new Date(),
   };
 }

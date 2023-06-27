@@ -137,6 +137,7 @@ export interface Operation<
       RequestUrlParamNames,
       RequestHeaderNames,
       RequestQueryParamNames,
+      ResponseHeaderNames,
       RequestFailureTypes
     >,
     ctx: OperationContext,
