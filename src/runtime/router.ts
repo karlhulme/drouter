@@ -98,6 +98,7 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
         middlewareModules,
         loadPayloadIndex,
       );
+      console.log("BASICALLY WORKED", response.status);
     } catch (err) {
       if (err instanceof HttpError) {
         response = errorResponse(
@@ -108,7 +109,13 @@ export function router(config: ServiceConfig): Deno.ServeHandler {
           err.properties,
           err.additionalHeaders,
         );
-        console.log(err);
+        console.log(
+          "BASICALLY ERRORED",
+          err.code,
+          err.type,
+          err.title,
+          err.detail,
+        );
       } else {
         // Log the unexpected error to the console.
         console.log(err);
